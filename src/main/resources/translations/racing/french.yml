@@ -1,0 +1,320 @@
+commands:
+  create_race:
+    success: "§eLa course `<race_name>` a été créée."
+    error_name_occupied: "§cIl existe déjà une course nommée `<race_name>`."
+  delete_race:
+    success: "§eLa course `<race_name>` a été supprimée."
+  change_race_name:
+    success: "§eLe nom de la course a été changé de `<old_name>` à `<new_name>`."
+  race_add_checkpoint:
+    success: "§eUn nouveau point de contrôle `<position>` a été créé pour la course `<race_name>`."
+    error_is_occupied: "§cIl y a déjà un point de contrôle à cet emplacement."
+    error_position_out_of_bounds: "§cLa position maximale que vous pouvez entrer pour ce point de contrôle est <max>."
+  race_delete_checkpoint:
+    success: "§eLe point de contrôle `<position>` pour la course `<race_name>` a été supprimé."
+  race_move_checkpoint:
+    success: "§eLe point de contrôle `<position>` pour la course `<race_name>` a été déplacé à <x>, <y>, <z> dans le monde `<world>`."
+    error_no_change: "§eLe point de contrôle `<position>` est déjà à cet emplacement."
+    error_occupied: "§cIl y a déjà un point de contrôle à cet emplacement."
+  race_add_startpoint:
+    success: "§eUn nouveau point de départ `<position>` pour la course `<race_name>` a été créé."
+    error_is_occupied: "§cIl y a déjà un point de départ à cet emplacement."
+    error_position_out_of_bounds: "§cLa position maximale que vous pouvez entrer pour ce point de départ est <max>."
+  race_delete_startpoint:
+    success: "§eLe point de départ `<position>` pour la course `<race_name>` a été supprimé."
+  race_move_startpoint:
+    success: "§Le point de départ `<position>` pour la course `<race_name>` a été déplacé à <x>, <y>, <z> dans le monde `<world>`."
+    error_no_change: "§Le point de départ `<position>` est déjà à cet emplacement."
+    error_occupied: "§cIl y a déjà un point de départ à cet emplacement."
+  race_spawn:
+    error_not_enabled: "§cCette course n'est pas ouverte."
+  race_set_spawn:
+    success: "§eLe point d'apparition pour la course `<race_name>` est défini à <x>, <y>, <z> dans le monde `<world>`."
+  list_races:
+    race_list: "Course (<num_race>) : <races>"
+    race_list_item: "§b<race>"
+  race_set_type:
+    success: "§eLe type de course a été changé de `<old_type>` à `<new_type>`."
+    error_nochange: "§cLe type de course est déjà défini sur `<type>`."
+  race_set_start_order:
+    success: "§eL'ordre de départ a été changé de `<old_order>` à `<new_order>`."
+    error_nochange: "§cL'ordre de départ est déjà défini sur `<order>`."
+  race_set_song:
+    success: "§eLa chanson de la course a été changée de `<old_song>` à `<new_song>`."
+    error_nochange: "§cLa chanson de la course est déjà définie sur `<song>`."
+  race_unset_song:
+    success: "§eLa chanson a été retirée de la course."
+    error_already_unset: "§cLa course n'a pas de chanson."
+  start_race:
+    error_already_started: "§cLa course est déjà commencée."
+    error_missing_startpoint: "§cLa course doit avoir au moins 1 point de départ."
+    error_missing_checkpoint: "§cLa course doit avoir au moins 1 point de contrôle."
+    error_missing_checkpoints: "§cLa course doit avoir au moins 2 points de contrôle."
+    error_not_enabled: "§cCette course doit être activée pour démarrer. Écrivez §7/rc setstate <race_name> enabled §cpour l'activer."
+    error_no_enabled: "§cIl n'y a pas de course activée."
+  stop_race:
+    success: "§cLa course a été arrêtée."
+    error_not_started: "§cLa course n'est pas commencée."
+  join_race:
+    success: "§e<player_name> a rejoint la course `<race_name>`. (<current_participants>/<max_participants> participants)"
+    charged: "§e<fee> a été retiré de votre compte."
+    error_not_open: "§cCette course n'est pas ouverte à la participation."
+    error_is_full: "§cIl n'y a plus de places disponibles."
+    error_is_participating: "§cVous participez déjà à cette course."
+    error_is_participating_other: "§cVous participez actuellement à une autre course."
+    error_not_afford: "§cVous ne pouvez pas vous permettre d'entrer dans cette course. Les frais d'inscription sont <entry_fee> et vous avez <balance>."
+    error_game_mode: "§cVous ne pouvez pas rejoindre cette course en mode de jeu `<game_mode>`."
+    error_world: |-
+      §cVous ne pouvez pas rejoindre cette course depuis votre monde actuel.
+  race_skip_wait:
+    error_not_started: "§cLa course doit être commencée pour sauter la préparation."
+  reload:
+    success: "§eLa configuration a été rechargée."
+    failed: |-
+      §cLa configuration n'a pas pu être rechargée.
+      Raison : <reason>
+    failed_messages: |-
+      §cLes messages n'ont pas pu être rechargés.
+      Raison : <reason>
+    not_races: "§cLes courses n'ont pas été rechargées car il y a des courses en cours."
+    races_failed: "§cLes courses n'ont pas pu être rechargées. Erreur : <error>"
+    not_language: "§cLa langue n'a pas été rechargée car la langue `<language>` n'a pas pu être trouvée."
+  race_set_state:
+    success: "§eL'état a été changé de `<old_state>` à `<new_state>`."
+    error_nochange: "§cL'état est déjà défini sur `<state>`."
+    error_ongoing: "§cLa course est en cours et ne peut pas changer d'état."
+  race_help:
+    title: "§6§m----§r§6[ §eAide Course §6]§m----"
+    item: "§e<text>"
+  race_set_entryfee:
+    success: "§eLes frais d'inscription sont définis sur <entry_fee>."
+  race_set_walkspeed:
+    success: "§eLa vitesse de marche a été définie sur <walk_speed>."
+  race_set_pig_speed:
+    success: "§eLa vitesse du cochon a été définie sur <speed>."
+  race_set_strider_speed:
+    success: "§eLa vitesse du strider a été définie sur <speed>."
+  race_set_horse_speed:
+    success: "§eLa vitesse du cheval a été définie sur <speed>."
+  race_set_horse_jump_strength:
+    success: "§eLa force de saut du cheval a été définie sur <jump_strength>."
+  race_add_potion_effect:
+    success: "§eL'effet de potion `<potion_effect>` avec l'amplificateur `<amplifier>` a été défini dans la course `<race_name>`."
+  race_remove_potion_effect:
+    success: "§eL'effet de potion `<potion_effect>` a été retiré de la course `<race_name>`."
+  race_clear_potion_effects:
+    success: "§eTous les effets de potion ont été retirés de la course `<race_name>`."
+  race_leave:
+    error_not_participating: "§cVous ne participez à aucune course."
+    success: "§eVous avez quitté la course `<race_name>` et avez été déplacé au point d'apparition de la course."
+    leave_broadcast: "§e<player_name> a quitté la course."
+    leave_payback: "§eVos frais d'inscription de <entry_fee> vous ont été remboursés."
+  race_info:
+    success: |
+      §6§m----§r§6[ §eInfo Course §6]§m----
+      §eNom : §f<name>
+      §eType : §f<type>
+      §eÉtat : §f<state>
+      §eCréé : §f<created>
+      §ePoints de départ : §f<num_startpoints>
+      §ePoints de contrôle : §f<num_checkpoints>
+      <entry_fee|suffix:\n>§eVitesse de marche : §f<walk_speed>
+      §eEffets de potion : <none>
+      <potion_effects|delimiter:\n>
+    no_potion_effects: "§fAucun"
+    potion_effect_item: "§f<potion_effect> : <amplifier>"
+    entry_fee_line: "§eFrais d'inscription : §f<entry_fee>\n"
+  race_top:
+    types:
+      fastest: 'Course la plus rapide pour <laps> <lap_word>'
+      fastest_lap: 'Tour le plus rapide'
+      most_runs: 'Plus de courses'
+      most_wins: 'Plus de victoires'
+      win_ratio: 'Ratio de victoires'
+    header: "§9<type> §e dans la course §a<race_name>"
+    item: "§e#<position> §f<player_name> §8- §e<value>"
+    item_none: "§e#<position> §f-"
+  race_reset_top:
+    success: '§eLe classement pour la course §a<race_name> §e a été réinitialisé.'
+  hd_top_list_create:
+    success: |-
+      §eL'hologramme du classement a été créé.
+    already_exist: |-
+      §cIl existe déjà un hologramme du classement avec le nom `<name>`.
+    error_no_persist: |-
+      §cL'hologramme du classement n'a pas pu être sauvegardé dans le fichier. Vérifiez votre console pour une erreur plus détaillée afin de la résoudre, sinon l'hologramme du classement sera supprimé au prochain redémarrage.
+  hd_top_list_delete:
+    success: |-
+      §eL'hologramme du classement a été supprimé.
+    error_fail_delete_file: |-
+      §cLe fichier de l'hologramme du classement n'a pas pu être supprimé. Essayez de supprimer le fichier manuellement, sinon l'hologramme du classement sera recréé au prochain rechargement.
+  hd_top_list_move:
+    success: |-
+      §eL'hologramme du classement a été déplacé à votre emplacement.
+  hd_top_list_set_race:
+    success: |-
+      §eL'hologramme du classement a changé de course de §a<old_race> §e à §a<new_race>§e.
+  hd_top_list_set_stat:
+    success: |-
+      §eL'hologramme du classement a changé le type de statistique de §6<old_stat> §e à §6<new_stat>§e.
+  hd_top_list_set_laps:
+    success: |-
+      §eL'hologramme du classement a changé le nombre de tours de §6<old_laps> §e à §6<new_laps>§e.
+  hd_top_list_list:
+    header: |-
+      §eListes des classements holographiques :
+    item: |-
+      §6<top_list>
+    item_info: |-
+      §f(§e course : §a<race>§r, §e stat : §6<stat>§r§f)
+    teleport_click: |-
+      /rc hdtoplist teleport <top_list>
+    teleport_hover: |-
+      §l§bTéléportation vers le classement
+
+validators:
+  race_not_found: "§cAucune course avec le nom `<race_name>` n'a été trouvée."
+  race_already_exist: "§cIl existe déjà une course avec le nom `<race_name>`."
+  checkpoint_not_found: "§cAucun point de contrôle avec la position `<position>` dans la course `<race_name>` n'a été trouvé."
+  checkpoint_already_exist: "§cIl existe déjà un point de contrôle `<position>` dans la course `<race_name>`."
+  startpoint_not_found: "§cAucun point de départ avec la position `<position>` dans la course `<race_name>` n'a été trouvé."
+  startpoint_already_exist: "§cIl existe déjà un point de départ avec la position `<position>` dans la course `<race_name>`."
+  type_not_found: "§cIl n'y a pas de type appelé `<type>`. Types possibles : <types>."
+  start_order_not_found: "§cIl n'y a pas d'ordre de départ appelé `<order>`. Ordres possibles : <orders>."
+  state_not_found: "§cIl n'y a pas d'état appelé `<state>`. États possibles : <states>."
+  song_not_found: "§cIl n'y a pas de chanson appelée `<song_name>`."
+  validate_non_integer: |-
+    §cL'argument attendu `<argument>` doit être un entier mais a reçu `<received>`.
+
+    Utilisation :
+    <help_text>
+  validate_non_number: |-
+    §cL'argument attendu `<argument>` doit être un nombre mais a reçu `<received>`.
+
+    Utilisation :
+    <help_text>
+  min_exceed: |-
+    §cL'argument attendu `<argument>` doit être au moins `<expected>` mais a reçu `<received>`.
+
+    Utilisation :
+    <help_text>
+  max_exceed: |-
+    §cL'argument attendu `<argument>` doit être au plus `<expected>` mais a reçu `<received>`.
+
+    Utilisation :
+    <help_text>
+  race_potion_effect_not_found: "§cIl n'y a pas d'effet de potion avec le nom `<potion_effect>` dans la course `<race_name>`."
+  potion_effect_not_found: "§cIl n'y a pas d'effet de potion avec le nom `<potion_effect>`."
+  stat_type_not_found: "§cIl n'y a pas de type de statistique avec le nom `<stat_type>`. Valeurs possibles : <stat_types>"
+  hd_top_list_not_found: "§cIl n'y a pas de classement holographique avec le nom `<name>`."
+
+race_canceled: "§cLa course a été annulée en raison du manque de participants."
+race_start_gamemode_disqualified: "§e<player_name> est dans un mode de jeu interdit et est maintenant disqualifié."
+race_start_gamemode_disqualified_target: "§eVous avez été disqualifié car vous êtes dans un mode de jeu interdit."
+race_death_disqualified: "§e<player_name> est mort pendant la course et est maintenant disqualifié."
+race_death_disqualified_target: "§eVous êtes mort et êtes donc disqualifié."
+edit_no_edit_mode: "§cVous ne pouvez pas modifier la course `<race_name>` car elle n'est pas en construction. Tapez §7/rc setstate <race_name> under_construction§c pour la mettre en construction."
+race_result_header: "§eRésultat de la course §a<race_name>"
+race_participant_result: "§6#<position>. §e<player_name> a terminé avec le temps <time>."
+race_participant_result_no_complete: "§7- §e<player_name> n'a pas terminé."
+race_participate_click_text: "/racing join <race_name>"
+race_participate_hover_text: "Cliquez ici pour participer."
+race_participate_text: |
+  §eLa course §a<race_name>§e a été démarrée et commence dans <time_left>.
+  Tours : <laps>
+  §6>> Cliquez ici pour participer <<
+race_participate_text_fee: |
+  §eLa course §a<race_name>§e a été démarrée et commence dans <time_left>.
+  Tours : <laps>
+  Frais d'inscription : <entry_fee>
+  §6>> Cliquez ici pour participer <<
+race_participate_discord: |
+  @everyone
+  La course **<race_name>** a été démarrée et commence dans **<time_left>**.
+  Tours : <laps>
+  Rejoignez le serveur et écrivez **/rc join <race_name>** pour participer.
+race_participate_discord_fee: |
+  @everyone
+  La course **<race_name>** a été démarrée et commence dans **<time_left>**.
+  Tours : <laps>
+  Frais d'inscription : <entry_fee>
+  Rejoignez le serveur et écrivez **/rc join <race_name>** pour participer.
+race_participate_text_timeleft: "§eIl reste <time_left> avant que la course ne commence. Écrivez §7/rc join <race_name>§e pour participer."
+race_countdown_subtitle: "secondes avant que la course ne commence."
+race_next_lap_actionbar: "§6Tour <ordinal>"
+race_final_lap_actionbar: "§6Dernier tour"
+race_type_respawn_start_info: "§eVous pouvez frapper l'air avec votre main pour vous téléporter au point de départ."
+race_type_respawn_last_info: "§eVous pouvez frapper l'air avec votre main pour vous téléporter au dernier point de contrôle."
+race_skipwait_hover_text: "Cliquez ici pour démarrer instantanément"
+race_skipwait_click_text: "/racing skipwait <race_name>"
+race_skipwait: "§e[Sauter l'attente]"
+race_stop_hover_text: "Cliquez ici pour arrêter la course"
+race_stop_click_text: "/racing stop <race_name>"
+race_stop: "§e[Arrêter la course]"
+race_sign_registered: "§eLe panneau pour la course `<race_name>` a été enregistré."
+race_sign_unregistered: "§eLe panneau pour la course `<race_name>` a été désenregistré."
+race_sign_lines: |
+  [Course]
+  §a<race_name>
+  §b<status>
+  <laps> Tours §l§8<current_participants>/<max_participants>
+race_sign_fastest_lines: |
+  [Course]
+  §a<race_name>
+  §bLe plus rapide
+  <laps> Tours
+race_sign_stats_lines: |
+  [Course]
+  §a<race_name>
+  §b<stat_name>
+race_sign_status_not_started: "§8§l• Non commencée •"
+race_sign_status_lobby: "§d§l• Lobby •"
+race_sign_status_in_game: "§4§l• En jeu •"
+race_blocked_cmd: "§c<command> est bloqué pendant une course."
+
+no_permission_command: "§cVous n'avez pas la permission d'exécuter cette commande."
+missing_arguments_command: |-
+  §cCertains arguments pour cette commande sont manquants.
+
+  Utilisation :
+  <usage>
+command_not_found: |-
+  §cLa commande n'a pas été trouvée.
+
+  Suggestions :
+  <suggestions>
+
+timeunit.second: "seconde"
+timeunit.seconds: "secondes"
+timeunit.minute: "minute"
+timeunit.minutes: "minutes"
+timeunit.hour: "heure"
+timeunit.hours: "heures"
+timeunit.day: "jour"
+timeunit.days: "jours"
+timeunit.now: "maintenant"
+
+scoreboard.heading_format: "§b§l== <heading> (<laps> tours)=="
+scoreboard.title_format: "§b<title>"
+scoreboard.text_format: "§f<text>"
+scoreboard.world_record: "Record du serveur :"
+scoreboard.world_record_fastest_lap: "SR tour le plus rapide :"
+scoreboard.personal_record: "Meilleur personnel :"
+scoreboard.time: "Temps :"
+scoreboard.fastest_lap: "Tour le plus rapide :"
+scoreboard.lap_tag: " Tour"
+scoreboard.no_time_stats: "--:--.---"
+scoreboard.no_name_stats: "---------"
+
+lap.plural: "Tours"
+lap.singular: "Tour"
+
+hd_top_list.header: |-
+  §a§l§n<race_name>
+  §e§l<stat_type>
+hd_top_list.item: |-
+  §6<position>. §f<player_name> §7- §6<value>
+hd_top_list.none: |-
+  §6<position>. §fn/a
+hd_top_list.footer: |-
+  §e§m-------------
