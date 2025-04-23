@@ -1,0 +1,320 @@
+commands:
+  create_race:
+    success: "§eRace `<race_name>` har skapats."
+    error_name_occupied: "§cDet finns redan ett race med namn `<race_name>`."
+  delete_race:
+    success: "§eRace `<race_name>` har raderats."
+  change_race_name:
+    success: "§eNamn på race har ändrats från `<old_name>` till `<new_name>`."
+  race_add_checkpoint:
+    success: "§eNy checkpoint `<position>` har skapats för race `<race_name>`."
+    error_is_occupied: "§cDet finns redan en checkpoint på den här platsen."
+    error_position_out_of_bounds: "§cPosition för den här checkpointen kan maximalt vara <max>."
+  race_delete_checkpoint:
+    success: "§eCheckpoint `<position>` för race `<race_name>` borttagen."
+  race_move_checkpoint:
+    success: "§eCheckpoint `<position>` för race `<race_name>` flyttades till <x>, <y>, <z> in världen `<world>`."
+    error_no_change: "§eCheckpoint `<position>` befinner sig redan på den här platsen."
+    error_occupied: "§cDet finns redan en checkpoint på den här platsen."
+  race_add_startpoint:
+    success: "§eNy startpunkt #<position> för race `<race_name>` skapad."
+    error_is_occupied: "§cDet finns redan en startpunkt på den här platsen."
+    error_position_out_of_bounds: "§cPosition för den här startpunkt kan maximalt vara <max>."
+  race_delete_startpoint:
+    success: "§eStartpunkt #<position> för race `<race_name>` har raderats."
+  race_move_startpoint:
+    success: "§eStartpunkt `<position>` för race `<race_name>` flyttades till <x>, <y>, <z> in världen `<world>`."
+    error_no_change: "§eStartpunkt `<position>` befinner sig redan på den här platsen."
+    error_occupied: "§cDet finns redan en startpunkt på den här platsen."
+  race_spawn:
+    error_not_enabled: "§cDetta race är inte öppet."
+  race_set_spawn:
+    success: "§eSpawn för race `<race_name>` satt till <x>, <y>, <z> i värld `<world>`."
+  list_races:
+    race_list: "Race (<num_race>): <races>"
+    race_list_item: "§b<race>"
+  race_set_type:
+    success: "§eTyp ändrad från `<old_type>` till `<new_type>`."
+    error_nochange: "§cRacet typ är redan `<type>`."
+  race_set_start_order:
+    success: "§eStart order changed from `<old_order>` to `<new_order>`."
+    error_nochange: "§cStart order is already set to `<order>`."
+  race_set_song:
+    success: "§eLåt ändrad från `<old_song>` till `<new_song>`."
+    error_nochange: "§cLåt är redan satt till `<song>`."
+  race_unset_song:
+    success: "§eLåt är borttagen från race."
+    error_already_unset: "§cRacet har ingen vald låt."
+  start_race:
+    error_already_started: "§cRacet är redan startat."
+    error_missing_startpoint: "§cRacet måste ha minst 1 startpunkt."
+    error_missing_checkpoint: "§cRacet måste ha minst 1 checkpoint."
+    error_missing_checkpoints: "§cRacet måste ha minst 2 checkpoints."
+    error_not_enabled: "§eDetta race måste vara öppnat för att kunna starta. Skriv §7/rc setstate <race_name> enabled §cför att öppna det."
+    error_no_enabled: "§cDet finns inget aktiverat race."
+  stop_race:
+    success: "§cRacet har stoppats."
+    error_not_started: "§cRacet kan inte avslutas eftersom det inte är startat."
+  join_race:
+    success: "§e<player_name> gick med i race `<race_name>`. (<current_participants>/<max_participants> deltagande)"
+    charged: "§e<fee> har tagits från ditt konto."
+    error_not_open: "§cDetta race är inte öppet för deltagande."
+    error_is_full: "§cDet finns inga platser kvar."
+    error_is_participating: "§cDu deltar redan i detta race."
+    error_is_participating_other: "§cDu deltar för tillfället i ett annat race."
+    error_not_afford: "§cDu har inte råd att delta. Det kostar <entry_fee> och du har <balance>."
+    error_game_mode: "§cDu kan inte delta i racet när du är i `<game_mode>`."
+    error_world: |-
+      §cDu kan inte gå med i racet från den världen du befinner dig i.
+  race_skip_wait:
+    error_not_started: "§cRacet måste vara startat för att kunna skippas."
+  reload:
+    success: "§eKonfiguration har laddats om."
+    failed: |-
+      §cKonfiguration kunde inte laddas om.
+      Anledning: <reason>
+    failed_messages: |-
+      §cMeddelanden kunde inte laddas om.
+      Anledning: <reason>
+    not_races: "§cRace har inte laddats om eftersom ett eller flera race pågår."
+    races_failed: "§cRace kunde inte laddas om. Fel: <error>"
+    not_language: "§cSpråket har inte laddats om eftersom det inte finns ett språk med namnet `<language>`."
+  race_set_state:
+    success: "§eStatus har ändrats från `<old_state>` till `<new_state>`."
+    error_nochange: "§Status är redan satt till `<state>`."
+    error_ongoing: "§cRace som pågår kan inte ändra status."
+  race_help:
+    title: "§6§m----§r§6[ §eRacing Hjälp §6]§m----"
+    item: "§e<text>"
+  race_set_entryfee:
+    success: "§eAnmälningsavgift satt till <entry_fee>."
+  race_set_walkspeed:
+    success: "§eFörflyttningshastighet har satts till <walk_speed>."
+  race_set_pig_speed:
+    success: "§eFörflyttningshastighet för grisar har satts till <speed>."
+  race_set_strider_speed:
+    success: "§eFörflyttningshastighet för striders har satts till <speed>."
+  race_set_horse_speed:
+    success: "§eeFörflyttningshastighet för hästar har satts till <speed>."
+  race_set_horse_jump_strength:
+    success: "§eSkuttkraft för hästar har satts till <jump_strength>."
+  race_add_potion_effect:
+    success: "§Trolldryckseffekt `<potion_effect>` med förstärkare `<amplifier>` i race `<race_name>` tillagd."
+  race_remove_potion_effect:
+    success: "§eTrolldryckseffekt `<potion_effect>` har tagits bort från race `<race_name>`."
+  race_clear_potion_effects:
+    success: "§eAlla trolldryckseffekter har tagits bort från race `<race_name>`."
+  race_leave:
+    error_not_participating: "§cDu deltar inte i något race."
+    success: "§eDu har lämnat race `<race_name>`."
+    leave_broadcast: "§e<player_name> har lämnat racet."
+    leave_payback: "§eDu har fått tillbaka <entry_fee>."
+  race_info:
+    success: |
+      §6§m----§r§6[ §eRace Info §6]§m----
+      §eNamn: §f<name>
+      §eTyp: §f<type>
+      §eStatus: §f<state>
+      §eSkapad: §f<created>
+      §Startpunkter: §f<num_startpoints>
+      §eCheckpoints: §f<num_checkpoints>
+      <entry_fee>§eRörelsehastighet: §f<walk_speed>
+      §eTrolldryckseffekter: <none>
+      <potion_effects|delimiter:\n>
+    no_potion_effects: "§fInga"
+    potion_effect_item: "§f<potion_effect> : <amplifier>"
+    entry_fee_line: "§eAnmälningsavgift: §f<entry_fee>\n"
+  race_top:
+    types:
+      fastest: 'Snabbaste'
+      fastest_lap: 'Snabbaste varv'
+      most_runs: 'Mest deltagande'
+      most_wins: 'Flest vinster'
+      win_ratio: 'Störst vinstförhållande'
+    header: "§e§9<type> §ei race §a<race_name>"
+    item: "§e#<position> §f<player_name> §8- §e<value>"
+    item_none: "§e#<position> §f-"
+  race_reset_top:
+    success: '§eResultat för race §a<race_name> §e har återställts.'
+  hd_top_list_create:
+    success: |-
+      §eHolografisk topplista skapad.
+    already_exist: |-
+      §cDet finns redan en holografisk topplista med namnet `<name>`.
+    error_no_persist: |-
+      §cHolografisk topplista kunde inte sparas till fil. Kolla konsollen för ett mer detaljerat fel för att försöka lösa problemet annars försvinner topplistan efter nästa omstart.
+  hd_top_list_delete:
+    success: |-
+      §eHolografisk topplista borttagen.
+    error_fail_delete_file: |-
+      §cHolografisk topplista kunde inte raderas. Försök att manuellt radera filen annars så kommer topplistan vara kvar efter nästa omstart.
+  hd_top_list_move:
+    success: |-
+      §eHolografisk topplista har flyttats till din position.
+  hd_top_list_set_race:
+    success: |-
+      §eHolografisk topplista har ändrat race från §a<old_race> §etill §a<new_race>§e.
+  hd_top_list_set_stat:
+    success: |-
+      §eHolografisk topplista har ändrat statistiktyp från §6<old_stat> §etill §6<new_stat>§e.
+  hd_top_list_set_laps:
+    success: |-
+      §eHolografisk topplista har ändrat antalet varv från §6<old_laps> §etill §6<new_laps>§e.
+  hd_top_list_list:
+    header: |-
+      §elHolografiska topplistor:
+    item: |-
+      §6<top_list>
+    item_info: |-
+      §f(§erace: §a<race>§r, §etyp: §6<stat>§r§f)
+    teleport_click: |-
+      /rc hdtoplist teleport <top_list>
+    teleport_hover: |-
+      §l§bTeleportera till topplistan
+
+validators:
+  race_not_found: "§cDet finns inget race med namn `<race_name>`."
+  race_already_exist: "§cDet finns redan ett race med namn `<race_name>`."
+  checkpoint_not_found: "§cDet finns ingen checkpoint `<position>` i race `<race_name>`."
+  checkpoint_already_exist: "§cDet finns redan en checkpoint `<position>` i race `<race_name>`."
+  startpoint_not_found: "§cDet finns ingen startpunkt `<position>` i race `<race_name>`."
+  startpoint_already_exist: "§cDet finns redan en startpunkt `<position>` i race `<race_name>`."
+  type_not_found: "§cDet finns ingen typ `<type>`. Möjliga typer: <types>."
+  start_order_not_found: "§cThere is no start order called `<order>`. Possible orders: <orders>."
+  state_not_found: "§cDet finns ingen status `<state>`. Möjliga statusar: <states>."
+  song_not_found: "§cDet finns ingen låt med namnet `<song_name>`."
+  validate_non_integer: |-
+    §c`<argument>` måste vara ett heltal men fick `<received>`.
+
+    Användning:
+    <help_text>
+  validate_non_number: |-
+    §c`<argument>` måste vara ett nummer men fick `<received>`.
+
+    Användning:
+    <help_text>
+  min_exceed: |-
+    §c`<argument>` måste va minst `<expected>` men fick `<received>`.
+
+    Användning:
+    <help_text>
+  max_exceed: |-
+    §c`<argument>` får va högst `<expected>` men fick `<received>`.
+
+    Användning:
+    <help_text>
+  race_potion_effect_not_found: "§cDet finns ingen trolldryckseffekt med namnet `<potion_effect>` i race `<race_name>`."
+  potion_effect_not_found: "§cDet finns ingen trolldryckseffekt med namnet `<potion_effect>`."
+  stat_type_not_found: "§cDet finns ingen statistiktyp med namnet `<stat_type>`. Möjliga typer: <stat_types>"
+  hd_top_list_not_found: "§cDet finns ingen holografisk topplista med namnet: `<name>`."
+
+race_canceled: "§cRacet har blivit inställt p.g.a. för få deltagande."
+race_start_gamemode_disqualified: "§e<player_name> befanns sig i ett förbjudet spelläge vid start och är därmed diskvalificerad."
+race_start_gamemode_disqualified_target: "§eDu blev diskvalificerad eftersom du befann dig i ett förbjudet spelläge vid start."
+race_death_disqualified: "§e<player_name> dog och är därmed diskvalificerad."
+race_death_disqualified_target: "§eDu dog och är därmed diskvalificerad."
+edit_no_edit_mode: "§cDu kan inte ändra på race `<race_name>` eftersom racet inte är under konstruktion. Skriv §7/rc setstate <race_name> under_construction§c för att sätta det under konstruktion."
+race_result_header: "§eResultat för race §a<race_name>"
+race_participant_result: "§6#<position>. §e<player_name> har vunnit race §a<race_name>§e med tiden <time>."
+race_participant_result_no_complete: "§7- §e<player_name> slutförde inte."
+race_participate_click_text: "/rc join <race_name>"
+race_participate_hover_text: "Klicka för att delta"
+race_participate_text: |
+  §eRace §a<race_name>§e har startats och börjar om <time_left>.
+  Varv: <laps>
+  §6>> Klicka här för att delta <<
+race_participate_text_fee: |
+  §eRace §a<race_name>§e har startats och börjar om <time_left>.
+  Varv: <laps>
+  Anmälningsavgift: <entry_fee>
+  §6>> Klicka här för att delta <<
+race_participate_discord: |
+  @everyone
+  Race **<race_name>** har startats och börjar om **<time_left>**.
+  Varv: <laps>
+  Gå in på servern och skriv **/rc join <race_name>** för att delta.
+race_participate_discord_fee: |
+  @everyone
+  Race **<race_name>** har startats och börjar om **<time_left>**.
+  Varv: <laps>
+  Anmälningsavgift: <entry_fee>
+  Gå in på servern och skriv **/rc join <race_name>** för att delta.
+race_participate_text_timeleft: "§eDet är <time_left> kvar innan racet börjar. Skriv §7/rc join <race_name>§e för att delta."
+race_countdown_subtitle: "sekunder innan racet börjar"
+race_next_lap_actionbar: "§6Varv <ordinal>"
+race_final_lap_actionbar: "§6Sista varvet"
+race_type_respawn_start_info: "§eDu kan slå i luften med handen för att teleportera tillbaka dig till startpunkten."
+race_type_respawn_last_info: "§eDu kan slå i luften med handen för att teleportera tillbaka dig till den senaste checkpointen."
+race_skipwait_hover_text: "Klicka här för att starta direkt"
+race_skipwait_click_text: "/rc skipwait <race_name>"
+race_skipwait: "§e[Starta direkt]"
+race_stop_hover_text: "Klicka här för att stoppa racet"
+race_stop_click_text: "/rc stop <race_name>"
+race_stop: "§e[Stoppa racet]"
+race_sign_registered: "§eSkylt för race `<race_name>` är registrerad."
+race_sign_unregistered: "§eSkylt för race `<race_name>` är avregistrerad."
+race_sign_lines: |
+  [Race]
+  <race_name>
+  §l§8<current_participants>/<max_participants>
+  <status>
+race_sign_fastest_lines: |
+  [Race]
+  §a<race_name>
+  §bFastest
+  <laps> Laps
+race_sign_stats_lines: |
+  [Race]
+  §a<race_name>
+  §b<stat_name>
+race_sign_status_not_started: "§8§l• Stängd •"
+race_sign_status_lobby: "§d§l• Lobby •"
+race_sign_status_in_game: "§4§l• I spelet •"
+race_blocked_cmd: "§c<command> är blockerat när man deltar i race."
+
+no_permission_command: "§cDu har inte tillåtelse att utföra detta kommando."
+missing_arguments_command: |-
+  §cVissa argument till kommandot saknas.
+
+  Användning:
+  <usage>
+command_not_found: |-
+  §cKommandot hittades inte.
+
+  Alternativ:
+  <suggestions>
+
+timeunit.second: "sekund"
+timeunit.seconds: "sekunder"
+timeunit.minute: "minut"
+timeunit.minutes: "minuter"
+timeunit.hour: "timme"
+timeunit.hours: "timmar"
+timeunit.day: "dag"
+timeunit.days: "dagar"
+timeunit.now: "now"
+
+scoreboard.heading_format: "§b§l== <heading> (<laps> laps)=="
+scoreboard.title_format: "§b<title>"
+scoreboard.text_format: "§f<text>"
+scoreboard.world_record: "Serverrekord:"
+scoreboard.world_record_fastest_lap: "SR snabbaste varv:"
+scoreboard.personal_record: "Personligt bästa:"
+scoreboard.time: "Time:"
+scoreboard.fastest_lap: "Snabbaste varv:"
+scoreboard.lap_tag: " Lap"
+scoreboard.no_time_stats: "--:--.---"
+scoreboard.no_name_stats: "---------"
+
+lap.plural: "Varv"
+lap.singular: "varv"
+
+hd_top_list.header: |-
+  §a§l§n<race_name>
+  §e§l<stat_type>
+hd_top_list.item: |-
+  §6<position>. §f<player_name> §7- §6<value>
+hd_top_list.none: |-
+  §6<position>. §fn/a
+hd_top_list.footer: |-
+  §e§m-------------
