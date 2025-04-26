@@ -1,0 +1,320 @@
+commands:
+  create_race:
+    success: "§eRace `<race_name>` has been created."
+    error_name_occupied: "§cThere is already a race with called `<race_name>`."
+  delete_race:
+    success: "§eRace `<race_name>` has been deleted."
+  change_race_name:
+    success: "§eRace name changed from `<old_name>` to `<new_name>`."
+  race_add_checkpoint:
+    success: "§eNew checkpoint `<position>` has been created for race `<race_name>`."
+    error_is_occupied: "§cThere is already a checkpoint in this location."
+    error_position_out_of_bounds: "§cMax position you can enter for this checkpoint is <max>."
+  race_delete_checkpoint:
+    success: "§eCheckpoint `<position>` for race `<race_name>` has been deleted."
+  race_move_checkpoint:
+    success: "§eCheckpoint `<position>` for race `<race_name>` was moved to <x>, <y>, <z> in world `<world>`."
+    error_no_change: "§eCheckpoint `<position>` is already in this location."
+    error_occupied: "§cThere is already a checkpoint in this location."
+  race_add_startpoint:
+    success: "§eNew start point `<position>` for race `<race_name>` has been created."
+    error_is_occupied: "§cThere is already a start point in this location."
+    error_position_out_of_bounds: "§cMax position you can enter for this start point is <max>."
+  race_delete_startpoint:
+    success: "§eStart point `<position>` for race `<race_name>` has been deleted."
+  race_move_startpoint:
+    success: "§Start point `<position>` for race `<race_name>` was moved to <x>, <y>, <z> in world `<world>`."
+    error_no_change: "§Start point `<position>` is already in this location."
+    error_occupied: "§cThere is already a start point in this location."
+  race_spawn:
+    error_not_enabled: "§cThis race is not open."
+  race_set_spawn:
+    success: "§eSpawn for race `<race_name>` set to <x>, <y>, <z> in world `<world>`."
+  list_races:
+    race_list: "Race (<num_race>): <races>"
+    race_list_item: "§b<race>"
+  race_set_type:
+    success: "§eRace type changed from `<old_type>` to `<new_type>`."
+    error_nochange: "§cRace type is already set to `<type>`."
+  race_set_start_order:
+    success: "§eStart order changed from `<old_order>` to `<new_order>`."
+    error_nochange: "§cStart order is already set to `<order>`."
+  race_set_song:
+    success: "§eRace song changed from `<old_song>` to `<new_song>`."
+    error_nochange: "§cRace song is already set to `<song>`."
+  race_unset_song:
+    success: "§eSong was removed from race."
+    error_already_unset: "§cRace does not have a song."
+  start_race:
+    error_already_started: "§cRace is already started."
+    error_missing_startpoint: "§cRace must at least have 1 start point."
+    error_missing_checkpoint: "§cRace must at least have 1 checkpoint."
+    error_missing_checkpoints: "§cRace must at least have 2 checkpoints."
+    error_not_enabled: "§cThis race must be enabled in order to start. Write §7/rc setstate <race_name> enabled §cto enable it."
+    error_no_enabled: "§cThere are no enabled race."
+  stop_race:
+    success: "§cRace has been stopped."
+    error_not_started: "§cRace is not started."
+  join_race:
+    success: "§e<player_name> entered race `<race_name>`. (<current_participants>/<max_participants> participants)"
+    charged: "§e<fee> has been withdrawn from your account."
+    error_not_open: "§cThis race is not open for participation."
+    error_is_full: "§cThere are not open slots left."
+    error_is_participating: "§cYou are already participating in this race."
+    error_is_participating_other: "§cYou are currently participating in another race."
+    error_not_afford: "§cYou can't afford to enter this race. Entry fee is <entry_fee> and you have <balance>."
+    error_game_mode: "§cYou can't join this race when in game mode `<game_mode>`."
+    error_world: |-
+      §cYou can't join this race from your current world.
+  race_skip_wait:
+    error_not_started: "§cRace must be started in order to skip preparing."
+  reload:
+    success: "§eConfiguration has been reloaded."
+    failed: |-
+      §cConfiguration couldn't be reloaded.
+      Reason: <reason>
+    failed_messages: |-
+      §cMessages couldn't be reloaded.
+      Reason: <reason>
+    not_races: "§cRaces has not been reloaded because there are currently ongoing races."
+    races_failed: "§cRaces couldn't be reloaded. Error: <error>"
+    not_language: "§cLanguage has not been reloaded because the language `<language>` couldn't be found."
+  race_set_state:
+    success: "§eState has been changed from `<old_state>` to `<new_state>`."
+    error_nochange: "§cState is already set to `<state>`."
+    error_ongoing: "§cThe race is ongoing and can't have it's state changed."
+  race_help:
+    title: "§6§m----§r§6[ §eRacing Help §6]§m----"
+    item: "§e<text>"
+  race_set_entryfee:
+    success: "§eEntry fee set to <entry_fee>."
+  race_set_walkspeed:
+    success: "§eWalk speed has been set to <walk_speed>."
+  race_set_pig_speed:
+    success: "§ePig speed has been set to <speed>."
+  race_set_strider_speed:
+    success: "§eStrider speed has been set to <speed>."
+  race_set_horse_speed:
+    success: "§eHorse speed has been set to <speed>."
+  race_set_horse_jump_strength:
+    success: "§eHorse jump strength has been set to <jump_strength>."
+  race_add_potion_effect:
+    success: "§ePotion effect `<potion_effect>` with amplifier `<amplifier>` set in race `<race_name>`."
+  race_remove_potion_effect:
+    success: "§ePotion effect `<potion_effect>` has been removed from race `<race_name>`."
+  race_clear_potion_effects:
+    success: "§eAll potion effects has been removed from race `<race_name>`."
+  race_leave:
+    error_not_participating: "§cYou are not participating in any race."
+    success: "§eYou have left race `<race_name>` and were moved to the race spawn point."
+    leave_broadcast: "§e<player_name> has left the race."
+    leave_payback: "§eYou have been paid your entry fee of <entry_fee> back."
+  race_info:
+    success: |
+      §6§m----§r§6[ §eRace Info §6]§m----
+      §eName: §f<name>
+      §eType: §f<type>
+      §eState: §f<state>
+      §eCreated: §f<created>
+      §eStart points: §f<num_startpoints>
+      §eCheckpoints: §f<num_checkpoints>
+      <entry_fee|suffix:\n>§eWalk speed: §f<walk_speed>
+      §ePotion effects: <none>
+      <potion_effects|delimiter:\n>
+    no_potion_effects: "§fNone"
+    potion_effect_item: "§f<potion_effect> : <amplifier>"
+    entry_fee_line: "§eEntry fee: §f<entry_fee>\n"
+  race_top:
+    types:
+      fastest: 'Fastest run for <laps> <lap_word>'
+      fastest_lap: 'Fastest Lap'
+      most_runs: 'Most runs'
+      most_wins: 'Most wins'
+      win_ratio: 'Win ratio'
+    header: "§9<type> §ein race §a<race_name>"
+    item: "§e#<position> §f<player_name> §8- §e<value>"
+    item_none: "§e#<position> §f-"
+  race_reset_top:
+    success: '§eLeaderboard for race §a<race_name> §e has been reset.'
+  hd_top_list_create:
+    success: |-
+      §eHologram top list was created.
+    already_exist: |-
+      §cThere is already a hologram top list with name `<name>`.
+    error_no_persist: |-
+      §cHologram top list couldn't be saved to file. Check your console for a more detailed error to solve it otherwise the hologram top list will be removed on the next restart.
+  hd_top_list_delete:
+    success: |-
+      §eHologram top list was removed.
+    error_fail_delete_file: |-
+      §cHologram top list file couldn't be removed. Try and delete the file manually otherwise the hologram top list would be created on the next reload.
+  hd_top_list_move:
+    success: |-
+      §eHologram top list has moved to your location.
+  hd_top_list_set_race:
+    success: |-
+      §eHologram top list changed race from §a<old_race> §eto §a<new_race>§e.
+  hd_top_list_set_stat:
+    success: |-
+      §eHologram top list changed stat type from §6<old_stat> §eto §6<new_stat>§e.
+  hd_top_list_set_laps:
+    success: |-
+      §eHologram top list changed number of laps to §6<old_laps> §eto §6<new_laps>§e.
+  hd_top_list_list:
+    header: |-
+      §elHologram top lists:
+    item: |-
+      §6<top_list>
+    item_info: |-
+      §f(§erace: §a<race>§r, §estat: §6<stat>§r§f)
+    teleport_click: |-
+      /rc hdtoplist teleport <top_list>
+    teleport_hover: |-
+      §l§bTeleport to the top list
+
+validators:
+  race_not_found: "§cA race with name `<race_name>` couldn't be found."
+  race_already_exist: "§cThere is already a race with name `<race_name>`."
+  checkpoint_not_found: "§cA checkpoint with position `<position>` in race `<race_name>` couldn't be found."
+  checkpoint_already_exist: "§cThere is already a checkpoint `<position>` in race `<race_name>`."
+  startpoint_not_found: "§cA start point with position `<position>` in race `<race_name>` couldn't be found."
+  startpoint_already_exist: "§cThere is already a start point with position `<position>` in race `<race_name>`."
+  type_not_found: "§cThere is no type called `<type>`. Possible types: <types>."
+  start_order_not_found: "§cThere is no start order called `<order>`. Possible orders: <orders>."
+  state_not_found: "§cThere is no state called `<state>`. Possible states: <states>."
+  song_not_found: "§cThere is not song called `<song_name>`."
+  validate_non_integer: |-
+    §cExpected argument `<argument>` to be an integer but got `<received>`.
+
+    Usage:
+    <help_text>
+  validate_non_number: |-
+    §cExpected argument `<argument>` to be an number but got `<received>`.
+
+    Usage:
+    <help_text>
+  min_exceed: |-
+    §cExpected argument `<argument>` to be at least `<expected>` but got `<received>`.
+
+    Usage:
+    <help_text>
+  max_exceed: |-
+    §cExpected argument `<argument>` to be at most `<expected>` but got `<received>`.
+
+    Usage:
+    <help_text>
+  race_potion_effect_not_found: "§cThere is no potion effect with name `<potion_effect>` in race `<race_name>`."
+  potion_effect_not_found: "§cThere is no potion effect with name `<potion_effect>`."
+  stat_type_not_found: "§cThere is no stat type with name `<stat_type>`. Possible values: <stat_types>"
+  hd_top_list_not_found: "§cThere is not hologram top list with name `<name>`."
+
+race_canceled: "§cRace has been cancelled due to lack of participants."
+race_start_gamemode_disqualified: "§e<player_name> is in a forbidden game mode and is now disqualified."
+race_start_gamemode_disqualified_target: "§eYou were disqualified since you are in a forbidden game mode."
+race_death_disqualified: "§e<player_name> died during the race and is now disqualified."
+race_death_disqualified_target: "§eYou died and is therefore disqualified."
+edit_no_edit_mode: "§cYou can't change race `<race_name>` because it's not under construction. Type §7/rc setstate <race_name> under_construction§c to put it under construction."
+race_result_header: "§eResult of race §a<race_name>"
+race_participant_result: "§6#<position>. §e<player_name> finished with time <time>."
+race_participant_result_no_complete: "§7- §e<player_name> didn't finish."
+race_participate_click_text: "/racing join <race_name>"
+race_participate_hover_text: "Click here to participate."
+race_participate_text: |
+  §eRace §a<race_name>§e has been started and begins in <time_left>.
+  Laps: <laps>
+  §6>> Click here to participate <<
+race_participate_text_fee: |
+  §eRace §a<race_name>§e has been started and begins in <time_left>.
+  Laps: <laps>
+  Entry fee: <entry_fee>
+  §6>> Click here to participate <<
+race_participate_discord: |
+  @everyone
+  Race **<race_name>** has been started and begins in **<time_left>**.
+  Laps: <laps>
+  Enter the server and write **/rc join <race_name>** to participate.
+race_participate_discord_fee: |
+  @everyone
+  Race **<race_name>** has been started and begins in **<time_left>**.
+  Laps: <laps>
+  Entry fee: <entry_fee>
+  Enter the server and write **/rc join <race_name>** to participate.
+race_participate_text_timeleft: "§eThere are <time_left> left before the race begins. Write §7/rc join <race_name>§e to participate."
+race_countdown_subtitle: "seconds before the race begins."
+race_next_lap_actionbar: "§6Lap <ordinal>"
+race_final_lap_actionbar: "§6Final lap"
+race_type_respawn_start_info: "§eYou can punch the air with your hand to teleport back to the start point."
+race_type_respawn_last_info: "§eYou can punch the air with your hand to teleport back to the last checkpoint."
+race_skipwait_hover_text: "Click here to start instantly"
+race_skipwait_click_text: "/racing skipwait <race_name>"
+race_skipwait: "§e[Skip waiting]"
+race_stop_hover_text: "Click here to stop the race"
+race_stop_click_text: "/racing stop <race_name>"
+race_stop: "§e[Stop race]"
+race_sign_registered: "§eSign for race `<race_name>` has been registered."
+race_sign_unregistered: "§eSign for race `<race_name>` has been unregistered."
+race_sign_lines: |
+  [Race]
+  §a<race_name>
+  §b<status>
+  <laps> Laps §l§8<current_participants>/<max_participants>
+race_sign_fastest_lines: |
+  [Race]
+  §a<race_name>
+  §bFastest
+  <laps> Laps
+race_sign_stats_lines: |
+  [Race]
+  §a<race_name>
+  §b<stat_name>
+race_sign_status_not_started: "§8§l• Not started •"
+race_sign_status_lobby: "§d§l• Lobby •"
+race_sign_status_in_game: "§4§l• In game •"
+race_blocked_cmd: "§c<command> is blocked during a race."
+
+no_permission_command: "§cYou don't have permission to execute this command."
+missing_arguments_command: |-
+  §cSome arguments for this command is missing.
+
+  Usage:
+  <usage>
+command_not_found: |-
+  §cCommand wasn't found.
+
+  Suggestions:
+  <suggestions>
+
+timeunit.second: "second"
+timeunit.seconds: "seconds"
+timeunit.minute: "minute"
+timeunit.minutes: "minutes"
+timeunit.hour: "hour"
+timeunit.hours: "hours"
+timeunit.day: "day"
+timeunit.days: "days"
+timeunit.now: "now"
+
+scoreboard.heading_format: "§b§l== <heading> (<laps> laps)=="
+scoreboard.title_format: "§b<title>"
+scoreboard.text_format: "§f<text>"
+scoreboard.world_record: "Server record:"
+scoreboard.world_record_fastest_lap: "SR fastest lap:"
+scoreboard.personal_record: "Personal best:"
+scoreboard.time: "Time:"
+scoreboard.fastest_lap: "Fastest lap:"
+scoreboard.lap_tag: " Lap"
+scoreboard.no_time_stats: "--:--.---"
+scoreboard.no_name_stats: "---------"
+
+lap.plural: "Laps"
+lap.singular: "Lap"
+
+hd_top_list.header: |-
+  §a§l§n<race_name>
+  §e§l<stat_type>
+hd_top_list.item: |-
+  §6<position>. §f<player_name> §7- §6<value>
+hd_top_list.none: |-
+  §6<position>. §fn/a
+hd_top_list.footer: |-
+  §e§m-------------
