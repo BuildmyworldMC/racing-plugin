@@ -6,24 +6,20 @@ import com.github.hornta.racing.messenger.org.reflections.util.ClasspathHelper;
 import com.github.hornta.racing.messenger.org.reflections.util.Utils;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public abstract class Vfs {
-   private static List<Vfs.UrlType> defaultUrlTypes = new ArrayList(Arrays.asList(Vfs.DefaultUrlTypes.values()));
+   private static List<Vfs.UrlType> defaultUrlTypes = new ArrayList<>(Arrays.asList(Vfs.DefaultUrlTypes.values()));
 
    public static List<Vfs.UrlType> getDefaultUrlTypes() {
       return defaultUrlTypes;
@@ -34,7 +30,7 @@ public abstract class Vfs {
    }
 
    public static void addDefaultURLTypes(Vfs.UrlType urlType) {
-      defaultUrlTypes.add(0, urlType);
+      defaultUrlTypes.addFirst(urlType);
    }
 
    public static Vfs.Dir fromURL(URL url) {
@@ -42,9 +38,9 @@ public abstract class Vfs {
    }
 
    public static Vfs.Dir fromURL(URL url, List<Vfs.UrlType> urlTypes) {
-      Iterator var2 = urlTypes.iterator();
+      Iterator<UrlType> var2 = urlTypes.iterator();
 
-      while(var2.hasNext()) {
+      while (var2.hasNext()) {
          Vfs.UrlType type = (Vfs.UrlType)var2.next();
 
          try {
@@ -56,7 +52,7 @@ public abstract class Vfs {
             }
          } catch (Throwable var5) {
             if (Reflections.log != null) {
-               Reflections.log.warn("could not create Dir using " + type + " from url " + url.toExternalForm() + ". skipping.", var5);
+                Reflections.log.warn("could not create Dir using {} from url {}. skipping.", type, url.toExternalForm(), var5);
             }
          }
       }
@@ -88,7 +84,7 @@ public abstract class Vfs {
                return StreamSupport.stream(fromURL(url).getFiles().spliterator(), false);
             } catch (Throwable var2) {
                if (Reflections.log != null) {
-                  Reflections.log.error("could not findFiles for url. continuing. [" + url + "]", var2);
+                   Reflections.log.error("could not findFiles for url. continuing. [{}]", url, var2);
                }
 
                return Stream.of();
@@ -105,22 +101,19 @@ public abstract class Vfs {
          if ((file = new java.io.File(path)).exists()) {
             return file;
          }
-      } catch (URISyntaxException var6) {
+      } catch (URISyntaxException ignored) {
       }
 
-      try {
-         path = URLDecoder.decode(url.getPath(), "UTF-8");
-         if (path.contains(".jar!")) {
-            path = path.substring(0, path.lastIndexOf(".jar!") + ".jar".length());
-         }
+       path = URLDecoder.decode(url.getPath(), StandardCharsets.UTF_8);
+       if (path.contains(".jar!")) {
+          path = path.substring(0, path.lastIndexOf(".jar!") + ".jar".length());
+       }
 
-         if ((file = new java.io.File(path)).exists()) {
-            return file;
-         }
-      } catch (UnsupportedEncodingException var5) {
-      }
+       if ((file = new java.io.File(path)).exists()) {
+          return file;
+       }
 
-      try {
+       try {
          path = url.toExternalForm();
          if (path.startsWith("jar:")) {
             path = path.substring("jar:".length());
@@ -150,14 +143,14 @@ public abstract class Vfs {
          if ((file = new java.io.File(path)).exists()) {
             return file;
          }
-      } catch (Exception var4) {
+      } catch (Exception ignored) {
       }
 
       return null;
    }
 
    private static boolean hasJarFileInPath(URL url) {
-      return url.toExternalForm().matches(".*\\.jar(\\!.*|$)");
+      return url.toExternalForm().matches(".*\\.jar(!.*|$)");
    }
 
    public static enum DefaultUrlTypes implements Vfs.UrlType {
@@ -167,7 +160,7 @@ public abstract class Vfs {
          }
 
          public Vfs.Dir createDir(URL url) throws Exception {
-            return new ZipDir(new JarFile(Vfs.getFile(url)));
+            return new ZipDir(new JarFile(Objects.requireNonNull(Vfs.getFile(url))));
          }
       },
       jarUrl {
@@ -182,7 +175,7 @@ public abstract class Vfs {
                   urlConnection.setUseCaches(false);
                   return new ZipDir(((JarURLConnection)urlConnection).getJarFile());
                }
-            } catch (Throwable var3) {
+            } catch (Throwable ignored) {
             }
 
             java.io.File file = Vfs.getFile(url);
@@ -275,7 +268,7 @@ public abstract class Vfs {
    public interface Dir {
       String getPath();
 
-      Iterable<?extends Vfs.File> getFiles();
+      Iterable<Vfs.File> getFiles();
 
       void close();
    }
