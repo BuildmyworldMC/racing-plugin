@@ -3,6 +3,7 @@ package com.github.hornta.racing.messenger.org.reflections.vfs;
 import com.github.hornta.racing.messenger.org.reflections.Reflections;
 import java.io.IOException;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 public class ZipDir implements Vfs.Dir {
    final java.util.zip.ZipFile jarFile;
@@ -15,11 +16,11 @@ public class ZipDir implements Vfs.Dir {
       return this.jarFile.getName();
    }
 
-   public Iterable<?extends Vfs.File> getFiles() {
+   public Iterable<Vfs.File> getFiles() {
       return this.jarFile.stream()
               .filter((entry) -> !entry.isDirectory())
               .map((entry) -> new ZipFile(this, entry))
-              .iterator();
+              .collect(Collectors.toUnmodifiableList());
    }
 
    public void close() {
