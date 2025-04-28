@@ -1,12 +1,11 @@
 package com.github.hornta.racing.packetwrapper;
 
 import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedParticle;
 
 public class WrapperPlayServerWorldParticles extends AbstractPacket {
-   public static final PacketType TYPE;
+   public static final PacketType TYPE = PacketType.Play.Server.WORLD_PARTICLES;
 
    public WrapperPlayServerWorldParticles() {
       super(new PacketContainer(TYPE), TYPE);
@@ -97,7 +96,4 @@ public class WrapperPlayServerWorldParticles extends AbstractPacket {
       this.handle.getBooleans().write(0, value);
    }
 
-   static {
-      TYPE = Server.WORLD_PARTICLES;
-   }
 }
