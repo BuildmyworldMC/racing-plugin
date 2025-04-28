@@ -2,7 +2,7 @@ package com.github.hornta.racing.hd_top_list;
 
 import com.github.hornta.racing.enums.RaceStatType;
 import com.github.hornta.racing.objects.Race;
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import java.util.UUID;
 
 public class HDTopList {

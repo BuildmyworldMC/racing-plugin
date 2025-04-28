@@ -15,8 +15,9 @@ import com.github.hornta.racing.events.UnloadRaceEvent;
 import com.github.hornta.racing.messenger.MessageManager;
 import com.github.hornta.racing.objects.Race;
 import com.github.hornta.racing.objects.RacePlayerStatistic;
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -90,76 +91,38 @@ public class HDTopListManager implements Listener {
 
    private static void updateText(HDTopList topList, List<String> playerNames) {
       Hologram hologram = topList.getHologram();
-      hologram.clearLines();
-      int playerNameIndex;
-      int i;
-      String none;
+      List<String> lines = new ArrayList<>();
       if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.HD_TOP_LIST_SHOW_HEADER)) {
-         MessageManager.setValue("stat_type", (Object)topList.getStatType().getFormattedStat(topList.getLaps()));
-         MessageManager.setValue("race_name", (Object)topList.getRace().getName());
-         String header = MessageManager.getMessage(MessageKey.HD_TOP_LIST_HEADER);
-         String[] var4 = header.split("\n");
-         playerNameIndex = var4.length;
-
-         for(i = 0; i < playerNameIndex; ++i) {
-            none = var4[i];
-            hologram.appendTextLine(none);
-         }
+          MessageManager.setValue("stat_type", topList.getStatType().getFormattedStat(topList.getLaps()));
+          MessageManager.setValue("race_name", topList.getRace().getName());
+          String header = MessageManager.getMessage(MessageKey.HD_TOP_LIST_HEADER);
+          Collections.addAll(lines, header.split("\n"));
       }
-
-      int p = 1;
+      int position = 1;
       Set<RacePlayerStatistic> stats = topList.getRace().getResults(topList.getStatType(), topList.getLaps());
-      playerNameIndex = 0;
-      Iterator var16 = stats.iterator();
-
-      while(var16.hasNext()) {
-         RacePlayerStatistic s = (RacePlayerStatistic)var16.next();
-         MessageManager.setValue("position", (Object)(p++));
-         MessageManager.setValue("player_name", playerNames.get(playerNameIndex));
-         ++playerNameIndex;
-         Util.setTimeUnitValues();
-         String value = s.getStatValue(topList.getStatType(), topList.getLaps());
-         MessageManager.setValue("value", (Object)value);
-         String item = MessageManager.getMessage(MessageKey.HD_TOP_LIST_ITEM);
-         String[] var10 = item.split("\n");
-         int var11 = var10.length;
-
-         for(int var12 = 0; var12 < var11; ++var12) {
-            String part = var10[var12];
-            hologram.appendTextLine(part);
-         }
-
-         if (p > 10) {
-            break;
-         }
+      int playerNameIndex = 0;
+      for (RacePlayerStatistic stat : stats) {
+          MessageManager.setValue("position", position++);
+          MessageManager.setValue("player_name", playerNames.get(playerNameIndex++));
+          Util.setTimeUnitValues();
+          String value = stat.getStatValue(topList.getStatType(), topList.getLaps());
+          MessageManager.setValue("value", value);
+          String item = MessageManager.getMessage(MessageKey.HD_TOP_LIST_ITEM);
+          Collections.addAll(lines, item.split("\n"));
+  
+          if (position > 10) break;
       }
-
-      int var22;
-      for(i = p; i <= 10; ++i) {
-         MessageManager.setValue("position", (Object)i);
-         none = MessageManager.getMessage(MessageKey.HD_TOP_LIST_NONE);
-         String[] var20 = none.split("\n");
-         var22 = var20.length;
-
-         for(int var23 = 0; var23 < var22; ++var23) {
-            String part = var20[var23];
-            hologram.appendTextLine(part);
-         }
+      for (int i = position; i <= 10; i++) {
+          MessageManager.setValue("position", i);
+          String none = MessageManager.getMessage(MessageKey.HD_TOP_LIST_NONE);
+          Collections.addAll(lines, none.split("\n"));
       }
-
       if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.HD_TOP_LIST_SHOW_FOOTER)) {
-         String footer = MessageManager.getMessage(MessageKey.HD_TOP_LIST_FOOTER);
-         String[] var19 = footer.split("\n");
-         int var21 = var19.length;
-
-         for(var22 = 0; var22 < var21; ++var22) {
-            String part = var19[var22];
-            hologram.appendTextLine(part);
-         }
+          String footer = MessageManager.getMessage(MessageKey.HD_TOP_LIST_FOOTER);
+          Collections.addAll(lines, footer.split("\n"));
       }
-
-   }
-
+      DHAPI.setHologramLines(hologram, lines);
+  }
    private void updateDirtyTopLists() {
       this.updateDirtyTopLists((Runnable)null);
    }
@@ -247,7 +210,7 @@ public class HDTopListManager implements Listener {
       }
 
       this.topLists.removeIf((l) -> {
-         return l.getHologram().isDeleted();
+         return l.getHologram().isEnabled();
       });
    }
 
@@ -259,18 +222,17 @@ public class HDTopListManager implements Listener {
    }
 
    private void createTopListInternal(String name, Location location, Race race, RaceStatType statType, int laps, Consumer<Boolean> callback) {
-      Hologram hologram = HologramsAPI.createHologram(RacingPlugin.getInstance(), location);
+      Hologram hologram = DHAPI.createHologram(UUID.randomUUID().toString(), location);
       HDTopList hdTopList = new HDTopList(UUID.randomUUID(), HDTopListVersion.getLast(), name, hologram, race, statType, laps);
       this.storage.write(hdTopList, (result) -> {
          if (result) {
             this.topLists.add(hdTopList);
             this.updateDirtyTopLists();
          }
-
          callback.accept(result);
       });
    }
-
+   
    private void updateToplists(Iterable<HDTopList> topLists) {
       CompletableFuture.runAsync(() -> {
          final Map<HDTopList, List<String>> names = new HashMap();

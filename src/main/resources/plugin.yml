@@ -6,7 +6,7 @@ author: hornta
 website: https://github.com/TrollskogenMC/racing
 main: com.github.hornta.racing.RacingPlugin
 depend: [ ProtocolLib ]
-softdepend: [ NoteBlockAPI, HolographicDisplays, Vault ]
+softdepend: [ NoteBlockAPI, DecentHolograms, Vault ]
 commands:
   racing:
     aliases:

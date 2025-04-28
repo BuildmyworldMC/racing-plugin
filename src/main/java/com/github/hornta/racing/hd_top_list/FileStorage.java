@@ -5,8 +5,8 @@ import com.github.hornta.racing.RacingPlugin;
 import com.github.hornta.racing.enums.RaceStatType;
 import com.github.hornta.racing.migration.ParseYamlLocationException;
 import com.github.hornta.racing.objects.Race;
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
@@ -45,57 +45,57 @@ public class FileStorage {
    }
 
    public void load(Consumer<List<HDTopList>> callback) {
-      CompletableFuture.supplyAsync(() -> {
-         List<YamlConfiguration> cfgFiles = new ArrayList();
-         File[] files = this.directory.listFiles();
-         if (files == null) {
-            return cfgFiles;
-         } else {
-            File[] var3 = files;
-            int var4 = files.length;
-
-            for(int var5 = 0; var5 < var4; ++var5) {
-               File file = var3[var5];
-               if (file.isFile()) {
-                  YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-
-                  try {
-                     this.migrationManager.migrate(yaml);
-
-                     try {
-                        yaml.save(file);
-                     } catch (IOException var9) {
-                        RacingPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save hologram top list");
-                     }
-
-                     cfgFiles.add(yaml);
-                  } catch (Exception var10) {
-                     RacingPlugin.logger().log(Level.SEVERE, var10.getMessage(), var10);
+      CompletableFuture.<List<YamlConfiguration>>supplyAsync(() -> {
+          List<YamlConfiguration> cfgFiles = new ArrayList<>();
+          File[] files = this.directory.listFiles();
+          if (files == null) {
+              return cfgFiles;
+          } else {
+              File[] var3 = files;
+              int var4 = files.length;
+  
+              for(int var5 = 0; var5 < var4; ++var5) {
+                  File file = var3[var5];
+                  if (file.isFile()) {
+                      YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+  
+                      try {
+                          this.migrationManager.migrate(yaml);
+  
+                          try {
+                              yaml.save(file);
+                          } catch (IOException var9) {
+                              RacingPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save hologram top list");
+                          }
+  
+                          cfgFiles.add(yaml);
+                      } catch (Exception var10) {
+                          RacingPlugin.logger().log(Level.SEVERE, var10.getMessage(), var10);
+                      }
                   }
-               }
-            }
-
-            return cfgFiles;
-         }
+              }
+  
+              return cfgFiles;
+          }
       }).thenAccept((configurations) -> {
-         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
-            List<HDTopList> topLists = new ArrayList();
-            Iterator var4 = configurations.iterator();
-
-            while(var4.hasNext()) {
-               YamlConfiguration config = (YamlConfiguration)var4.next();
-
-               try {
-                  topLists.add(this.parse(config));
-               } catch (Exception var7) {
-                  RacingPlugin.logger().log(Level.SEVERE, var7.getMessage());
-               }
-            }
-
-            callback.accept(topLists);
-         });
+          Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
+              List<HDTopList> topLists = new ArrayList<>();
+              Iterator var4 = configurations.iterator();
+  
+              while(var4.hasNext()) {
+                  YamlConfiguration config = (YamlConfiguration)var4.next();
+  
+                  try {
+                      topLists.add(this.parse(config));
+                  } catch (Exception var7) {
+                      RacingPlugin.logger().log(Level.SEVERE, var7.getMessage());
+                  }
+              }
+  
+              callback.accept(topLists);
+          });
       });
-   }
+  }
 
    public void delete(HDTopList topList, Consumer<Boolean> callback) {
       File cfgFile = new File(this.directory, topList.getId() + ".yml");
@@ -205,7 +205,7 @@ public class FileStorage {
                         throw new ParseHDTopListException("`laps` is invalid");
                      }
 
-                     Hologram hologram = HologramsAPI.createHologram(RacingPlugin.getInstance(), location);
+                     Hologram hologram = DHAPI.createHologram(UUID.randomUUID().toString(), location);
                      return new HDTopList(id, version, name, hologram, race, type, laps);
                   }
                }
