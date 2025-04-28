@@ -180,6 +180,7 @@ public class RacePlayerSession {
          break;
       case BOAT:
          this.spawnVehicle(EntityType.OAK_BOAT, location);
+         RacingPlugin.debug("Setting boat type to " + EntityType.OAK_BOAT);
       case ELYTRA:
       case PLAYER:
       }
@@ -330,11 +331,6 @@ public class RacePlayerSession {
    private void unfreezeHorse() {
       ((Attributable)this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(this.raceSession.getRace().getHorseSpeed());
       ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getHorseJumpStrength());
-   }
-
-   private void setupBoat() {
-      ((Boat)this.vehicle).setWoodType(TreeSpecies.GENERIC);
-      RacingPlugin.debug("Setting boat type to " + TreeSpecies.GENERIC);
    }
 
    void setStartPoint(RaceStartPoint startPoint) {
