@@ -28,8 +28,8 @@ public abstract class AbstractPacket {
    public void sendPacket(Player receiver) {
       try {
          ProtocolLibrary.getProtocolManager().sendServerPacket(receiver, this.getHandle());
-      } catch (InvocationTargetException var3) {
-         throw new RuntimeException("Cannot send packet.", var3);
+      } catch (RuntimeException e) {
+         throw new RuntimeException("Failed to send packet to " + receiver.getName(), e);
       }
    }
 }
