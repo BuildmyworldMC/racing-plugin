@@ -284,17 +284,17 @@ public class HDTopListManager implements Listener {
 
    private void updateToplists(Iterable<HDTopList> topLists) {
       CompletableFuture.runAsync(() -> {
-         final Map<HDTopList, List<String>> names = new HashMap();
-         Iterator var3 = topLists.iterator();
+         final Map<HDTopList, List<String>> names = new HashMap<>();
+         Iterator<HDTopList> var3 = topLists.iterator();
 
          while (var3.hasNext()) {
-            HDTopList topList = (HDTopList) var3.next();
+            HDTopList topList = var3.next();
             Set<RacePlayerStatistic> stats = topList.getRace().getResults(topList.getStatType(), topList.getLaps());
-            List<String> topListUsernames = new ArrayList();
-            Iterator var7 = stats.iterator();
+            List<String> topListUsernames = new ArrayList<>();
+            Iterator<RacePlayerStatistic> var7 = stats.iterator();
 
             while (var7.hasNext()) {
-               RacePlayerStatistic stat = (RacePlayerStatistic) var7.next();
+               RacePlayerStatistic stat = var7.next();
                topListUsernames.add(getFormattedPlayerName(stat));
             }
 
@@ -334,10 +334,10 @@ public class HDTopListManager implements Listener {
    }
 
    private void deleteTopListInternal(String name, Consumer<Boolean> callback) {
-      Iterator var3 = this.topLists.iterator();
+      Iterator<HDTopList> var3 = this.topLists.iterator();
 
       while (var3.hasNext()) {
-         HDTopList topList = (HDTopList) var3.next();
+         HDTopList topList = var3.next();
          if (topList.getName().equals(name)) {
             this.deleteTopList(topList, callback);
             break;
