@@ -87,8 +87,8 @@ public class RacingManager implements Listener {
    public void shutdown() {
       Iterator var1 = this.raceSessions.iterator();
 
-      while(var1.hasNext()) {
-         RaceSession raceSession = (RaceSession)var1.next();
+      while (var1.hasNext()) {
+         RaceSession raceSession = (RaceSession) var1.next();
          raceSession.stop();
       }
 
@@ -107,15 +107,15 @@ public class RacingManager implements Listener {
    }
 
    public List<RaceSession> getRaceSessions(Race race) {
-      return this.getRaceSessions(race, (RaceSessionState)null);
+      return this.getRaceSessions(race, (RaceSessionState) null);
    }
 
    public List<RaceSession> getRaceSessions(Race race, RaceSessionState state) {
       List<RaceSession> sessions = new ArrayList();
       Iterator var4 = this.raceSessions.iterator();
 
-      while(var4.hasNext()) {
-         RaceSession session = (RaceSession)var4.next();
+      while (var4.hasNext()) {
+         RaceSession session = (RaceSession) var4.next();
          boolean stateOk = state == null || session.getState() == state;
          if (session.getRace() == race && stateOk) {
             sessions.add(session);
@@ -134,8 +134,8 @@ public class RacingManager implements Listener {
             return false;
          }
 
-         session = (RaceSession)var2.next();
-      } while(session.getRace() != race);
+         session = (RaceSession) var2.next();
+      } while (session.getRace() != race);
 
       return true;
    }
@@ -146,16 +146,16 @@ public class RacingManager implements Listener {
          this.addChunkTickets();
          Iterator var2 = event.getRace().getCheckpoints().iterator();
 
-         while(var2.hasNext()) {
-            RaceCheckpoint checkpoint = (RaceCheckpoint)var2.next();
+         while (var2.hasNext()) {
+            RaceCheckpoint checkpoint = (RaceCheckpoint) var2.next();
             checkpoint.startTask(true);
             checkpoint.setupHologram();
          }
 
          var2 = event.getRace().getStartPoints().iterator();
 
-         while(var2.hasNext()) {
-            RaceStartPoint startPoint = (RaceStartPoint)var2.next();
+         while (var2.hasNext()) {
+            RaceStartPoint startPoint = (RaceStartPoint) var2.next();
             startPoint.setupHologram();
          }
 
@@ -166,16 +166,16 @@ public class RacingManager implements Listener {
    void onUnloadRace(UnloadRaceEvent event) {
       Iterator var2 = event.getRace().getCheckpoints().iterator();
 
-      while(var2.hasNext()) {
-         RaceCheckpoint checkpoint = (RaceCheckpoint)var2.next();
+      while (var2.hasNext()) {
+         RaceCheckpoint checkpoint = (RaceCheckpoint) var2.next();
          checkpoint.stopTask();
          checkpoint.removeHologram();
       }
 
       var2 = event.getRace().getStartPoints().iterator();
 
-      while(var2.hasNext()) {
-         RaceStartPoint startPoint = (RaceStartPoint)var2.next();
+      while (var2.hasNext()) {
+         RaceStartPoint startPoint = (RaceStartPoint) var2.next();
          startPoint.removeHologram();
       }
 
@@ -188,8 +188,8 @@ public class RacingManager implements Listener {
       event.getCheckpoint().setupHologram();
       Iterator var2 = event.getRace().getCheckpoints().iterator();
 
-      while(var2.hasNext()) {
-         RaceCheckpoint cp = (RaceCheckpoint)var2.next();
+      while (var2.hasNext()) {
+         RaceCheckpoint cp = (RaceCheckpoint) var2.next();
          if (cp.getPosition() > event.getCheckpoint().getPosition()) {
             cp.removeHologram();
             cp.setupHologram();
@@ -205,8 +205,8 @@ public class RacingManager implements Listener {
       event.getCheckpoint().removeHologram();
       Iterator var2 = event.getRace().getCheckpoints().iterator();
 
-      while(var2.hasNext()) {
-         RaceCheckpoint checkpoint = (RaceCheckpoint)var2.next();
+      while (var2.hasNext()) {
+         RaceCheckpoint checkpoint = (RaceCheckpoint) var2.next();
          if (checkpoint.getPosition() >= event.getCheckpoint().getPosition() && checkpoint.getHologram() != null) {
             checkpoint.removeHologram();
             checkpoint.setupHologram();
@@ -221,8 +221,8 @@ public class RacingManager implements Listener {
       event.getStartPoint().setupHologram();
       Iterator var2 = event.getRace().getStartPoints().iterator();
 
-      while(var2.hasNext()) {
-         RaceStartPoint cp = (RaceStartPoint)var2.next();
+      while (var2.hasNext()) {
+         RaceStartPoint cp = (RaceStartPoint) var2.next();
          if (cp.getPosition() > event.getStartPoint().getPosition()) {
             cp.removeHologram();
             cp.setupHologram();
@@ -237,8 +237,8 @@ public class RacingManager implements Listener {
       event.getStartPoint().removeHologram();
       Iterator var2 = event.getRace().getStartPoints().iterator();
 
-      while(var2.hasNext()) {
-         RaceStartPoint startPoint = (RaceStartPoint)var2.next();
+      while (var2.hasNext()) {
+         RaceStartPoint startPoint = (RaceStartPoint) var2.next();
          if (startPoint.getPosition() >= event.getStartPoint().getPosition() && startPoint.getHologram() != null) {
             startPoint.removeHologram();
             startPoint.setupHologram();
@@ -252,8 +252,8 @@ public class RacingManager implements Listener {
    void onRaceChangeState(RaceChangeStateEvent event) {
       Iterator var2 = event.getRace().getCheckpoints().iterator();
 
-      while(var2.hasNext()) {
-         RaceCheckpoint checkpoint = (RaceCheckpoint)var2.next();
+      while (var2.hasNext()) {
+         RaceCheckpoint checkpoint = (RaceCheckpoint) var2.next();
          if (event.getRace().getState() == RaceState.UNDER_CONSTRUCTION) {
             checkpoint.startTask(true);
             checkpoint.setupHologram();
@@ -263,11 +263,11 @@ public class RacingManager implements Listener {
          }
       }
 
-      if (RacingPlugin.getInstance().isHolographicDisplaysLoaded()) {
+      if (RacingPlugin.getInstance().isDecentHologramsLoaded()) {
          var2 = event.getRace().getStartPoints().iterator();
 
-         while(var2.hasNext()) {
-            RaceStartPoint startPoint = (RaceStartPoint)var2.next();
+         while (var2.hasNext()) {
+            RaceStartPoint startPoint = (RaceStartPoint) var2.next();
             if (event.getRace().getState() == RaceState.UNDER_CONSTRUCTION) {
                startPoint.setupHologram();
             } else {
@@ -287,29 +287,30 @@ public class RacingManager implements Listener {
 
    @EventHandler
    void onRaceSessionResult(RaceSessionResultEvent event) {
-      List<PlayerSessionResult> sortedPlayerResults = (List)event.getResult().getPlayerResults().values().stream().sorted(Comparator.comparingLong(PlayerSessionResult::getRaceDuration)).collect(Collectors.toList());
+      List<PlayerSessionResult> sortedPlayerResults = (List) event.getResult().getPlayerResults().values().stream()
+            .sorted(Comparator.comparingLong(PlayerSessionResult::getRaceDuration)).collect(Collectors.toList());
       Collection<String> resultMessages = new ArrayList();
       Race race = event.getResult().getRaceSession().getRace();
-      MessageManager.setValue("race_name", (Object)race.getName());
+      MessageManager.setValue("race_name", (Object) race.getName());
       String headerMessage = MessageManager.getMessage(MessageKey.RACE_RESULT_HEADER);
       resultMessages.add(headerMessage);
       int currentPosition = 1;
       Iterator var7 = sortedPlayerResults.iterator();
 
-      while(var7.hasNext()) {
-         PlayerSessionResult playerResult = (PlayerSessionResult)var7.next();
+      while (var7.hasNext()) {
+         PlayerSessionResult playerResult = (PlayerSessionResult) var7.next();
          if (currentPosition <= 10) {
             String playerName = Bukkit.getOfflinePlayer(playerResult.getPlayerId()).getName();
             String message;
             if (playerResult.hasCompletedRace()) {
-               MessageManager.setValue("position", (Object)currentPosition);
+               MessageManager.setValue("position", (Object) currentPosition);
                ++currentPosition;
-               MessageManager.setValue("player_name", (Object)playerName);
-               MessageManager.setValue("time", (Object)Util.getTimeLeft(playerResult.getRaceDuration()));
+               MessageManager.setValue("player_name", (Object) playerName);
+               MessageManager.setValue("time", (Object) Util.getTimeLeft(playerResult.getRaceDuration()));
                Util.setTimeUnitValues();
                message = MessageManager.getMessage(MessageKey.RACE_PARTICIPANT_RESULT);
             } else {
-               MessageManager.setValue("player_name", (Object)playerName);
+               MessageManager.setValue("player_name", (Object) playerName);
                message = MessageManager.getMessage(MessageKey.RACE_PARTICIPANT_RESULT_NO_COMPLETE);
             }
 
@@ -318,16 +319,17 @@ public class RacingManager implements Listener {
       }
 
       String joinedResultMessage = String.join("\n", resultMessages);
-      if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.BROADCAST_RESULT_MESSAGE)) {
+      if ((Boolean) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.BROADCAST_RESULT_MESSAGE)) {
          Bukkit.broadcastMessage(joinedResultMessage);
       } else {
-         List<Player> playersToMessage = (List)event.getResult().getPlayerResults().values().stream().map((playerResultx) -> {
-            return Bukkit.getPlayer(playerResultx.getPlayerId());
-         }).filter(Objects::nonNull).collect(Collectors.toList());
+         List<Player> playersToMessage = (List) event.getResult().getPlayerResults().values().stream()
+               .map((playerResultx) -> {
+                  return Bukkit.getPlayer(playerResultx.getPlayerId());
+               }).filter(Objects::nonNull).collect(Collectors.toList());
          Iterator var14 = playersToMessage.iterator();
 
-         while(var14.hasNext()) {
-            Player player = (Player)var14.next();
+         while (var14.hasNext()) {
+            Player player = (Player) var14.next();
             player.sendMessage(joinedResultMessage);
          }
       }
@@ -341,15 +343,17 @@ public class RacingManager implements Listener {
    @EventHandler
    void onRaceSessionStop(RaceSessionStopEvent event) {
       this.raceSessions.remove(event.getRaceSession());
-      if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.TELEPORT_AFTER_RACE_ENABLED)) {
-         String whenString = (String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.TELEPORT_AFTER_RACE_WHEN);
+      if ((Boolean) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.TELEPORT_AFTER_RACE_ENABLED)) {
+         String whenString = (String) RacingPlugin.getInstance().getConfiguration()
+               .get(ConfigKey.TELEPORT_AFTER_RACE_WHEN);
          TeleportAfterRaceWhen when = TeleportAfterRaceWhen.valueOf(whenString.toUpperCase(Locale.ENGLISH));
          if (when == TeleportAfterRaceWhen.EVERYONE_FINISHES) {
             Iterator var4 = event.getRaceSession().getPlayerSessions().iterator();
 
-            while(var4.hasNext()) {
-               RacePlayerSession playerSession = (RacePlayerSession)var4.next();
-               PaperLib.teleportAsync(playerSession.getPlayer(), event.getRaceSession().getRace().getSpawn(), TeleportCause.PLUGIN);
+            while (var4.hasNext()) {
+               RacePlayerSession playerSession = (RacePlayerSession) var4.next();
+               PaperLib.teleportAsync(playerSession.getPlayer(), event.getRaceSession().getRace().getSpawn(),
+                     TeleportCause.PLUGIN);
             }
          }
       }
@@ -361,30 +365,30 @@ public class RacingManager implements Listener {
       boolean hasPermission = event.getPlayer().hasPermission(Permission.RACING_MODIFY.toString());
       Iterator var3 = this.races.iterator();
 
-      while(var3.hasNext()) {
-         Race race = (Race)var3.next();
+      while (var3.hasNext()) {
+         Race race = (Race) var3.next();
          Iterator var5 = race.getCheckpoints().iterator();
 
-         while(var5.hasNext()) {
-            RaceCheckpoint checkpoint = (RaceCheckpoint)var5.next();
+         while (var5.hasNext()) {
+            RaceCheckpoint checkpoint = (RaceCheckpoint) var5.next();
             if (checkpoint.getHologram() != null) {
                if (hasPermission) {
-                  checkpoint.getHologram().getVisibilityManager().showTo(event.getPlayer());
+                  checkpoint.getHologram().setShowPlayer(event.getPlayer());
                } else {
-                  checkpoint.getHologram().getVisibilityManager().hideTo(event.getPlayer());
+                  checkpoint.getHologram().setHidePlayer(event.getPlayer());
                }
             }
          }
 
          var5 = race.getStartPoints().iterator();
 
-         while(var5.hasNext()) {
-            RaceStartPoint startPoint = (RaceStartPoint)var5.next();
+         while (var5.hasNext()) {
+            RaceStartPoint startPoint = (RaceStartPoint) var5.next();
             if (startPoint.getHologram() != null) {
                if (hasPermission) {
-                  startPoint.getHologram().getVisibilityManager().showTo(event.getPlayer());
+                  startPoint.getHologram().setShowPlayer(event.getPlayer());
                } else {
-                  startPoint.getHologram().getVisibilityManager().hideTo(event.getPlayer());
+                  startPoint.getHologram().setHidePlayer(event.getPlayer());
                }
             }
          }
@@ -394,38 +398,29 @@ public class RacingManager implements Listener {
 
    @EventHandler
    void onPlayerQuit(PlayerQuitEvent event) {
-      Iterator var2 = this.races.iterator();
+      Player player = event.getPlayer();
 
-      while(var2.hasNext()) {
-         Race race = (Race)var2.next();
-         Iterator var4 = race.getCheckpoints().iterator();
-
-         while(var4.hasNext()) {
-            RaceCheckpoint checkpoint = (RaceCheckpoint)var4.next();
+      for (Race race : this.races) {
+         for (RaceCheckpoint checkpoint : race.getCheckpoints()) {
             if (checkpoint.getHologram() != null) {
-               checkpoint.getHologram().getVisibilityManager().resetVisibility(event.getPlayer());
+               checkpoint.getHologram().setHidePlayer(player);
             }
          }
 
-         var4 = race.getStartPoints().iterator();
-
-         while(var4.hasNext()) {
-            RaceStartPoint startPoint = (RaceStartPoint)var4.next();
+         for (RaceStartPoint startPoint : race.getStartPoints()) {
             if (startPoint.getHologram() != null) {
-               startPoint.getHologram().getVisibilityManager().resetVisibility(event.getPlayer());
+               startPoint.getHologram().setHidePlayer(player);
             }
          }
       }
-
    }
 
-   @EventHandler(
-      priority = EventPriority.HIGHEST
-   )
+   @EventHandler(priority = EventPriority.HIGHEST)
    void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
       RaceSession session = this.getParticipatingRace(event.getPlayer());
       if (session != null && session.getState() != RaceSessionState.PREPARING) {
-         List<String> blockedCommands = (List)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.BLOCKED_COMMANDS);
+         List<String> blockedCommands = (List) RacingPlugin.getInstance().getConfiguration()
+               .get(ConfigKey.BLOCKED_COMMANDS);
          String entryLabel = event.getMessage().split(" ")[0].replace("/", "");
          String[] entryArgs = event.getMessage().replace("/" + entryLabel, "").trim().split(" ");
          Iterator var6 = blockedCommands.iterator();
@@ -439,37 +434,39 @@ public class RacingManager implements Listener {
                   return;
                }
 
-               blockedCommand = (String)var6.next();
+               blockedCommand = (String) var6.next();
                blockedLabel = blockedCommand.split(" ")[0].replace("/", "");
-            } while(!blockedLabel.equalsIgnoreCase(entryLabel));
+            } while (!blockedLabel.equalsIgnoreCase(entryLabel));
 
             skip = false;
             String argString = blockedCommand.replace(blockedLabel, "").trim();
             if (!argString.isEmpty()) {
                String[] blockedArgs = argString.split(" ");
 
-               for(int i = 0; i < blockedArgs.length; ++i) {
+               for (int i = 0; i < blockedArgs.length; ++i) {
                   if (i >= entryArgs.length || !blockedArgs[i].equalsIgnoreCase(entryArgs[i])) {
                      skip = true;
                      break;
                   }
                }
             }
-         } while(skip);
+         } while (skip);
 
          event.setCancelled(true);
-         MessageManager.setValue("command", (Object)("/" + blockedCommand));
+         MessageManager.setValue("command", (Object) ("/" + blockedCommand));
          MessageManager.sendMessage(event.getPlayer(), MessageKey.BLOCKED_CMDS);
       }
    }
 
    @EventHandler
    void onRacePlayerGoal(RacePlayerGoalEvent event) {
-      if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.TELEPORT_AFTER_RACE_ENABLED)) {
-         String whenString = (String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.TELEPORT_AFTER_RACE_WHEN);
+      if ((Boolean) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.TELEPORT_AFTER_RACE_ENABLED)) {
+         String whenString = (String) RacingPlugin.getInstance().getConfiguration()
+               .get(ConfigKey.TELEPORT_AFTER_RACE_WHEN);
          TeleportAfterRaceWhen when = TeleportAfterRaceWhen.valueOf(whenString.toUpperCase(Locale.ENGLISH));
          if (when == TeleportAfterRaceWhen.PARTICIPANT_FINISHES) {
-            PaperLib.teleportAsync(event.getPlayerSession().getPlayer(), event.getRaceSession().getRace().getSpawn(), TeleportCause.PLUGIN);
+            PaperLib.teleportAsync(event.getPlayerSession().getPlayer(), event.getRaceSession().getRace().getSpawn(),
+                  TeleportCause.PLUGIN);
          }
       }
 
@@ -478,7 +475,8 @@ public class RacingManager implements Listener {
    @EventHandler
    void onSessionStateChanged(SessionStateChangedEvent event) {
       if (event.getRaceSession().getState() == RaceSessionState.COUNTDOWN) {
-         Bukkit.getPluginManager().callEvent(new ExecuteCommandEvent(RaceCommandType.ON_COUNTDOWN, event.getRaceSession()));
+         Bukkit.getPluginManager()
+               .callEvent(new ExecuteCommandEvent(RaceCommandType.ON_COUNTDOWN, event.getRaceSession()));
       } else if (event.getRaceSession().getState() == RaceSessionState.STARTED) {
          Bukkit.getPluginManager().callEvent(new ExecuteCommandEvent(RaceCommandType.ON_START, event.getRaceSession()));
       }
@@ -494,28 +492,27 @@ public class RacingManager implements Listener {
          throw new RuntimeException("Can't load races because there are ongoing race sessions.");
       } else {
          Iterator var1 = this.races.iterator();
-
-         while(var1.hasNext()) {
-            Race race = (Race)var1.next();
+         while (var1.hasNext()) {
+            Race race = (Race) var1.next();
             Bukkit.getPluginManager().callEvent(new UnloadRaceEvent(race));
          }
-
          this.racesByName.clear();
          this.racesById.clear();
          this.races.clear();
-         this.api.fetchAllRaces((fetchedRaces) -> {
-            Iterator var2 = fetchedRaces.iterator();
-
-            while(var2.hasNext()) {
-               Race race = (Race)var2.next();
-               this.racesByName.put(race.getName(), race);
-               this.racesById.put(race.getId(), race);
-               this.races.add(race);
-               Bukkit.getPluginManager().callEvent(new LoadRaceEvent(race));
-            }
-
-            Bukkit.getPluginManager().callEvent(new RacesLoadedEvent());
-         });
+         
+         Bukkit.getScheduler().runTaskLater(RacingPlugin.getInstance(), () -> {
+            this.api.fetchAllRaces((fetchedRaces) -> {
+               Iterator var2 = fetchedRaces.iterator();
+               while (var2.hasNext()) {
+                  Race race = (Race) var2.next();
+                  this.racesByName.put(race.getName(), race);
+                  this.racesById.put(race.getId(), race);
+                  this.races.add(race);
+                  Bukkit.getPluginManager().callEvent(new LoadRaceEvent(race));
+               }
+               Bukkit.getPluginManager().callEvent(new RacesLoadedEvent());
+            });
+         }, 20L); 
       }
    }
 
@@ -535,9 +532,9 @@ public class RacingManager implements Listener {
       List<RaceCheckpoint> checkpoints = race.getCheckpoints();
       checkpoints.add(checkpoint.getPosition() - 1, checkpoint);
 
-      for(int i = checkpoint.getPosition(); i < checkpoints.size(); ++i) {
-         int newPos = ((RaceCheckpoint)checkpoints.get(i)).getPosition() + 1;
-         ((RaceCheckpoint)checkpoints.get(i)).setPosition(newPos);
+      for (int i = checkpoint.getPosition(); i < checkpoints.size(); ++i) {
+         int newPos = ((RaceCheckpoint) checkpoints.get(i)).getPosition() + 1;
+         ((RaceCheckpoint) checkpoints.get(i)).setPosition(newPos);
       }
 
       this.api.updateCheckpoints(race.getId(), checkpoints, (result) -> {
@@ -556,8 +553,8 @@ public class RacingManager implements Listener {
       List<RaceCheckpoint> checkpoints = race.getCheckpoints();
       int removedIndex = checkpoints.indexOf(checkpoint);
 
-      for(int i = removedIndex + 1; i < checkpoints.size(); ++i) {
-         ((RaceCheckpoint)checkpoints.get(i)).setPosition(((RaceCheckpoint)checkpoints.get(i)).getPosition() - 1);
+      for (int i = removedIndex + 1; i < checkpoints.size(); ++i) {
+         ((RaceCheckpoint) checkpoints.get(i)).setPosition(((RaceCheckpoint) checkpoints.get(i)).getPosition() - 1);
       }
 
       checkpoints.remove(removedIndex);
@@ -634,9 +631,9 @@ public class RacingManager implements Listener {
       List<RaceStartPoint> startPoints = race.getStartPoints();
       startPoints.add(startPoint.getPosition() - 1, startPoint);
 
-      for(int i = startPoint.getPosition(); i < startPoints.size(); ++i) {
-         int newPos = ((RaceStartPoint)startPoints.get(i)).getPosition() + 1;
-         ((RaceStartPoint)startPoints.get(i)).setPosition(newPos);
+      for (int i = startPoint.getPosition(); i < startPoints.size(); ++i) {
+         int newPos = ((RaceStartPoint) startPoints.get(i)).getPosition() + 1;
+         ((RaceStartPoint) startPoints.get(i)).setPosition(newPos);
       }
 
       this.api.updateStartPoints(race.getId(), startPoints, (result) -> {
@@ -655,8 +652,8 @@ public class RacingManager implements Listener {
       List<RaceStartPoint> startPoints = race.getStartPoints();
       int removedIndex = startPoints.indexOf(startPoint);
 
-      for(int i = removedIndex + 1; i < startPoints.size(); ++i) {
-         ((RaceStartPoint)startPoints.get(i)).setPosition(((RaceStartPoint)startPoints.get(i)).getPosition() - 1);
+      for (int i = removedIndex + 1; i < startPoints.size(); ++i) {
+         ((RaceStartPoint) startPoints.get(i)).setPosition(((RaceStartPoint) startPoints.get(i)).getPosition() - 1);
       }
 
       startPoints.remove(removedIndex);
@@ -673,11 +670,11 @@ public class RacingManager implements Listener {
    }
 
    public Race getRace(String name) {
-      return (Race)this.racesByName.get(name);
+      return (Race) this.racesByName.get(name);
    }
 
    public Race getRace(UUID id) {
-      return (Race)this.racesById.get(id);
+      return (Race) this.racesById.get(id);
    }
 
    public List<Race> getRaces() {
@@ -694,8 +691,8 @@ public class RacingManager implements Listener {
             return null;
          }
 
-         session = (RaceSession)var2.next();
-      } while(!session.isParticipating(player));
+         session = (RaceSession) var2.next();
+      } while (!session.isParticipating(player));
 
       return session;
    }
@@ -708,24 +705,26 @@ public class RacingManager implements Listener {
       List<RaceSession> sessions = this.getRaceSessions(race);
       RaceSession session = null;
       if (!sessions.isEmpty()) {
-         session = (RaceSession)sessions.get(0);
+         session = (RaceSession) sessions.get(0);
       }
 
       if (this.getNonJoinableGameModes().contains(player.getGameMode())) {
-         MessageManager.setValue("game_mode", (Enum)player.getGameMode());
+         MessageManager.setValue("game_mode", (Enum) player.getGameMode());
          MessageManager.sendMessage(player, MessageKey.JOIN_RACE_GAME_MODE);
       } else if (this.getNonJoinableWorlds().contains(player.getWorld())) {
          MessageManager.sendMessage(player, MessageKey.JOIN_RACE_WORLD);
       } else {
-         boolean startOnSign = (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.START_ON_JOIN_SIGN);
-         boolean startOnCommand = (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.START_ON_JOIN_COMMAND);
+         boolean startOnSign = (Boolean) RacingPlugin.getInstance().getConfiguration()
+               .get(ConfigKey.START_ON_JOIN_SIGN);
+         boolean startOnCommand = (Boolean) RacingPlugin.getInstance().getConfiguration()
+               .get(ConfigKey.START_ON_JOIN_COMMAND);
          if (session == null && (type == JoinType.SIGN && startOnSign || type == JoinType.COMMAND && startOnCommand)) {
             StartRaceStatus status = this.tryStartRace(race.getName(), player, laps);
             if (status == StartRaceStatus.ERROR) {
                return;
             }
 
-            session = (RaceSession)this.getRaceSessions(race).get(0);
+            session = (RaceSession) this.getRaceSessions(race).get(0);
          }
 
          if (session != null && session.getState() == RaceSessionState.PREPARING) {
@@ -739,23 +738,24 @@ public class RacingManager implements Listener {
                Economy economy = RacingPlugin.getInstance().getVaultEconomy();
                if (economy != null && race.getEntryFee() > 0.0D) {
                   if (economy.getBalance(player) < race.getEntryFee()) {
-                     MessageManager.setValue("entry_fee", (Object)economy.format(race.getEntryFee()));
-                     MessageManager.setValue("balance", (Object)economy.format(economy.getBalance(player)));
+                     MessageManager.setValue("entry_fee", (Object) economy.format(race.getEntryFee()));
+                     MessageManager.setValue("balance", (Object) economy.format(economy.getBalance(player)));
                      MessageManager.sendMessage(player, MessageKey.JOIN_RACE_NOT_AFFORD);
                      return;
                   }
 
                   economy.withdrawPlayer(player, race.getEntryFee());
-                  MessageManager.setValue("fee", (Object)economy.format(race.getEntryFee()));
+                  MessageManager.setValue("fee", (Object) economy.format(race.getEntryFee()));
                   MessageManager.sendMessage(player, MessageKey.JOIN_RACE_CHARGED);
                }
 
                session.participate(player, race.getEntryFee());
-               MessageManager.setValue("player_name", (Object)player.getName());
-               MessageManager.setValue("race_name", (Object)race.getName());
-               MessageManager.setValue("current_participants", (Object)session.getAmountOfParticipants());
-               MessageManager.setValue("max_participants", (Object)race.getStartPoints().size());
-               if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.BROADCAST_PLAYER_JOIN_MESSAGE)) {
+               MessageManager.setValue("player_name", (Object) player.getName());
+               MessageManager.setValue("race_name", (Object) race.getName());
+               MessageManager.setValue("current_participants", (Object) session.getAmountOfParticipants());
+               MessageManager.setValue("max_participants", (Object) race.getStartPoints().size());
+               if ((Boolean) RacingPlugin.getInstance().getConfiguration()
+                     .get(ConfigKey.BROADCAST_PLAYER_JOIN_MESSAGE)) {
                   MessageManager.broadcast(MessageKey.JOIN_RACE_SUCCESS);
                } else {
                   MessageManager.sendMessage(player, MessageKey.JOIN_RACE_SUCCESS);
@@ -772,7 +772,7 @@ public class RacingManager implements Listener {
       Race race = this.getRace(raceName);
       List sessions;
       if (race == null) {
-         sessions = (List)this.races.stream().filter((r) -> {
+         sessions = (List) this.races.stream().filter((r) -> {
             return r.getState() == RaceState.ENABLED;
          }).collect(Collectors.toList());
          if (sessions.isEmpty()) {
@@ -780,11 +780,11 @@ public class RacingManager implements Listener {
             return StartRaceStatus.ERROR;
          }
 
-         race = (Race)sessions.get(Util.randomRangeInt(0, sessions.size() - 1));
+         race = (Race) sessions.get(Util.randomRangeInt(0, sessions.size() - 1));
       }
 
       if (race.getState() != RaceState.ENABLED) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", (Object) race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.START_RACE_NOT_ENABLED);
          return StartRaceStatus.ERROR;
       } else {
@@ -812,34 +812,34 @@ public class RacingManager implements Listener {
       if (!PaperLib.isPaper()) {
          Iterator var1 = Bukkit.getWorlds().iterator();
 
-         while(var1.hasNext()) {
-            World world = (World)var1.next();
+         while (var1.hasNext()) {
+            World world = (World) var1.next();
             world.removePluginChunkTickets(RacingPlugin.getInstance());
          }
 
          var1 = this.races.iterator();
 
-         while(true) {
+         while (true) {
             Race race;
             do {
                if (!var1.hasNext()) {
                   return;
                }
 
-               race = (Race)var1.next();
-            } while(race.getState() == RaceState.ENABLED);
+               race = (Race) var1.next();
+            } while (race.getState() == RaceState.ENABLED);
 
             Iterator var3 = race.getStartPoints().iterator();
 
-            while(var3.hasNext()) {
-               RaceStartPoint startPoint = (RaceStartPoint)var3.next();
+            while (var3.hasNext()) {
+               RaceStartPoint startPoint = (RaceStartPoint) var3.next();
                startPoint.getLocation().getChunk().addPluginChunkTicket(RacingPlugin.getInstance());
             }
 
             var3 = race.getCheckpoints().iterator();
 
-            while(var3.hasNext()) {
-               RaceCheckpoint checkpoint = (RaceCheckpoint)var3.next();
+            while (var3.hasNext()) {
+               RaceCheckpoint checkpoint = (RaceCheckpoint) var3.next();
                checkpoint.getLocation().getChunk().addPluginChunkTicket(RacingPlugin.getInstance());
             }
 
@@ -849,12 +849,13 @@ public class RacingManager implements Listener {
    }
 
    public Set<GameMode> getNonJoinableGameModes() {
-      List<String> value = (List)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_GAME_MODE);
+      List<String> value = (List) RacingPlugin.getInstance().getConfiguration()
+            .get(ConfigKey.PREVENT_JOIN_FROM_GAME_MODE);
       Set<GameMode> gameModes = new HashSet();
       Iterator var3 = value.iterator();
 
-      while(var3.hasNext()) {
-         String gameMode = (String)var3.next();
+      while (var3.hasNext()) {
+         String gameMode = (String) var3.next();
 
          try {
             gameModes.add(GameMode.valueOf(gameMode.toUpperCase(Locale.ENGLISH)));
@@ -866,12 +867,12 @@ public class RacingManager implements Listener {
    }
 
    public Set<World> getNonJoinableWorlds() {
-      List<String> value = (List)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_WORLD);
+      List<String> value = (List) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_WORLD);
       Set<World> worlds = new HashSet();
       Iterator var3 = value.iterator();
 
-      while(var3.hasNext()) {
-         String world = (String)var3.next();
+      while (var3.hasNext()) {
+         String world = (String) var3.next();
          World gm = Bukkit.getWorld(world);
          if (gm != null) {
             worlds.add(gm);

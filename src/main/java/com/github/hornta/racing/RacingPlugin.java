@@ -107,7 +107,7 @@ import org.jetbrains.annotations.NotNull;
 public class RacingPlugin extends JavaPlugin {
    private static RacingPlugin instance;
    private boolean noteBlockAPILoaded;
-   private boolean holographicDisplaysLoaded;
+   private boolean decentHologramsLoaded;
    private Economy vaultEconomy;
    private Chat vaultChat;
    private Commando commando;
@@ -151,8 +151,8 @@ public class RacingPlugin extends JavaPlugin {
       return this.noteBlockAPILoaded;
    }
 
-   public boolean isHolographicDisplaysLoaded() {
-      return this.holographicDisplaysLoaded;
+   public boolean isDecentHologramsLoaded() {
+      return this.decentHologramsLoaded;
    }
 
    public Commando getCommando() {
@@ -175,7 +175,7 @@ public class RacingPlugin extends JavaPlugin {
       instance = this;
       new Metrics(this, 5356);
       this.noteBlockAPILoaded = Bukkit.getPluginManager().isPluginEnabled("NoteBlockAPI");
-      this.holographicDisplaysLoaded = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
+      this.decentHologramsLoaded = Bukkit.getPluginManager().isPluginEnabled("DecentHolograms");
       if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
          RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
          if (rsp != null) {
@@ -213,7 +213,6 @@ public class RacingPlugin extends JavaPlugin {
       if (this.racingManager != null) {
          this.racingManager.shutdown();
       }
-
    }
 
    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
@@ -505,7 +504,6 @@ public class RacingPlugin extends JavaPlugin {
          SongManager.init(this);
          this.getServer().getPluginManager().registerEvents(SongManager.getInstance(), this);
       }
-
    }
 
    private void setupCommands() {
@@ -555,7 +553,6 @@ public class RacingPlugin extends JavaPlugin {
          case ERR_MIN_LENGTH:
          case ERR_PATTERN:
          }
-
       });
       ICarbonArgument raceArgument = (new CarbonArgument.Builder("race")).setHandler(new RaceArgumentHandler(this.racingManager, true)).create();
       this.commando.addCommand("racing create").withHandler(new CommandCreateRace(this.racingManager)).withArgument((new CarbonArgument.Builder("race")).setHandler(new RaceArgumentHandler(this.racingManager, false)).showTabCompletion(false).create()).requiresPermission(Permission.COMMAND_CREATE.toString()).requiresPermission(Permission.RACING_MODIFY.toString()).preventConsoleCommandSender();
@@ -620,7 +617,7 @@ public class RacingPlugin extends JavaPlugin {
       ICarbonArgument statArgument = (new CarbonArgument.Builder("stat")).setHandler(new RaceStatArgumentHandler()).create();
       this.commando.addCommand("racing top").withArgument(raceArgument).withArgument(statArgument).withArgument(lapsArgument).withHandler(new CommandTop(this.racingManager)).requiresPermission(Permission.COMMAND_TOP.toString()).requiresPermission(Permission.RACING_PLAYER.toString());
       this.commando.addCommand("racing resettop").withArgument(raceArgument).withHandler(new CommandResetTop(this.racingManager)).requiresPermission(Permission.COMMAND_RESET_TOP.toString()).requiresPermission(Permission.RACING_ADMIN.toString());
-      if (this.holographicDisplaysLoaded) {
+      if (this.decentHologramsLoaded) {
          ICarbonArgument topListName = (new CarbonArgument.Builder("name")).setHandler(new TopListArgumentHandler(false)).create();
          this.commando.addCommand("racing hdtoplist create").withHandler(new CommandCreateHDTopList()).withArgument(topListName).withArgument(raceArgument).withArgument(statArgument).withArgument(lapsArgument).requiresPermission(Permission.COMMAND_CREATE_HD_TOP_LIST.toString()).requiresPermission(Permission.RACING_MODIFY.toString()).preventConsoleCommandSender();
          ICarbonArgument topListArg = (new CarbonArgument.Builder("toplist")).setHandler(new TopListArgumentHandler(true)).create();
@@ -632,7 +629,6 @@ public class RacingPlugin extends JavaPlugin {
          this.commando.addCommand("racing hdtoplist list").withHandler(new CommandListHDTopList()).requiresPermission(Permission.COMMAND_LIST_HD_TOP_LIST.toString()).requiresPermission(Permission.RACING_MODERATOR.toString());
          this.commando.addCommand("racing hdtoplist teleport").withHandler(new CommandTeleportHDTopList()).withArgument(topListArg).requiresPermission(Permission.COMMAND_TELEPORT_HD_TOP_LIST.toString()).requiresPermission(Permission.RACING_MODERATOR.toString()).preventConsoleCommandSender();
       }
-
    }
 
    private void setupObjects() {
@@ -650,11 +646,10 @@ public class RacingPlugin extends JavaPlugin {
       case CUSTOM:
       default:
          this.racingManager.load();
-         if (this.holographicDisplaysLoaded) {
+         if (this.decentHologramsLoaded) {
             this.hdTopListManager = new HDTopListManager();
             this.getServer().getPluginManager().registerEvents(this.hdTopListManager, this);
          }
-
       }
    }
 }

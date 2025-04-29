@@ -65,7 +65,7 @@ public class CheckpointParticleTask extends BukkitRunnable {
             rgb = RGB.randomLightColor();
          }
 
-         particle.setParticleType(WrappedParticle.create(Particle.DUST, new DustOptions(Color.fromRGB(isInside ? this.isInsideColor.getR() : (this.isLast ? rgb.getR() : this.defaultColor.getR()), isInside ? this.isInsideColor.getG() : (this.isLast ? rgb.getG() : this.defaultColor.getG()), isInside ? this.isInsideColor.getB() : (this.isLast ? rgb.getB() : this.defaultColor.getB())), 2.0F)));
+         particle.setParticle(WrappedParticle.create(Particle.DUST, new DustOptions(Color.fromRGB(isInside ? this.isInsideColor.getR() : (this.isLast ? rgb.getR() : this.defaultColor.getR()), isInside ? this.isInsideColor.getG() : (this.isLast ? rgb.getG() : this.defaultColor.getG()), isInside ? this.isInsideColor.getB() : (this.isLast ? rgb.getB() : this.defaultColor.getB())), 2.0F)));
          particle.setX(loc.getX());
          particle.setY(loc.getY());
          particle.setZ(loc.getZ());

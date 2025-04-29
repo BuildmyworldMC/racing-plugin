@@ -67,11 +67,6 @@ public class Reflections {
       }
 
    }
-
-//   public Reflections(String prefix, Scanner... scanners) {
-//      this(prefix, scanners);
-//   }
-
    public Reflections(Object... params) {
       this((Configuration)ConfigurationBuilder.build(params));
    }
