@@ -406,6 +406,7 @@ public class RacingManager implements Listener {
                checkpoint.getHologram().setHidePlayer(player);
             }
          }
+
          for (RaceStartPoint startPoint : race.getStartPoints()) {
             if (startPoint.getHologram() != null) {
                startPoint.getHologram().setHidePlayer(player);
@@ -491,28 +492,27 @@ public class RacingManager implements Listener {
          throw new RuntimeException("Can't load races because there are ongoing race sessions.");
       } else {
          Iterator var1 = this.races.iterator();
-
          while (var1.hasNext()) {
             Race race = (Race) var1.next();
             Bukkit.getPluginManager().callEvent(new UnloadRaceEvent(race));
          }
-
          this.racesByName.clear();
          this.racesById.clear();
          this.races.clear();
-         this.api.fetchAllRaces((fetchedRaces) -> {
-            Iterator var2 = fetchedRaces.iterator();
-
-            while (var2.hasNext()) {
-               Race race = (Race) var2.next();
-               this.racesByName.put(race.getName(), race);
-               this.racesById.put(race.getId(), race);
-               this.races.add(race);
-               Bukkit.getPluginManager().callEvent(new LoadRaceEvent(race));
-            }
-
-            Bukkit.getPluginManager().callEvent(new RacesLoadedEvent());
-         });
+         
+         Bukkit.getScheduler().runTaskLater(RacingPlugin.getInstance(), () -> {
+            this.api.fetchAllRaces((fetchedRaces) -> {
+               Iterator var2 = fetchedRaces.iterator();
+               while (var2.hasNext()) {
+                  Race race = (Race) var2.next();
+                  this.racesByName.put(race.getName(), race);
+                  this.racesById.put(race.getId(), race);
+                  this.races.add(race);
+                  Bukkit.getPluginManager().callEvent(new LoadRaceEvent(race));
+               }
+               Bukkit.getPluginManager().callEvent(new RacesLoadedEvent());
+            });
+         }, 20L); 
       }
    }
 

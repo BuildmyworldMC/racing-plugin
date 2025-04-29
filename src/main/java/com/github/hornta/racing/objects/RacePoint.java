@@ -46,13 +46,13 @@ public class RacePoint {
    public void setLocation(Location location) {
       this.location = location;
       if (this.hologram != null) {
-         this.hologram.setLocation(location.clone().add(new Vector(0, 1, 0)));
+         this.hologram.setLocation(location.clone().add(new Vector(0, 0.5, 0)));
       }
    }
 
    public void setupHologram() {
       if (RacingPlugin.getInstance().isDecentHologramsLoaded()) {
-         Location hologramLoc = this.location.clone().add(new Vector(0, 1, 0));
+         Location hologramLoc = this.location.clone().add(new Vector(0, 0.5, 0));
          String hologramName = "racepoint_" + this.id.toString();
          this.hologram = DHAPI.createHologram(hologramName, hologramLoc);
          DHAPI.addHologramLine(this.hologram, "§d" + this.position);
@@ -64,6 +64,8 @@ public class RacePoint {
                this.hologram.setHidePlayer(player);
             }
          }
+      } else {
+         System.out.println("Decent Hologram is not loaded");
       }
    }
 
