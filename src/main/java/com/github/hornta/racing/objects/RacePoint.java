@@ -2,8 +2,8 @@ package com.github.hornta.racing.objects;
 
 import com.github.hornta.racing.RacingPlugin;
 import com.github.hornta.racing.enums.Permission;
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import java.util.Iterator;
 import java.util.UUID;
 import org.bukkit.Bukkit;
@@ -46,30 +46,31 @@ public class RacePoint {
    public void setLocation(Location location) {
       this.location = location;
       if (this.hologram != null) {
-         this.hologram.teleport(location.clone().add(new Vector(0, 1, 0)));
+         this.hologram.setLocation(location.clone().add(new Vector(0, 0.5, 0)));
       }
-
    }
 
    public void setupHologram() {
-      if (RacingPlugin.getInstance().isHolographicDisplaysLoaded()) {
-         this.hologram = HologramsAPI.createHologram(RacingPlugin.getInstance(), this.location.clone().add(new Vector(0, 1, 0)));
-         this.hologram.appendTextLine("§d" + this.position);
-         this.hologram.getVisibilityManager().setVisibleByDefault(false);
-         Iterator var1 = Bukkit.getOnlinePlayers().iterator();
+      if (RacingPlugin.getInstance().isDecentHologramsLoaded()) {
+         Location hologramLoc = this.location.clone().add(new Vector(0, 0.5, 0));
+         String hologramName = "racepoint_" + this.id.toString();
+         this.hologram = DHAPI.createHologram(hologramName, hologramLoc);
+         DHAPI.addHologramLine(this.hologram, "§d" + this.position);
 
-         while(var1.hasNext()) {
-            Player player = (Player)var1.next();
+         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasPermission(Permission.RACING_MODIFY.toString())) {
-               this.hologram.getVisibilityManager().showTo(player);
+               this.hologram.setShowPlayer(player);
+            } else {
+               this.hologram.setHidePlayer(player);
             }
          }
-
+      } else {
+         System.out.println("Decent Hologram is not loaded");
       }
    }
 
    public void removeHologram() {
-      if (RacingPlugin.getInstance().isHolographicDisplaysLoaded() && this.hologram != null) {
+      if (RacingPlugin.getInstance().isDecentHologramsLoaded() && this.hologram != null) {
          this.hologram.delete();
          this.hologram = null;
       }
