@@ -94,7 +94,7 @@ public class HDTopListManager implements Listener {
 
    private static void updateText(HDTopList topList, List<String> playerNames) {
       if (!Bukkit.getPluginManager().isPluginEnabled("DecentHolograms")) {
-         RacingPlugin.getInstance().getLogger().warning("Tentative de mise à jour d'hologramme sans DecentHolograms");
+         RacingPlugin.getInstance().getLogger().warning("Attempting to update hologram without DecentHolograms");
          return;
       }
 
@@ -256,7 +256,7 @@ public class HDTopListManager implements Listener {
             callback.accept(hologram);
          } catch (Exception e) {
             RacingPlugin.getInstance().getLogger()
-                  .severe("Erreur lors de la création de l'hologramme: " + e.getMessage());
+                  .severe("Error creating hologram: " + e.getMessage());
             callback.accept(null);
          }
       }, 5L);
