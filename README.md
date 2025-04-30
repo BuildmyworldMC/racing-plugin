@@ -1,3 +1,5 @@
+![Racing Banner](https://github.com/ORN-Fox/racing/blob/main/racing-banner.jpg)
+
 # Racing - Spigot Plugin 4.3.0-SNAPSHOT
 
 Create and play race with your friends.
