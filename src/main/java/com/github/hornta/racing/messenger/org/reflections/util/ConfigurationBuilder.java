@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 
 public class ConfigurationBuilder implements Configuration {
    private Set<Scanner> scanners = new HashSet(Arrays.asList(new TypeAnnotationsScanner(), new SubTypesScanner()));
-   private Set<URL> urls = new HashSet();
+   private Set<URL> urls = new HashSet<>();;
    protected MetadataAdapter metadataAdapter;
    private Predicate<String> inputsFilter;
    private Serializer serializer;
@@ -38,7 +38,7 @@ public class ConfigurationBuilder implements Configuration {
 
    public static ConfigurationBuilder build(Object... params) {
       ConfigurationBuilder builder = new ConfigurationBuilder();
-      List<Object> parameters = new ArrayList();
+      List<Object> parameters = new ArrayList<>();
       Iterator var7;
       Object param;
       if (params != null) {
@@ -74,7 +74,7 @@ public class ConfigurationBuilder implements Configuration {
          }
       }
 
-      List<ClassLoader> loaders = new ArrayList();
+      List<ClassLoader> loaders = new ArrayList<>();
       Iterator var13 = parameters.iterator();
 
       while(var13.hasNext()) {
@@ -86,7 +86,7 @@ public class ConfigurationBuilder implements Configuration {
 
       ClassLoader[] classLoaders = loaders.isEmpty() ? null : (ClassLoader[])loaders.toArray(new ClassLoader[loaders.size()]);
       FilterBuilder filter = new FilterBuilder();
-      List<Scanner> scanners = new ArrayList();
+      List<Scanner> scanners = new ArrayList<>();
       var7 = parameters.iterator();
 
       while(var7.hasNext()) {

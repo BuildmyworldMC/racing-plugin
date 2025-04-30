@@ -123,7 +123,7 @@ public class FileAPI implements RacingAPI {
 
    public void fetchAllRaces(Consumer<List<Race>> callback) {
       CompletableFuture.supplyAsync(() -> {
-         List<YamlConfiguration> races = new ArrayList();
+         List<YamlConfiguration> races = new ArrayList<>();
          File[] files = this.directory.listFiles();
          if (files == null) {
             return races;
@@ -156,7 +156,7 @@ public class FileAPI implements RacingAPI {
          }
       }).thenAccept((configurations) -> {
          Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
-            List<Race> races = new ArrayList();
+            List<Race> races = new ArrayList<>();
             Iterator var4 = configurations.iterator();
 
             while(var4.hasNext()) {
@@ -395,7 +395,7 @@ public class FileAPI implements RacingAPI {
    }
 
    private List<RaceCheckpoint> parseCheckpoints(YamlConfiguration yaml) {
-      List<RaceCheckpoint> checkpoints = new ArrayList();
+      List<RaceCheckpoint> checkpoints = new ArrayList<>();
       ConfigurationSection section = yaml.getConfigurationSection("checkpoints");
       if (section == null) {
          RacingPlugin.logger().log(Level.SEVERE, "Couldn't find checkpoints section");
@@ -461,7 +461,7 @@ public class FileAPI implements RacingAPI {
    }
 
    private List<RaceStartPoint> parseStartPoints(YamlConfiguration yaml) {
-      List<RaceStartPoint> startPoints = new ArrayList();
+      List<RaceStartPoint> startPoints = new ArrayList<>();
       ConfigurationSection section = yaml.getConfigurationSection("startPoints");
       if (section == null) {
          RacingPlugin.logger().log(Level.SEVERE, "Couldn't find startpoints section");
@@ -521,7 +521,7 @@ public class FileAPI implements RacingAPI {
    }
 
    public static Set<RacePlayerStatistic> parseResults(YamlConfiguration yaml) {
-      Set<RacePlayerStatistic> results = new HashSet();
+      Set<RacePlayerStatistic> results = new HashSet<>();
       Iterable<Map<String, Object>> entries = (Iterable<Map<String, Object>>) yaml.getList("results");
       if (entries == null) {
          throw new ParseRaceException("Couldn't parse `results` list");
@@ -559,12 +559,12 @@ public class FileAPI implements RacingAPI {
    }
 
    public static void writeResults(Iterable<RacePlayerStatistic> results, ConfigurationSection yaml) {
-      Collection<Map<String, Object>> writeList = new ArrayList();
+      Collection<Map<String, Object>> writeList = new ArrayList<>();
       Iterator var3 = results.iterator();
 
       while(var3.hasNext()) {
          RacePlayerStatistic entry = (RacePlayerStatistic)var3.next();
-         Map<String, Object> writeObject = new LinkedHashMap();
+         Map<String, Object> writeObject = new LinkedHashMap<>();
          writeObject.put("player_id", entry.getPlayerId().toString());
          writeObject.put("name", entry.getPlayerName());
          writeObject.put("runs", entry.getRuns());
@@ -579,7 +579,7 @@ public class FileAPI implements RacingAPI {
    }
 
    private Set<RacePotionEffect> parsePotionEffects(YamlConfiguration yaml) {
-      Set<RacePotionEffect> potionEffects = new HashSet();
+      Set<RacePotionEffect> potionEffects = new HashSet<>();
       ConfigurationSection section = yaml.getConfigurationSection("potion_effects");
       if (section == null) {
          throw new ParseRaceException("Missing field `potion_effects`");
@@ -618,7 +618,7 @@ public class FileAPI implements RacingAPI {
    }
 
    private Set<RaceSign> parseSigns(YamlConfiguration yaml) {
-      Set<RaceSign> signs = new HashSet();
+      Set<RaceSign> signs = new HashSet<>();
       List<Map<String, Object>> entries = (List<Map<String, Object>>) yaml.getList("signs");
       if (entries == null) {
          throw new ParseRaceException("Couldn't parse signs list");
@@ -680,12 +680,12 @@ public class FileAPI implements RacingAPI {
    }
 
    private void writeSigns(Set<RaceSign> signs, YamlConfiguration yaml) {
-      List<Map<String, Object>> writeList = new ArrayList();
+      List<Map<String, Object>> writeList = new ArrayList<>();
       Iterator var4 = signs.iterator();
 
       while(var4.hasNext()) {
          RaceSign sign = (RaceSign)var4.next();
-         Map<String, Object> writeSign = new LinkedHashMap();
+         Map<String, Object> writeSign = new LinkedHashMap<>();
          writeSign.put("x", sign.getSign().getLocation().getBlockX());
          writeSign.put("y", sign.getSign().getLocation().getBlockY());
          writeSign.put("z", sign.getSign().getLocation().getBlockZ());
@@ -751,7 +751,7 @@ public class FileAPI implements RacingAPI {
    }
 
    private List<RaceCommand> parseCommands(YamlConfiguration yaml) {
-      List<RaceCommand> commands = new ArrayList();
+      List<RaceCommand> commands = new ArrayList<>();
       Iterable<Map<String, Object>> entries = (Iterable<Map<String, Object>>) yaml.getList("commands");
       if (entries == null) {
          throw new ParseRaceException("Couldn't parse `commands`");
@@ -821,12 +821,12 @@ public class FileAPI implements RacingAPI {
    }
 
    private void writeCommands(List<RaceCommand> commands, YamlConfiguration yaml) {
-      List<Map<String, Object>> writeList = new ArrayList();
+      List<Map<String, Object>> writeList = new ArrayList<>();
 
       LinkedHashMap writeObject;
       for(Iterator var4 = commands.iterator(); var4.hasNext(); writeList.add(writeObject)) {
          RaceCommand command = (RaceCommand)var4.next();
-         writeObject = new LinkedHashMap();
+         writeObject = new LinkedHashMap<>();
          writeObject.put("when", command.getCommandType().toString().toLowerCase(Locale.ENGLISH));
          writeObject.put("enabled", command.isEnabled());
          writeObject.put("command", command.getCommand());

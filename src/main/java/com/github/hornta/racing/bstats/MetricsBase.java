@@ -39,7 +39,7 @@ public class MetricsBase {
    private final boolean logErrors;
    private final boolean logSentData;
    private final boolean logResponseStatusText;
-   private final Set<CustomChart> customCharts = new HashSet();
+   private final Set<CustomChart> customCharts = new HashSet<>();
    private final boolean enabled;
 
    public MetricsBase(String platform, String serverUuid, int serviceId, boolean enabled, Consumer<JsonObjectBuilder> appendPlatformDataConsumer, Consumer<JsonObjectBuilder> appendServiceDataConsumer, Consumer<Runnable> submitTaskConsumer, Supplier<Boolean> checkServiceEnabledSupplier, BiConsumer<String, Throwable> errorLogger, Consumer<String> infoLogger, boolean logErrors, boolean logSentData, boolean logResponseStatusText) {

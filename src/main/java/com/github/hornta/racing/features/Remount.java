@@ -18,7 +18,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class Remount extends PacketAdapter {
-   private final Map<Player, Integer> counter = new HashMap();
+   private final Map<Player, Integer> counter = new HashMap<>();
 
    public Remount() {
       super(RacingPlugin.getInstance(), ListenerPriority.NORMAL, new PacketType[]{Client.POSITION, Client.POSITION_LOOK, Client.LOOK});

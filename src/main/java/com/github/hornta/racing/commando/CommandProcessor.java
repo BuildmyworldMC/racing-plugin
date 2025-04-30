@@ -46,7 +46,7 @@ public class CommandProcessor {
             }
 
             int typedArgs = 0;
-            List<String> commandArgs = new ArrayList();
+            List<String> commandArgs = new ArrayList<>();;
             argIndex = 0;
 
             for(Iterator var15 = this.command.getArguments().iterator(); var15.hasNext(); ++argIndex) {

@@ -8,14 +8,14 @@ import java.util.Queue;
 import java.util.Set;
 
 public class Util {
-   private static Map<Class<?>, Set<Class<?>>> memoizedInterfaces = new HashMap();
+   private static Map<Class<?>, Set<Class<?>>> memoizedInterfaces = new HashMap<>();
 
    public static Set<Class<?>> getSuperInterfaces(Class<?> clazz) {
       if (memoizedInterfaces.containsKey(clazz)) {
          return (Set)memoizedInterfaces.get(clazz);
       } else {
          Queue<Class<?>> queue = new LinkedList();
-         Set<Class<?>> types = new HashSet();
+         Set<Class<?>> types = new HashSet<>();;
          queue.add(clazz);
          types.add(clazz);
 

@@ -18,7 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class SongManager implements Listener {
    private static SongManager instance;
    private final JavaPlugin plugin;
-   private final Map<Player, RadioSongPlayer> playerRadios = new HashMap();
+   private final Map<Player, RadioSongPlayer> playerRadios = new HashMap<>();
    private Map<String, Song> songsByName;
    private Set<String> songNames;
 
@@ -74,8 +74,8 @@ public class SongManager implements Listener {
          this.songsByName.clear();
          this.songNames.clear();
       } else {
-         this.songsByName = new HashMap();
-         this.songNames = new HashSet();
+         this.songsByName = new HashMap<>();
+         this.songNames = new HashSet<>();
       }
 
       File[] files = directory.listFiles();

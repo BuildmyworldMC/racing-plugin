@@ -46,7 +46,7 @@ public abstract class ClasspathHelper {
    }
 
    public static Collection<URL> forResource(String resourceName, ClassLoader... classLoaders) {
-      List<URL> result = new ArrayList();
+      List<URL> result = new ArrayList<>();
       ClassLoader[] loaders = classLoaders(classLoaders);
       ClassLoader[] var4 = loaders;
       int var5 = loaders.length;
@@ -106,7 +106,7 @@ public abstract class ClasspathHelper {
    }
 
    public static Collection<URL> forClassLoader(ClassLoader... classLoaders) {
-      Collection<URL> result = new ArrayList();
+      Collection<URL> result = new ArrayList<>();
       ClassLoader[] loaders = classLoaders(classLoaders);
       ClassLoader[] var3 = loaders;
       int var4 = loaders.length;
@@ -126,7 +126,7 @@ public abstract class ClasspathHelper {
    }
 
    public static Collection<URL> forJavaClassPath() {
-      Collection<URL> urls = new ArrayList();
+      Collection<URL> urls = new ArrayList<>();
       String javaClassPath = System.getProperty("java.class.path");
       if (javaClassPath != null) {
          String[] var2 = javaClassPath.split(File.pathSeparator);
@@ -149,7 +149,7 @@ public abstract class ClasspathHelper {
    }
 
    public static Collection<URL> forWebInfLib(ServletContext servletContext) {
-      Collection<URL> urls = new ArrayList();
+      Collection<URL> urls = new ArrayList<>();
       Set<?> resourcePaths = servletContext.getResourcePaths("/WEB-INF/lib");
       if (resourcePaths == null) {
          return urls;
@@ -191,7 +191,7 @@ public abstract class ClasspathHelper {
    }
 
    public static Collection<URL> forManifest(URL url) {
-      Collection<URL> result = new ArrayList();
+      Collection<URL> result = new ArrayList<>();
       result.add(url);
 
       try {
@@ -226,7 +226,7 @@ public abstract class ClasspathHelper {
    }
 
    public static Collection<URL> forManifest(Iterable<URL> urls) {
-      Collection<URL> result = new ArrayList();
+      Collection<URL> result = new ArrayList<>();
       Iterator var2 = urls.iterator();
 
       while(var2.hasNext()) {

@@ -85,7 +85,7 @@ public class Reflections {
          long time = System.currentTimeMillis();
          int scannedUrls = 0;
          ExecutorService executorService = this.configuration.getExecutorService();
-         List<Future<?>> futures = new ArrayList();
+         List<Future<?>> futures = new ArrayList<>();
          Iterator var6 = this.configuration.getUrls().iterator();
 
          while(var6.hasNext()) {

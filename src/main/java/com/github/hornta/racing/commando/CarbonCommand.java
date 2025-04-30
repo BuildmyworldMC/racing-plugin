@@ -19,12 +19,12 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class CarbonCommand {
-   private final ArrayList<String> parts = new ArrayList();
+   private final ArrayList<String> parts = new ArrayList<>();;
    private ICommandHandler handler;
    private List<String> permissions = Collections.emptyList();
    private Boolean preventConsoleCommandSender = false;
    private Boolean preventPlayerCommandSender = false;
-   private final List<ICarbonArgument> arguments = new ArrayList();
+   private final List<ICarbonArgument> arguments = new ArrayList<>();;
    private String helpText;
    private final EnumMap<CarbonArgumentType, IArgumentHandler> typeCompleters = new EnumMap(CarbonArgumentType.class);
    private static final Pattern permissionArgumentPattern = Pattern.compile("\\[[0-9]+]", 2);
@@ -149,7 +149,7 @@ public class CarbonCommand {
 
    public CarbonCommand requiresPermission(String permission) {
       if (this.permissions.isEmpty()) {
-         this.permissions = new ArrayList();
+         this.permissions = new ArrayList<>();;
       }
 
       this.permissions.add(permission);
@@ -183,7 +183,7 @@ public class CarbonCommand {
             }
 
             String permission = (String)var3.next();
-            Map<String, String> values = new HashMap();
+            Map<String, String> values = new HashMap<>();
 
             for(int i = 0; i < args.size(); ++i) {
                values.put(String.valueOf(i), args.get(i));
@@ -225,8 +225,8 @@ public class CarbonCommand {
             if (argument.getPermission() != null && !sender.hasPermission(argument.getPermission())) {
                return Collections.emptySet();
             } else if ((argumentHandler != null || argument.getType().isCompletable()) && argument.isTabCompletionActive()) {
-               Set<String> suggestions = new HashSet();
-               Set<String> prevArgs = new HashSet();
+               Set<String> suggestions = new HashSet<>();;
+               Set<String> prevArgs = new HashSet<>();;
                Iterator var9 = argument.getDependencies().iterator();
 
                while(var9.hasNext()) {

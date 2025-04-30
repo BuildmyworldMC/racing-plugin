@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Translation {
    private final File file;
    private final String language;
-   private final Map<Enum, String> translations = new HashMap();
+   private final Map<Enum, String> translations = new HashMap<>();
 
    Translation(File file, String language) {
       this.file = file;
@@ -28,7 +28,7 @@ public class Translation {
 
    public void load(JavaPlugin plugin, Map<Enum, String> identifiers) {
       YamlConfiguration yaml = YamlConfiguration.loadConfiguration(this.file);
-      Set<String> validationErrors = new HashSet();
+      Set<String> validationErrors = new HashSet<>();;
       Set<String> yamlKeys = yaml.getKeys(true);
       Iterator var6 = yamlKeys.iterator();
 

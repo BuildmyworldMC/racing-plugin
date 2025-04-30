@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 public class Commando {
    private final CommandSet rootCommandSet = new CommandSet(this);
-   private final List<CarbonCommand> allCommands = new ArrayList();
+   private final List<CarbonCommand> allCommands = new ArrayList<>();;
    private BiConsumer<CommandSender, CarbonCommand> noPermissionHandler;
    private BiConsumer<CommandSender, CarbonCommand> missingArgumentHandler;
    private BiConsumer<CommandSender, List<CarbonCommand>> missingCommandHandler;

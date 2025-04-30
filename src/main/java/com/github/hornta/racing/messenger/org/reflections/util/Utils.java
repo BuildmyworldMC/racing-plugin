@@ -82,7 +82,7 @@ public abstract class Utils {
    }
 
    public static Set<Method> getMethodsFromDescriptors(Iterable<String> annotatedWith, ClassLoader... classLoaders) {
-      Set<Method> result = new HashSet();
+      Set<Method> result = new HashSet<>();;
       Iterator var3 = annotatedWith.iterator();
 
       while(var3.hasNext()) {
@@ -99,7 +99,7 @@ public abstract class Utils {
    }
 
    public static Set<Constructor> getConstructorsFromDescriptors(Iterable<String> annotatedWith, ClassLoader... classLoaders) {
-      Set<Constructor> result = new HashSet();
+      Set<Constructor> result = new HashSet<>();;
       Iterator var3 = annotatedWith.iterator();
 
       while(var3.hasNext()) {
@@ -116,7 +116,7 @@ public abstract class Utils {
    }
 
    public static Set<Member> getMembersFromDescriptors(Iterable<String> values, ClassLoader... classLoaders) {
-      Set<Member> result = new HashSet();
+      Set<Member> result = new HashSet<>();;
       Iterator var3 = values.iterator();
 
       while(var3.hasNext()) {

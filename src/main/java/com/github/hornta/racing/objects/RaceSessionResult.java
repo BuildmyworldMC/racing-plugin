@@ -10,7 +10,7 @@ public class RaceSessionResult {
 
    public RaceSessionResult(RaceSession raceSession) {
       this.raceSession = raceSession;
-      this.playerResults = new HashMap();
+      this.playerResults = new HashMap<>();
    }
 
    public RaceSession getRaceSession() {

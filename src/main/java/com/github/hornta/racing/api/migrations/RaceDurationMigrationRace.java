@@ -25,7 +25,7 @@ public class RaceDurationMigrationRace implements IRaceFileMigration {
          Map<String, Object> player_results = (Map)var3.next();
          Object duration = player_results.get("duration");
          player_results.put("fastestLap", duration);
-         Map<Integer, Object> records = new HashMap();
+         Map<Integer, Object> records = new HashMap<>();
          records.put(1, duration);
          player_results.put("records", records);
          player_results.remove("duration");

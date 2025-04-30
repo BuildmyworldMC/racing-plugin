@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Patch<T extends Enum<T>> {
-   private final Map<T, Node<T>> nodes = new HashMap();
+   private final Map<T, Node<T>> nodes = new HashMap<>();
    private final List<Operation<T>> operations = new LinkedList();
 
    public void set(T id, String path, Object value, Type type) {

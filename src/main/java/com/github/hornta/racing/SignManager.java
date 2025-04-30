@@ -44,11 +44,11 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 class SignManager implements Listener {
-   private static final Set<Material> wallSignMaterials = new HashSet();
+   private static final Set<Material> wallSignMaterials = new HashSet<>();
    private static final Set<Material> signPostMaterial;
    private final RacingManager racingManager;
-   private final HashMap<RaceSign, Race> racesBySign = new HashMap();
-   private final HashMap<String, RaceSign> raceSigns = new HashMap();
+   private final HashMap<RaceSign, Race> racesBySign = new HashMap<>();
+   private final HashMap<String, RaceSign> raceSigns = new HashMap<>();
 
    SignManager(RacingManager racingManager) {
       this.racingManager = racingManager;
@@ -309,7 +309,7 @@ class SignManager implements Listener {
       wallSignMaterials.add(Material.LEGACY_WALL_SIGN);
       wallSignMaterials.add(Material.CRIMSON_WALL_SIGN);
       wallSignMaterials.add(Material.WARPED_WALL_SIGN);
-      signPostMaterial = new HashSet();
+      signPostMaterial = new HashSet<>();
       signPostMaterial.add(Material.SPRUCE_SIGN);
       signPostMaterial.add(Material.ACACIA_SIGN);
       signPostMaterial.add(Material.BIRCH_SIGN);

@@ -58,7 +58,7 @@ public class JavassistAdapter implements MetadataAdapter<ClassFile, FieldInfo, M
    }
 
    public List<String> getParameterAnnotationNames(MethodInfo method, int parameterIndex) {
-      List<String> result = new ArrayList();
+      List<String> result = new ArrayList<>();
       List<ParameterAnnotationsAttribute> parameterAnnotationsAttributes = Arrays.asList((ParameterAnnotationsAttribute)method.getAttribute("RuntimeVisibleParameterAnnotations"), (ParameterAnnotationsAttribute)method.getAttribute("RuntimeInvisibleParameterAnnotations"));
       Iterator var5 = parameterAnnotationsAttributes.iterator();
 
@@ -148,9 +148,9 @@ public class JavassistAdapter implements MetadataAdapter<ClassFile, FieldInfo, M
    }
 
    private List<String> splitDescriptorToTypeNames(String descriptors) {
-      List<String> result = new ArrayList();
+      List<String> result = new ArrayList<>();
       if (descriptors != null && descriptors.length() != 0) {
-         List<Integer> indices = new ArrayList();
+         List<Integer> indices = new ArrayList<>();
          Descriptor.Iterator iterator = new Descriptor.Iterator(descriptors);
 
          while(iterator.hasNext()) {

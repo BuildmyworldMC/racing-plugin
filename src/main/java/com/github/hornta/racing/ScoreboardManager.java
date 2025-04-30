@@ -53,8 +53,8 @@ public class ScoreboardManager implements Listener {
       this.NO_TIME_STATS = "noTimeStats";
       this.NO_NAME_STATS = "noNameStats";
       this.LAP_TAG = "personalRecord";
-      this.configMap = new HashMap();
-      this.translationMap = new HashMap();
+      this.configMap = new HashMap<>();
+      this.translationMap = new HashMap<>();
       this.headingFormat = MessageManager.getMessage(MessageKey.SCOREBOARD_HEADING_FORMAT);
       this.titleFormat = MessageManager.getMessage(MessageKey.SCOREBOARD_TITLE_FORMAT);
       this.textFormat = MessageManager.getMessage(MessageKey.SCOREBOARD_TEXT_FORMAT);

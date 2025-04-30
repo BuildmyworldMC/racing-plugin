@@ -64,7 +64,7 @@ public class Store {
       String index = Utils.index(scannerClass);
       Map<String, Collection<String>> mmap = this.get(index);
       List<String> workKeys = new ArrayList(keys);
-      Set<String> result = new HashSet();
+      Set<String> result = new HashSet<>();;
 
       for(int i = 0; i < workKeys.size(); ++i) {
          String key = (String)workKeys.get(i);
@@ -105,7 +105,7 @@ public class Store {
       return ((Collection)((Map)this.storeMap.computeIfAbsent(index, (s) -> {
          return new ConcurrentHashMap();
       })).computeIfAbsent(key, (s) -> {
-         return new ArrayList();
+         return new ArrayList<>();
       })).add(value);
    }
 

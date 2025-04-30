@@ -32,14 +32,14 @@ public class Translations {
       this.plugin = plugin;
       this.messageManager = messageManager;
       this.translationResource = Pattern.compile("^translations/" + plugin.getDescription().getName() + "/.+\\.yml$");
-      this.languageFiles = new HashMap();
+      this.languageFiles = new HashMap<>();
       this.translationsDirectory = new File(plugin.getDataFolder() + File.separator + "translations");
       this.saveDefaults();
       this.readLanguageFiles(this.translationsDirectory);
    }
 
    private Map<String, InputStream> getResourceTranslationStreams() {
-      Map<String, InputStream> streams = new HashMap();
+      Map<String, InputStream> streams = new HashMap<>();
       Reflections reflections = new Reflections((String)null, new Scanner[]{new ResourcesScanner()});
       Set<String> resourceList = reflections.getResources(ymlResources);
       Iterator var4 = resourceList.iterator();

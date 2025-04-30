@@ -7,7 +7,7 @@ public class NodeMap<T extends Enum<T>> implements Iterable<Node<T>> {
    private final LinkedHashMap<T, Node<T>> nodes;
 
    NodeMap() {
-      this.nodes = new LinkedHashMap();
+      this.nodes = new LinkedHashMap<>();;
    }
 
    NodeMap(NodeMap<T> nodeMap) {

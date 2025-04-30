@@ -131,8 +131,8 @@ public class CarbonArgument implements ICarbonArgument {
 
       public Builder(String name) {
          this.type = CarbonArgumentType.STRING;
-         this.defaultValues = new HashMap();
-         this.dependencies = new HashSet();
+         this.defaultValues = new HashMap<>();
+         this.dependencies = new HashSet<>();
          this.showTabCompletion = true;
          this.catchRemaining = false;
          this.requiresPermission = null;

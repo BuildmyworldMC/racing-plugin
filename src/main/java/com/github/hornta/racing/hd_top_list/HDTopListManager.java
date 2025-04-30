@@ -46,7 +46,7 @@ public class HDTopListManager implements Listener {
 
    public HDTopListManager() {
       instance = this;
-      this.topLists = new ArrayList();
+      this.topLists = new ArrayList<>();
       this.storage = new FileStorage(RacingPlugin.getInstance());
    }
 
@@ -191,7 +191,7 @@ public class HDTopListManager implements Listener {
 
    @EventHandler
    void onDeleteRace(DeleteRaceEvent event) {
-      Collection<HDTopList> toRemove = new ArrayList();
+      Collection<HDTopList> toRemove = new ArrayList<>();
       Iterator var3 = this.topLists.iterator();
 
       HDTopList topList;

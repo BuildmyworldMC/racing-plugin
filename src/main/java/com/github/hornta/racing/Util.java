@@ -69,7 +69,7 @@ public class Util {
          long hours = duration % 86400000L / 3600000L;
          long minutes = duration % 86400000L % 3600000L / 60000L;
          long seconds = duration % 86400000L % 3600000L % 60000L;
-         List<DurationUnit> units = new ArrayList();
+         List<DurationUnit> units = new ArrayList<>();
          units.add(new DurationUnit(days, "<day>", "<days>"));
          units.add(new DurationUnit(hours, "<hour>", "<hours>"));
          units.add(new DurationUnit(minutes, "<minute>", "<minutes>"));

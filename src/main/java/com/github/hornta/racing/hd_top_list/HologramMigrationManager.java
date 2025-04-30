@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class HologramMigrationManager {
-   private final Collection<IHologramFileMigration> migrations = new ArrayList();
+   private final Collection<IHologramFileMigration> migrations = new ArrayList<>();
 
    public void addMigration(IHologramFileMigration migration) {
       if (migration.from() == migration.to()) {

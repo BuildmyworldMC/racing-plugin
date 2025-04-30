@@ -91,8 +91,8 @@ public class RaceSession implements Listener {
       this.initiator = initiator;
       this.race = race;
       this.laps = laps;
-      this.startTimerTasks = new ArrayList();
-      this.playerSessions = new LinkedHashMap();
+      this.startTimerTasks = new ArrayList<>();
+      this.playerSessions = new LinkedHashMap<>();;
       this.scoreboardManager = new ScoreboardManager();
       Bukkit.getPluginManager().registerEvents(this.scoreboardManager, RacingPlugin.getInstance());
       if (RacingPlugin.getInstance().isNoteBlockAPILoaded() && race.getSong() != null) {
@@ -269,7 +269,7 @@ public class RaceSession implements Listener {
          this.countdown = new RaceCountdown(this.playerSessions.values());
          this.countdown.start(() -> {
             this.setState(RaceSessionState.STARTED);
-            Collection<PotionEffect> potionEffects = new ArrayList();
+            Collection<PotionEffect> potionEffects = new ArrayList<>();
 
             for(RacePotionEffect racePotionEffect : this.race.getPotionEffects()) {
                potionEffects.add(new PotionEffect(racePotionEffect.getType(), Integer.MAX_VALUE, racePotionEffect.getAmplifier(), false, false, false));

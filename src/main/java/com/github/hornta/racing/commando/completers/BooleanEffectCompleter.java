@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.bukkit.command.CommandSender;
 
 public class BooleanEffectCompleter implements IArgumentHandler {
-   private static final Set<String> items = new HashSet();
+   private static final Set<String> items = new HashSet<>();
 
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
       return (Set)items.stream().filter((name) -> {

@@ -70,10 +70,10 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.Nullable;
 
 public class RacingManager implements Listener {
-   private final Map<String, Race> racesByName = new HashMap();
-   private final Map<UUID, Race> racesById = new HashMap();
-   private final List<Race> races = new ArrayList();
-   private final List<RaceSession> raceSessions = new ArrayList();
+   private final Map<String, Race> racesByName = new HashMap<>();
+   private final Map<UUID, Race> racesById = new HashMap<>();
+   private final List<Race> races = new ArrayList<>();
+   private final List<RaceSession> raceSessions = new ArrayList<>();
    private RacingAPI api;
 
    RacingManager() {
@@ -85,7 +85,7 @@ public class RacingManager implements Listener {
    }
 
    public void shutdown() {
-      Iterator var1 = this.raceSessions.iterator();
+      Iterator<RaceSession> var1 = this.raceSessions.iterator();
 
       while (var1.hasNext()) {
          RaceSession raceSession = (RaceSession) var1.next();
@@ -103,7 +103,7 @@ public class RacingManager implements Listener {
    }
 
    public List<RaceSession> getRaceSessions() {
-      return new ArrayList(this.raceSessions);
+      return new ArrayList<>(this.raceSessions);
    }
 
    public List<RaceSession> getRaceSessions(Race race) {
@@ -111,7 +111,7 @@ public class RacingManager implements Listener {
    }
 
    public List<RaceSession> getRaceSessions(Race race, RaceSessionState state) {
-      List<RaceSession> sessions = new ArrayList();
+      List<RaceSession> sessions = new ArrayList<>();
       Iterator var4 = this.raceSessions.iterator();
 
       while (var4.hasNext()) {
@@ -289,7 +289,7 @@ public class RacingManager implements Listener {
    void onRaceSessionResult(RaceSessionResultEvent event) {
       List<PlayerSessionResult> sortedPlayerResults = (List) event.getResult().getPlayerResults().values().stream()
             .sorted(Comparator.comparingLong(PlayerSessionResult::getRaceDuration)).collect(Collectors.toList());
-      Collection<String> resultMessages = new ArrayList();
+      Collection<String> resultMessages = new ArrayList<>();
       Race race = event.getResult().getRaceSession().getRace();
       MessageManager.setValue("race_name", (Object) race.getName());
       String headerMessage = MessageManager.getMessage(MessageKey.RACE_RESULT_HEADER);
@@ -678,7 +678,7 @@ public class RacingManager implements Listener {
    }
 
    public List<Race> getRaces() {
-      return new ArrayList(this.races);
+      return new ArrayList<>(this.races);
    }
 
    @Nullable
@@ -851,7 +851,7 @@ public class RacingManager implements Listener {
    public Set<GameMode> getNonJoinableGameModes() {
       List<String> value = (List) RacingPlugin.getInstance().getConfiguration()
             .get(ConfigKey.PREVENT_JOIN_FROM_GAME_MODE);
-      Set<GameMode> gameModes = new HashSet();
+      Set<GameMode> gameModes = new HashSet<>();
       Iterator var3 = value.iterator();
 
       while (var3.hasNext()) {
@@ -868,7 +868,7 @@ public class RacingManager implements Listener {
 
    public Set<World> getNonJoinableWorlds() {
       List<String> value = (List) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_WORLD);
-      Set<World> worlds = new HashSet();
+      Set<World> worlds = new HashSet<>();
       Iterator var3 = value.iterator();
 
       while (var3.hasNext()) {

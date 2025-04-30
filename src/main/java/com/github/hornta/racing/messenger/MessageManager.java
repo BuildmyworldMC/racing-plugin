@@ -15,8 +15,8 @@ public class MessageManager {
    private static MessageManager instance;
    private static final Pattern placeholderPattern = Pattern.compile("<([a-z_]+)(?:\\|(.+))?>", 2);
    private Translation translation;
-   private static final Map<String, List<String>> placeholderValues = new HashMap();
-   private static final Map<String, Enum> placeholderKeys = new HashMap();
+   private static final Map<String, List<String>> placeholderValues = new HashMap<>();
+   private static final Map<String, Enum> placeholderKeys = new HashMap<>();
    private final Map<Enum, String> identifiers;
 
    public MessageManager(Map<Enum, String> identifiers) {

@@ -12,7 +12,7 @@ public class FilterBuilder implements Predicate<String> {
    private final List<Predicate<String>> chain;
 
    public FilterBuilder() {
-      this.chain = new ArrayList();
+      this.chain = new ArrayList<>();
    }
 
    private FilterBuilder(Collection<Predicate<String>> filters) {
@@ -87,7 +87,7 @@ public class FilterBuilder implements Predicate<String> {
    }
 
    public static FilterBuilder parse(String includeExcludeString) {
-      List<Predicate<String>> filters = new ArrayList();
+      List<Predicate<String>> filters = new ArrayList<>();
       if (!Utils.isEmpty(includeExcludeString)) {
          String[] var2 = includeExcludeString.split(",");
          int var3 = var2.length;
@@ -119,7 +119,7 @@ public class FilterBuilder implements Predicate<String> {
    }
 
    public static FilterBuilder parsePackages(String includeExcludeString) {
-      List<Predicate<String>> filters = new ArrayList();
+      List<Predicate<String>> filters = new ArrayList<>();
       if (!Utils.isEmpty(includeExcludeString)) {
          String[] var2 = includeExcludeString.split(",");
          int var3 = var2.length;

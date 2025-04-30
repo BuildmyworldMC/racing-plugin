@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class RaceMigrationManager {
-   private final Collection<IRaceFileMigration> migrations = new ArrayList();
+   private final Collection<IRaceFileMigration> migrations = new ArrayList<>();
 
    public void addMigration(IRaceFileMigration migration) {
       if (migration.from() == migration.to()) {

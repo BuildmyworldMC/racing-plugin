@@ -15,7 +15,7 @@ public class Util {
    public static Set<String> getLeafs(YamlConfiguration configuration) {
       List<String> keys = new ArrayList(configuration.getKeys(true));
       Collections.reverse(keys);
-      Set<String> leafs = new HashSet();
+      Set<String> leafs = new HashSet<>();;
       Iterator var3 = keys.iterator();
 
       while(var3.hasNext()) {

@@ -59,7 +59,7 @@ public abstract class ReflectionUtils {
    }
 
    public static Set<Method> getAllMethods(Class<?> type, Predicate<? super Method>... predicates) {
-      Set<Method> result = new HashSet();
+      Set<Method> result = new HashSet<>();;
       Iterator var3 = getAllSuperTypes(type).iterator();
 
       while(var3.hasNext()) {
@@ -75,7 +75,7 @@ public abstract class ReflectionUtils {
    }
 
    public static Set<Constructor> getAllConstructors(Class<?> type, Predicate<? super Constructor>... predicates) {
-      Set<Constructor> result = new HashSet();
+      Set<Constructor> result = new HashSet<>();;
       Iterator var3 = getAllSuperTypes(type).iterator();
 
       while(var3.hasNext()) {
@@ -91,7 +91,7 @@ public abstract class ReflectionUtils {
    }
 
    public static Set<Field> getAllFields(Class<?> type, Predicate<? super Field>... predicates) {
-      Set<Field> result = new HashSet();
+      Set<Field> result = new HashSet<>();;
       Iterator var3 = getAllSuperTypes(type).iterator();
 
       while(var3.hasNext()) {
@@ -107,7 +107,7 @@ public abstract class ReflectionUtils {
    }
 
    public static <T extends AnnotatedElement> Set<Annotation> getAllAnnotations(T type, Predicate<Annotation>... predicates) {
-      Set<Annotation> result = new HashSet();
+      Set<Annotation> result = new HashSet<>();;
       if (type instanceof Class) {
          Iterator var3 = getAllSuperTypes((Class)type).iterator();
 
@@ -277,7 +277,7 @@ public abstract class ReflectionUtils {
             type = typeName;
          }
 
-         List<ReflectionsException> reflectionsExceptions = new ArrayList();
+         List<ReflectionsException> reflectionsExceptions = new ArrayList<>();
          ClassLoader[] var12 = ClasspathHelper.classLoaders(classLoaders);
          int var5 = var12.length;
          int var6 = 0;

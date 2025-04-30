@@ -20,7 +20,7 @@ import org.bukkit.command.CommandSender;
 public class CommandSet {
    private Commando commando;
    private CarbonCommand root;
-   private Map<String, CommandSet> childCommands = new HashMap();
+   private Map<String, CommandSet> childCommands = new HashMap<>();
 
    CommandSet(Commando commando) {
       this.commando = commando;
@@ -79,7 +79,7 @@ public class CommandSet {
    }
 
    private void handleMissingArgument(CommandSender sender, String argument) {
-      List<CarbonCommand> commands = new ArrayList();
+      List<CarbonCommand> commands = new ArrayList<>();;
       collectAllCommands(this.childCommands, commands, argument);
       BiConsumer<CommandSender, List<CarbonCommand>> handler = this.commando.getMissingCommandHandler();
       if (handler != null) {
@@ -113,7 +113,7 @@ public class CommandSet {
             }
          }
 
-         Set<String> suggestions = new HashSet();
+         Set<String> suggestions = new HashSet<>();;
          if (childCommand == null || ((String)args.get(args.size() - 1)).equalsIgnoreCase(childCommand)) {
             suggestions.addAll((Collection)this.childCommands.entrySet().stream().filter((e) -> {
                return ((CommandSet)e.getValue()).root == null ? true : ((CommandSet)e.getValue()).root.checkPermissions(sender);

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MessagesBuilder {
-   private final Map<Enum, String> identifiers = new HashMap();
+   private final Map<Enum, String> identifiers = new HashMap<>();
 
    public MessagesBuilder add(Enum id, String key) {
       this.identifiers.put(id, key);

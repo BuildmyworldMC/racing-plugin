@@ -21,7 +21,7 @@ public class JavaReflectionAdapter implements MetadataAdapter<Class, Field, Memb
    }
 
    public List<Member> getMethods(Class cls) {
-      List<Member> methods = new ArrayList();
+      List<Member> methods = new ArrayList<>();
       methods.addAll(Arrays.asList(cls.getDeclaredMethods()));
       methods.addAll(Arrays.asList(cls.getDeclaredConstructors()));
       return methods;
