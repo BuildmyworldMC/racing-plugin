@@ -16,6 +16,8 @@ Protocolib ^5.x (Required for plugin work)
 
 ### (Optional)
 DecentHolograms ^2.x (For hologram display)
+NoteBlockAPI ^1.x (For play custom song from note block)
+McEconomy + Vault (For economy support)
 
 ## Acknowledgment
 - Creator: Hornata
