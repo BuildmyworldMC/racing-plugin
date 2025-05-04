@@ -112,7 +112,7 @@ public class RacingManager implements Listener {
 
    public List<RaceSession> getRaceSessions(Race race, RaceSessionState state) {
       List<RaceSession> sessions = new ArrayList<>();
-      Iterator var4 = this.raceSessions.iterator();
+      Iterator<RaceSession> var4 = this.raceSessions.iterator();
 
       while (var4.hasNext()) {
          RaceSession session = (RaceSession) var4.next();
@@ -126,7 +126,7 @@ public class RacingManager implements Listener {
    }
 
    public boolean hasOngoingSession(Race race) {
-      Iterator var2 = this.raceSessions.iterator();
+      Iterator<RaceSession> var2 = this.raceSessions.iterator();
 
       RaceSession session;
       do {
@@ -186,7 +186,7 @@ public class RacingManager implements Listener {
    void onAddRaceCheckpoint(AddRaceCheckpointEvent event) {
       event.getCheckpoint().startTask(true);
       event.getCheckpoint().setupHologram();
-      Iterator var2 = event.getRace().getCheckpoints().iterator();
+      Iterator<RaceCheckpoint> var2 = event.getRace().getCheckpoints().iterator();
 
       while (var2.hasNext()) {
          RaceCheckpoint cp = (RaceCheckpoint) var2.next();
@@ -203,7 +203,7 @@ public class RacingManager implements Listener {
    void onDeleteRaceCheckpoint(DeleteRaceCheckpointEvent event) {
       event.getCheckpoint().stopTask();
       event.getCheckpoint().removeHologram();
-      Iterator var2 = event.getRace().getCheckpoints().iterator();
+      Iterator<RaceCheckpoint> var2 = event.getRace().getCheckpoints().iterator();
 
       while (var2.hasNext()) {
          RaceCheckpoint checkpoint = (RaceCheckpoint) var2.next();
@@ -219,7 +219,7 @@ public class RacingManager implements Listener {
    @EventHandler
    void onAddRaceStartPoint(AddRaceStartPointEvent event) {
       event.getStartPoint().setupHologram();
-      Iterator var2 = event.getRace().getStartPoints().iterator();
+      Iterator<RaceStartPoint> var2 = event.getRace().getStartPoints().iterator();
 
       while (var2.hasNext()) {
          RaceStartPoint cp = (RaceStartPoint) var2.next();
@@ -235,7 +235,7 @@ public class RacingManager implements Listener {
    @EventHandler
    void onDeleteRaceStartPoint(DeleteRaceStartPointEvent event) {
       event.getStartPoint().removeHologram();
-      Iterator var2 = event.getRace().getStartPoints().iterator();
+      Iterator<RaceStartPoint> var2 = event.getRace().getStartPoints().iterator();
 
       while (var2.hasNext()) {
          RaceStartPoint startPoint = (RaceStartPoint) var2.next();
@@ -295,7 +295,7 @@ public class RacingManager implements Listener {
       String headerMessage = MessageManager.getMessage(MessageKey.RACE_RESULT_HEADER);
       resultMessages.add(headerMessage);
       int currentPosition = 1;
-      Iterator var7 = sortedPlayerResults.iterator();
+      Iterator<PlayerSessionResult> var7 = sortedPlayerResults.iterator();
 
       while (var7.hasNext()) {
          PlayerSessionResult playerResult = (PlayerSessionResult) var7.next();
@@ -326,7 +326,7 @@ public class RacingManager implements Listener {
                .map((playerResultx) -> {
                   return Bukkit.getPlayer(playerResultx.getPlayerId());
                }).filter(Objects::nonNull).collect(Collectors.toList());
-         Iterator var14 = playersToMessage.iterator();
+         Iterator<Player> var14 = playersToMessage.iterator();
 
          while (var14.hasNext()) {
             Player player = (Player) var14.next();
@@ -348,7 +348,7 @@ public class RacingManager implements Listener {
                .get(ConfigKey.TELEPORT_AFTER_RACE_WHEN);
          TeleportAfterRaceWhen when = TeleportAfterRaceWhen.valueOf(whenString.toUpperCase(Locale.ENGLISH));
          if (when == TeleportAfterRaceWhen.EVERYONE_FINISHES) {
-            Iterator var4 = event.getRaceSession().getPlayerSessions().iterator();
+            Iterator<RacePlayerSession> var4 = event.getRaceSession().getPlayerSessions().iterator();
 
             while (var4.hasNext()) {
                RacePlayerSession playerSession = (RacePlayerSession) var4.next();
@@ -363,7 +363,7 @@ public class RacingManager implements Listener {
    @EventHandler
    void onPlayerJoin(PlayerJoinEvent event) {
       boolean hasPermission = event.getPlayer().hasPermission(Permission.RACING_MODIFY.toString());
-      Iterator var3 = this.races.iterator();
+      Iterator<Race> var3 = this.races.iterator();
 
       while (var3.hasNext()) {
          Race race = (Race) var3.next();
@@ -423,7 +423,7 @@ public class RacingManager implements Listener {
                .get(ConfigKey.BLOCKED_COMMANDS);
          String entryLabel = event.getMessage().split(" ")[0].replace("/", "");
          String[] entryArgs = event.getMessage().replace("/" + entryLabel, "").trim().split(" ");
-         Iterator var6 = blockedCommands.iterator();
+         Iterator<String> var6 = blockedCommands.iterator();
 
          String blockedCommand;
          boolean skip;
@@ -491,7 +491,7 @@ public class RacingManager implements Listener {
       if (!this.raceSessions.isEmpty()) {
          throw new RuntimeException("Can't load races because there are ongoing race sessions.");
       } else {
-         Iterator var1 = this.races.iterator();
+         Iterator<Race> var1 = this.races.iterator();
          while (var1.hasNext()) {
             Race race = (Race) var1.next();
             Bukkit.getPluginManager().callEvent(new UnloadRaceEvent(race));
@@ -502,7 +502,7 @@ public class RacingManager implements Listener {
          
          Bukkit.getScheduler().runTaskLater(RacingPlugin.getInstance(), () -> {
             this.api.fetchAllRaces((fetchedRaces) -> {
-               Iterator var2 = fetchedRaces.iterator();
+               Iterator<Race> var2 = fetchedRaces.iterator();
                while (var2.hasNext()) {
                   Race race = (Race) var2.next();
                   this.racesByName.put(race.getName(), race);
@@ -683,7 +683,7 @@ public class RacingManager implements Listener {
 
    @Nullable
    public RaceSession getParticipatingRace(Player player) {
-      Iterator var2 = this.raceSessions.iterator();
+      Iterator<RaceSession> var2 = this.raceSessions.iterator();
 
       RaceSession session;
       do {
@@ -852,7 +852,7 @@ public class RacingManager implements Listener {
       List<String> value = (List) RacingPlugin.getInstance().getConfiguration()
             .get(ConfigKey.PREVENT_JOIN_FROM_GAME_MODE);
       Set<GameMode> gameModes = new HashSet<>();
-      Iterator var3 = value.iterator();
+      Iterator<String> var3 = value.iterator();
 
       while (var3.hasNext()) {
          String gameMode = (String) var3.next();
@@ -869,7 +869,7 @@ public class RacingManager implements Listener {
    public Set<World> getNonJoinableWorlds() {
       List<String> value = (List) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_WORLD);
       Set<World> worlds = new HashSet<>();
-      Iterator var3 = value.iterator();
+      Iterator<String> var3 = value.iterator();
 
       while (var3.hasNext()) {
          String world = (String) var3.next();

@@ -76,9 +76,9 @@ public class Util {
          units.add(new DurationUnit(seconds, "<second>", "<seconds>"));
          StringBuilder stringBuilder = new StringBuilder();
          int count = 0;
-         Iterator var14 = units.iterator();
+         Iterator<DurationUnit> var14 = units.iterator();
 
-         while(var14.hasNext()) {
+         while (var14.hasNext()) {
             DurationUnit unit = (DurationUnit)var14.next();
             long amount = unit.getAmount();
             if (count != 0 && amount == 0L) {
@@ -108,13 +108,13 @@ public class Util {
    }
 
    public static void setTimeUnitValues() {
-      MessageManager.setValue("second", (Enum)MessageKey.TIME_UNIT_SECOND);
-      MessageManager.setValue("seconds", (Enum)MessageKey.TIME_UNIT_SECONDS);
-      MessageManager.setValue("minute", (Enum)MessageKey.TIME_UNIT_MINUTE);
-      MessageManager.setValue("minutes", (Enum)MessageKey.TIME_UNIT_MINUTES);
-      MessageManager.setValue("hour", (Enum)MessageKey.TIME_UNIT_HOURS);
-      MessageManager.setValue("hours", (Enum)MessageKey.TIME_UNIT_HOURS);
-      MessageManager.setValue("day", (Enum)MessageKey.TIME_UNIT_DAY);
-      MessageManager.setValue("days", (Enum)MessageKey.TIME_UNIT_DAYS);
+      MessageManager.setValue("second", MessageKey.TIME_UNIT_SECOND);
+      MessageManager.setValue("seconds", MessageKey.TIME_UNIT_SECONDS);
+      MessageManager.setValue("minute", MessageKey.TIME_UNIT_MINUTE);
+      MessageManager.setValue("minutes", MessageKey.TIME_UNIT_MINUTES);
+      MessageManager.setValue("hour", MessageKey.TIME_UNIT_HOURS);
+      MessageManager.setValue("hours", MessageKey.TIME_UNIT_HOURS);
+      MessageManager.setValue("day", MessageKey.TIME_UNIT_DAY);
+      MessageManager.setValue("days", MessageKey.TIME_UNIT_DAYS);
    }
 }
