@@ -12,6 +12,7 @@ public class CommandTeleportHDTopList implements ICommandHandler {
    public void handle(CommandSender commandSender, String[] args, int i) {
       HDTopList topList = HDTopListManager.getTopList(args[0]);
       Player player = (Player)commandSender;
-      PaperLib.teleportAsync(player, topList.getHologram().getLocation(), TeleportCause.PLUGIN);
+       assert topList != null;
+       PaperLib.teleportAsync(player, topList.getHologram().getLocation(), TeleportCause.PLUGIN);
    }
 }

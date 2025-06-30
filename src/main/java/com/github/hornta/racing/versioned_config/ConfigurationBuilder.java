@@ -9,7 +9,7 @@ public class ConfigurationBuilder<T extends Enum<T>> {
 
    public ConfigurationBuilder(File file) {
       this.file = file;
-      this.migrations = new LinkedList();
+      this.migrations = new LinkedList<>();
    }
 
    public void addMigration(Migration<T> migration) {
@@ -17,17 +17,17 @@ public class ConfigurationBuilder<T extends Enum<T>> {
    }
 
    public Configuration<T> create() throws ConfigurationException {
-      this.migrations.sort(new MigrationSorter());
+      this.migrations.sort(new MigrationSorter<>());
       this.validateMigrations();
-      Configuration<T> configuration = new Configuration(this.file, this.migrations);
+      Configuration<T> configuration = new Configuration<>(this.file, this.migrations);
       configuration.reload();
       return configuration;
    }
 
    private void validateMigrations() throws ConfigurationException {
       for(int i = 0; i < this.migrations.size(); ++i) {
-         if (((Migration)this.migrations.get(i)).getVersion() != i + 1) {
-            throw new ConfigurationException("Wrong version for %s. Version must start at 1 increased by 1 for every migration.", new Object[]{((Migration)this.migrations.get(i)).getClass().getName()});
+         if (((Migration<?>)this.migrations.get(i)).getVersion() != i + 1) {
+            throw new ConfigurationException("Wrong version for %s. Version must start at 1 increased by 1 for every migration.", new Object[]{((Migration<?>)this.migrations.get(i)).getClass().getName()});
          }
       }
 

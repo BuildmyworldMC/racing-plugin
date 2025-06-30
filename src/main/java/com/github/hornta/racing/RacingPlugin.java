@@ -99,7 +99,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -227,7 +226,7 @@ public class RacingPlugin extends JavaPlugin {
       File cfgFile = new File(this.getDataFolder(), "config.yml");
       ConfigurationBuilder<ConfigKey> cb = new ConfigurationBuilder<>(cfgFile);
       cb.addMigration(new Migration<>(1, () -> {
-         Patch<ConfigKey> patch = new Patch();
+         Patch<ConfigKey> patch = new Patch<>();
          patch.set(ConfigKey.LANGUAGE, "language", "english", Type.STRING);
          patch.set(ConfigKey.LOCALE, "locale", "en", Type.STRING);
          patch.set(ConfigKey.SONGS_DIRECTORY, "songs_directory", "songs", Type.STRING);
@@ -279,14 +278,14 @@ public class RacingPlugin extends JavaPlugin {
          return patch;
       }));
       cb.addMigration(new Migration<>(2, () -> {
-         Patch<ConfigKey> patch = new Patch();
+         Patch<ConfigKey> patch = new Patch<>();
          patch.set(ConfigKey.HD_TOP_LIST_DIRECTORY, "hd_top_list.directory", "hologram_toplists", Type.STRING);
          patch.set(ConfigKey.HD_TOP_LIST_SHOW_HEADER, "hd_top_list.show_header", true, Type.BOOLEAN);
          patch.set(ConfigKey.HD_TOP_LIST_SHOW_FOOTER, "hd_top_list.show_footer", false, Type.BOOLEAN);
          return patch;
       }));
       cb.addMigration(new Migration<>(3, () -> {
-         Patch<ConfigKey> patch = new Patch();
+         Patch<ConfigKey> patch = new Patch<>();
          patch.set(ConfigKey.BROADCAST_STOP_MESSAGE, "broadcast_stop_message", true, Type.BOOLEAN);
          patch.set(ConfigKey.BROADCAST_PLAYER_JOIN_MESSAGE, "broadcast_player_join_message", true, Type.BOOLEAN);
          patch.set(ConfigKey.BROADCAST_CANCEL_MESSAGE, "broadcast_cancel_message", true, Type.BOOLEAN);
@@ -295,18 +294,18 @@ public class RacingPlugin extends JavaPlugin {
          return patch;
       }));
       cb.addMigration(new Migration<>(4, () -> {
-         Patch<ConfigKey> patch = new Patch();
+         Patch<ConfigKey> patch = new Patch<>();
          patch.set(ConfigKey.PREVENT_JOIN_FROM_WORLD, "prevent_join_from_world", Collections.emptyList(), Type.LIST);
          return patch;
       }));
       cb.addMigration(new Migration<>(5, () -> {
-         Patch<ConfigKey> patch = new Patch();
+         Patch<ConfigKey> patch = new Patch<>();
          patch.set(ConfigKey.RESPAWN_STRIDER_DEATH, "respawn.strider.death", RespawnType.FROM_LAST_CHECKPOINT, Type.STRING);
          patch.set(ConfigKey.RESPAWN_STRIDER_INTERACT, "respawn.strider.interact", RespawnType.NONE, Type.STRING);
          return patch;
       }));
       cb.addMigration(new Migration<>(6, () -> {
-         Patch<ConfigKey> patch = new Patch();
+         Patch<ConfigKey> patch = new Patch<>();
          patch.set(ConfigKey.TELEPORT_AFTER_RACE_ENABLED, "teleport_after_race.enabled", true, Type.BOOLEAN);
          patch.set(ConfigKey.TELEPORT_AFTER_RACE_WHEN, "teleport_after_race.when", TeleportAfterRaceWhen.PARTICIPANT_FINISHES, Type.STRING);
          return patch;

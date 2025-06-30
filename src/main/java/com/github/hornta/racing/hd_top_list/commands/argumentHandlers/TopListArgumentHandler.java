@@ -18,7 +18,7 @@ public class TopListArgumentHandler implements IArgumentHandler {
    }
 
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)HDTopListManager.getTopLists().stream().map(HDTopList::getName).collect(Collectors.toSet());
+      return HDTopListManager.getTopLists().stream().map(HDTopList::getName).collect(Collectors.toSet());
    }
 
    public void whenInvalid(ValidationResult result) {

@@ -13,7 +13,8 @@ public class CommandMoveHDTopList implements ICommandHandler {
    public void handle(CommandSender commandSender, String[] args, int i) {
       Entity player = (Entity)commandSender;
       HDTopList topList = HDTopListManager.getTopList(args[0]);
-      topList.getHologram().setLocation(player.getLocation());
+       assert topList != null;
+       topList.getHologram().setLocation(player.getLocation());
       RacingPlugin.getHdTopListManager().updateDirtyTopLists(() -> {
          MessageManager.sendMessage(commandSender, MessageKey.HD_TOP_LIST_MOVE);
       });

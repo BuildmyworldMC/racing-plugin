@@ -9,16 +9,16 @@ import java.util.Map;
 
 public class Patch<T extends Enum<T>> {
    private final Map<T, Node<T>> nodes = new HashMap<>();
-   private final List<Operation<T>> operations = new LinkedList();
+   private final List<Operation<T>> operations = new LinkedList<>();
 
    public void set(T id, String path, Object value, Type type) {
-      Node<T> node = new Node(id, path, value, type);
+      Node<T> node = new Node<>(id, path, value, type);
       this.nodes.put(id, node);
-      this.addOperation(new AddOperation(id));
+      this.addOperation(new AddOperation<>(id));
    }
 
    public void unset(T id) {
-      this.addOperation(new RemoveOperation(id));
+      this.addOperation(new RemoveOperation<>(id));
    }
 
    public void addOperation(Operation<T> operation) {

@@ -12,10 +12,7 @@ import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,23 +48,21 @@ public class FileStorage {
           if (files == null) {
               return cfgFiles;
           } else {
-              File[] var3 = files;
               int var4 = files.length;
-  
-              for(int var5 = 0; var5 < var4; ++var5) {
-                  File file = var3[var5];
+
+              for (File file : files) {
                   if (file.isFile()) {
                       YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-  
+
                       try {
                           this.migrationManager.migrate(yaml);
-  
+
                           try {
                               yaml.save(file);
                           } catch (IOException var9) {
                               RacingPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save hologram top list");
                           }
-  
+
                           cfgFiles.add(yaml);
                       } catch (Exception var10) {
                           RacingPlugin.logger().log(Level.SEVERE, var10.getMessage(), var10);
@@ -80,9 +75,9 @@ public class FileStorage {
       }).thenAccept((configurations) -> {
           Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
               List<HDTopList> topLists = new ArrayList<>();
-              Iterator var4 = configurations.iterator();
+              Iterator<YamlConfiguration> var4 = configurations.iterator();
   
-              while(var4.hasNext()) {
+              while (var4.hasNext()) {
                   YamlConfiguration config = (YamlConfiguration)var4.next();
   
                   try {
@@ -261,6 +256,6 @@ public class FileStorage {
       yaml.set(path + ".z", location.getZ());
       yaml.set(path + ".pitch", location.getPitch());
       yaml.set(path + ".yaw", location.getYaw());
-      yaml.set(path + ".world", location.getWorld().getName());
+      yaml.set(path + ".world", Objects.requireNonNull(location.getWorld()).getName());
    }
 }

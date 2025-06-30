@@ -148,7 +148,7 @@ public class RaceSession implements Listener {
    }
 
    private void runAnnouncements() {
-      List<Integer> announceIntervals = (List)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RACE_ANNOUNCE_INTERVALS);
+      List announceIntervals = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RACE_ANNOUNCE_INTERVALS);
       int prepareTime = (Integer)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RACE_PREPARE_TIME);
       Iterator var3 = announceIntervals.iterator();
 
@@ -337,59 +337,60 @@ public class RaceSession implements Listener {
 
    private List<RacePlayerSession> getStartOrderSessions() {
       Map<UUID, RacePlayerStatistic> resultsByPlayerId = this.race.getResultByPlayerId();
-      List<RacePlayerSession> startOrderSessions = new ArrayList(this.playerSessions.values());
+      List<RacePlayerSession> startOrderSessions = new ArrayList<>(this.playerSessions.values());
       switch(this.race.getStartOrder()) {
-      case FASTEST:
-         startOrderSessions.sort((o1, o2) -> {
-            long t1 = resultsByPlayerId.containsKey(o1.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o1.getPlayer().getUniqueId())).getRecord(this.laps) : Long.MAX_VALUE;
-            long t2 = resultsByPlayerId.containsKey(o2.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o2.getPlayer().getUniqueId())).getRecord(this.laps) : Long.MAX_VALUE;
-            return Long.compare(t1, t2);
-         });
-         break;
-      case FASTEST_LAP:
-         startOrderSessions.sort((o1, o2) -> {
-            long t1 = resultsByPlayerId.containsKey(o1.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o1.getPlayer().getUniqueId())).getFastestLap() : Long.MAX_VALUE;
-            long t2 = resultsByPlayerId.containsKey(o2.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o2.getPlayer().getUniqueId())).getFastestLap() : Long.MAX_VALUE;
-            return Long.compare(t1, t2);
-         });
-         break;
-      case SLOWEST:
-         startOrderSessions.sort((o1, o2) -> {
-            long t1 = resultsByPlayerId.containsKey(o1.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o1.getPlayer().getUniqueId())).getRecord(this.laps) : Long.MAX_VALUE;
-            long t2 = resultsByPlayerId.containsKey(o2.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o2.getPlayer().getUniqueId())).getRecord(this.laps) : Long.MAX_VALUE;
-            return Long.compare(t2, t1);
-         });
-         break;
-      case SLOWEST_LAP:
-         startOrderSessions.sort((o1, o2) -> {
-            long t1 = resultsByPlayerId.containsKey(o1.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o1.getPlayer().getUniqueId())).getFastestLap() : Long.MAX_VALUE;
-            long t2 = resultsByPlayerId.containsKey(o2.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o2.getPlayer().getUniqueId())).getFastestLap() : Long.MAX_VALUE;
-            return Long.compare(t2, t1);
-         });
-         break;
-      case RANDOM:
-         Collections.shuffle(startOrderSessions);
-         break;
-      case WINS:
-         startOrderSessions.sort((o1, o2) -> {
-            long t1 = resultsByPlayerId.containsKey(o1.getPlayer().getUniqueId()) ? (long)((RacePlayerStatistic)resultsByPlayerId.get(o1.getPlayer().getUniqueId())).getWins() : 0L;
-            long t2 = resultsByPlayerId.containsKey(o2.getPlayer().getUniqueId()) ? (long)((RacePlayerStatistic)resultsByPlayerId.get(o2.getPlayer().getUniqueId())).getWins() : 0L;
-            return Long.compare(t1, t2);
-         });
-      case JOIN_ORDER:
-      default:
-         break;
-      case REVERSE_JOIN_ORDER:
-         Collections.reverse(startOrderSessions);
+         case FASTEST:
+            startOrderSessions.sort((o1, o2) -> {
+               long t1 = resultsByPlayerId.containsKey(o1.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o1.getPlayer().getUniqueId())).getRecord(this.laps) : Long.MAX_VALUE;
+               long t2 = resultsByPlayerId.containsKey(o2.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o2.getPlayer().getUniqueId())).getRecord(this.laps) : Long.MAX_VALUE;
+               return Long.compare(t1, t2);
+            });
+            break;
+         case FASTEST_LAP:
+            startOrderSessions.sort((o1, o2) -> {
+               long t1 = resultsByPlayerId.containsKey(o1.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o1.getPlayer().getUniqueId())).getFastestLap() : Long.MAX_VALUE;
+               long t2 = resultsByPlayerId.containsKey(o2.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o2.getPlayer().getUniqueId())).getFastestLap() : Long.MAX_VALUE;
+               return Long.compare(t1, t2);
+            });
+            break;
+         case SLOWEST:
+            startOrderSessions.sort((o1, o2) -> {
+               long t1 = resultsByPlayerId.containsKey(o1.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o1.getPlayer().getUniqueId())).getRecord(this.laps) : Long.MAX_VALUE;
+               long t2 = resultsByPlayerId.containsKey(o2.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o2.getPlayer().getUniqueId())).getRecord(this.laps) : Long.MAX_VALUE;
+               return Long.compare(t2, t1);
+            });
+            break;
+         case SLOWEST_LAP:
+            startOrderSessions.sort((o1, o2) -> {
+               long t1 = resultsByPlayerId.containsKey(o1.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o1.getPlayer().getUniqueId())).getFastestLap() : Long.MAX_VALUE;
+               long t2 = resultsByPlayerId.containsKey(o2.getPlayer().getUniqueId()) ? ((RacePlayerStatistic)resultsByPlayerId.get(o2.getPlayer().getUniqueId())).getFastestLap() : Long.MAX_VALUE;
+               return Long.compare(t2, t1);
+            });
+            break;
+         case RANDOM:
+            Collections.shuffle(startOrderSessions);
+            break;
+         case WINS:
+            startOrderSessions.sort((o1, o2) -> {
+               long t1 = resultsByPlayerId.containsKey(o1.getPlayer().getUniqueId()) ? (long)((RacePlayerStatistic)resultsByPlayerId.get(o1.getPlayer().getUniqueId())).getWins() : 0L;
+               long t2 = resultsByPlayerId.containsKey(o2.getPlayer().getUniqueId()) ? (long)((RacePlayerStatistic)resultsByPlayerId.get(o2.getPlayer().getUniqueId())).getWins() : 0L;
+               return Long.compare(t1, t2);
+            });
+         case REVERSE_JOIN_ORDER:
+            Collections.reverse(startOrderSessions);
+            break;
+         case JOIN_ORDER:
+         default:
+            break;
       }
 
       return startOrderSessions;
    }
 
    public void skipToCountdown() {
-      Iterator var1 = this.startTimerTasks.iterator();
+      Iterator<BukkitTask> var1 = this.startTimerTasks.iterator();
 
-      while(var1.hasNext()) {
+      while (var1.hasNext()) {
          BukkitTask task = (BukkitTask)var1.next();
          task.cancel();
       }
@@ -421,7 +422,7 @@ public class RaceSession implements Listener {
 
       Iterator var1 = this.startTimerTasks.iterator();
 
-      while(var1.hasNext()) {
+      while (var1.hasNext()) {
          BukkitTask task = (BukkitTask)var1.next();
          task.cancel();
       }
@@ -469,9 +470,9 @@ public class RaceSession implements Listener {
          MessageManager.sendMessage(player, MessageKey.RACE_LEAVE_PAYBACK);
       }
 
-      Iterator var4 = this.playerSessions.values().iterator();
+      Iterator<RacePlayerSession> var4 = this.playerSessions.values().iterator();
 
-      while(var4.hasNext()) {
+      while (var4.hasNext()) {
          RacePlayerSession session = (RacePlayerSession)var4.next();
          if (session.getPlayer() != null) {
             MessageManager.setValue("player_name", (Object)player.getName());
@@ -592,9 +593,8 @@ public class RaceSession implements Listener {
 
    @EventHandler
    void onVehicleMove(VehicleMoveEvent event) {
-      if (this.race.getType() == RaceType.MINECART && !event.getVehicle().getPassengers().isEmpty() && event.getVehicle().getPassengers().get(0) instanceof Player) {
-         Player player = (Player)event.getVehicle().getPassengers().get(0);
-         if (this.isCurrentlyRacing(player)) {
+      if (this.race.getType() == RaceType.MINECART && !event.getVehicle().getPassengers().isEmpty() && event.getVehicle().getPassengers().getFirst() instanceof Player player) {
+          if (this.isCurrentlyRacing(player)) {
             RacePlayerSession playerSession = (RacePlayerSession)this.playerSessions.get(player);
             if (this.state == RaceSessionState.COUNTDOWN || this.state == RaceSessionState.STARTED) {
                this.tryIncrementCheckpoint(playerSession);
@@ -625,14 +625,16 @@ public class RaceSession implements Listener {
          }
 
          if (playerSession.getVehicle() != null) {
-            if (playerSession.getStartLocation().distanceSquared(event.getTo()) >= 1.0D) {
+             assert event.getTo() != null;
+             if (playerSession.getStartLocation().distanceSquared(event.getTo()) >= 1.0D) {
                playerSession.respawnInVehicle();
                if (this.race.getType() == RaceType.HORSE) {
                   playerSession.freezeHorse();
                }
             }
          } else {
-            if (Double.compare(event.getFrom().getX(), event.getTo().getX()) == 0 && Double.compare(event.getFrom().getY(), event.getTo().getY()) == 0 && Double.compare(event.getFrom().getZ(), event.getTo().getZ()) == 0) {
+             assert event.getTo() != null;
+             if (Double.compare(event.getFrom().getX(), event.getTo().getX()) == 0 && Double.compare(event.getFrom().getY(), event.getTo().getY()) == 0 && Double.compare(event.getFrom().getZ(), event.getTo().getZ()) == 0) {
                return;
             }
 
@@ -671,9 +673,8 @@ public class RaceSession implements Listener {
 
    @EventHandler
    void onEntityDamage(EntityDamageEvent event) {
-      if (event.getEntity() instanceof Player) {
-         Player player = (Player)event.getEntity();
-         if (this.isCurrentlyRacing(player)) {
+      if (event.getEntity() instanceof Player player) {
+          if (this.isCurrentlyRacing(player)) {
             if (event.getFinalDamage() >= player.getHealth()) {
                RespawnType respawnType = this.getRespawnDeathType(this.race.getType());
                event.setCancelled(true);
@@ -694,9 +695,9 @@ public class RaceSession implements Listener {
                      player.setFallDistance(0.0F);
                      PaperLib.teleportAsync(player, this.race.getSpawn(), TeleportCause.PLUGIN);
                      MessageManager.sendMessage(player, MessageKey.DEATH_DISQUALIFIED_TARGET);
-                     Iterator var5 = this.playerSessions.values().iterator();
+                     Iterator<RacePlayerSession> var5 = this.playerSessions.values().iterator();
 
-                     while(var5.hasNext()) {
+                     while (var5.hasNext()) {
                         RacePlayerSession session = (RacePlayerSession)var5.next();
                         MessageManager.setValue("player_name", (Object)player.getName());
                         MessageManager.sendMessage(session.getPlayer(), MessageKey.DEATH_DISQUALIFIED);
@@ -715,9 +716,8 @@ public class RaceSession implements Listener {
 
    @EventHandler
    void onVehicleEnter(VehicleEnterEvent event) {
-      if (event.getEntered() instanceof Player) {
-         Player player = (Player)event.getEntered();
-         if (this.isCurrentlyRacing(player)) {
+      if (event.getEntered() instanceof Player player) {
+          if (this.isCurrentlyRacing(player)) {
             RacePlayerSession session = (RacePlayerSession)this.playerSessions.get(player);
             switch(this.race.getType()) {
             case PLAYER:
@@ -769,30 +769,30 @@ public class RaceSession implements Listener {
    void onPlayerDropItem(PlayerDropItemEvent event) {
       if (this.isCurrentlyRacing(event.getPlayer())) {
          switch(this.race.getType()) {
-         case ELYTRA:
-            if (event.getItemDrop().getItemStack().getType() == Material.ELYTRA) {
-               event.setCancelled(true);
-            }
-         case MINECART:
-         case BOAT:
-         default:
-            break;
-         case HORSE:
-            if (event.getItemDrop().getItemStack().getType() == Material.SADDLE) {
-               event.setCancelled(true);
-            }
-            break;
-         case PIG:
-            if (event.getItemDrop().getItemStack().getType() == Material.CARROT_ON_A_STICK) {
-               event.setCancelled(true);
-            }
-            break;
-         case STRIDER:
-            if (event.getItemDrop().getItemStack().getType() == Material.WARPED_FUNGUS_ON_A_STICK) {
-               event.setCancelled(true);
-            }
+            case ELYTRA:
+               if (event.getItemDrop().getItemStack().getType() == Material.ELYTRA) {
+                  event.setCancelled(true);
+               }
+            case HORSE:
+               if (event.getItemDrop().getItemStack().getType() == Material.SADDLE) {
+                  event.setCancelled(true);
+               }
+               break;
+            case PIG:
+               if (event.getItemDrop().getItemStack().getType() == Material.CARROT_ON_A_STICK) {
+                  event.setCancelled(true);
+               }
+               break;
+            case STRIDER:
+               if (event.getItemDrop().getItemStack().getType() == Material.WARPED_FUNGUS_ON_A_STICK) {
+                  event.setCancelled(true);
+               }
+               break;
+            case MINECART:
+            case BOAT:
+            default:
+               break;
          }
-
       }
    }
 
@@ -858,9 +858,9 @@ public class RaceSession implements Listener {
 
    private void checkFinished() {
       boolean allFinished = true;
-      Iterator var2 = this.playerSessions.values().iterator();
+      Iterator<RacePlayerSession> var2 = this.playerSessions.values().iterator();
 
-      while(var2.hasNext()) {
+      while (var2.hasNext()) {
          RacePlayerSession playerSession = (RacePlayerSession)var2.next();
          if (!playerSession.isFinished()) {
             allFinished = false;
@@ -877,44 +877,44 @@ public class RaceSession implements Listener {
    }
 
    private RespawnType getRespawnInteractType(RaceType type) {
-      switch(type) {
-      case PLAYER:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_PLAYER_INTERACT)).toUpperCase(Locale.ENGLISH));
-      case ELYTRA:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_ELYTRA_INTERACT)).toUpperCase(Locale.ENGLISH));
-      case MINECART:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_MINECART_INTERACT)).toUpperCase(Locale.ENGLISH));
-      case HORSE:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_HORSE_INTERACT)).toUpperCase(Locale.ENGLISH));
-      case BOAT:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_BOAT_INTERACT)).toUpperCase(Locale.ENGLISH));
-      case PIG:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_PIG_INTERACT)).toUpperCase(Locale.ENGLISH));
-      case STRIDER:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_STRIDER_INTERACT)).toUpperCase(Locale.ENGLISH));
-      default:
-         throw new IllegalArgumentException();
+      switch (type) {
+         case PLAYER:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_PLAYER_INTERACT)).toUpperCase(Locale.ENGLISH));
+         case ELYTRA:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_ELYTRA_INTERACT)).toUpperCase(Locale.ENGLISH));
+         case MINECART:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_MINECART_INTERACT)).toUpperCase(Locale.ENGLISH));
+         case HORSE:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_HORSE_INTERACT)).toUpperCase(Locale.ENGLISH));
+         case BOAT:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_BOAT_INTERACT)).toUpperCase(Locale.ENGLISH));
+         case PIG:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_PIG_INTERACT)).toUpperCase(Locale.ENGLISH));
+         case STRIDER:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_STRIDER_INTERACT)).toUpperCase(Locale.ENGLISH));
+         default:
+            throw new IllegalArgumentException();
       }
    }
 
    private RespawnType getRespawnDeathType(RaceType type) {
-      switch(type) {
-      case PLAYER:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_PLAYER_DEATH)).toUpperCase(Locale.ENGLISH));
-      case ELYTRA:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_ELYTRA_DEATH)).toUpperCase(Locale.ENGLISH));
-      case MINECART:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_MINECART_DEATH)).toUpperCase(Locale.ENGLISH));
-      case HORSE:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_HORSE_DEATH)).toUpperCase(Locale.ENGLISH));
-      case BOAT:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_BOAT_DEATH)).toUpperCase(Locale.ENGLISH));
-      case PIG:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_PIG_DEATH)).toUpperCase(Locale.ENGLISH));
-      case STRIDER:
-         return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_STRIDER_DEATH)).toUpperCase(Locale.ENGLISH));
-      default:
-         throw new IllegalArgumentException();
+      switch (type) {
+         case PLAYER:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_PLAYER_DEATH)).toUpperCase(Locale.ENGLISH));
+         case ELYTRA:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_ELYTRA_DEATH)).toUpperCase(Locale.ENGLISH));
+         case MINECART:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_MINECART_DEATH)).toUpperCase(Locale.ENGLISH));
+         case HORSE:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_HORSE_DEATH)).toUpperCase(Locale.ENGLISH));
+         case BOAT:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_BOAT_DEATH)).toUpperCase(Locale.ENGLISH));
+         case PIG:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_PIG_DEATH)).toUpperCase(Locale.ENGLISH));
+         case STRIDER:
+            return RespawnType.valueOf(((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_STRIDER_DEATH)).toUpperCase(Locale.ENGLISH));
+         default:
+            throw new IllegalArgumentException();
       }
    }
 

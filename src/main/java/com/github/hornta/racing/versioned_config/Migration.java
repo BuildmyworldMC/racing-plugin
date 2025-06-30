@@ -26,9 +26,10 @@ public class Migration<T extends Enum<T>> implements IMigration<T> {
    public Patch<T> createPatch(Snapshot<T> configuration) {
       Patch patch;
       if (this.applyWithSnapshot != null) {
-         patch = (Patch)this.applyWithSnapshot.apply(configuration);
+         patch = this.applyWithSnapshot.apply(configuration);
       } else {
-         patch = (Patch)this.applyWithoutSnapshot.get();
+          assert this.applyWithoutSnapshot != null;
+          patch = this.applyWithoutSnapshot.get();
       }
 
       Objects.requireNonNull(patch);

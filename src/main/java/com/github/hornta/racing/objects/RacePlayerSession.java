@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.TreeSpecies;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BossBar;
@@ -29,6 +28,8 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Objects;
 
 public class RacePlayerSession {
    public static final double MAX_HEALTH = 20.0D;
@@ -94,7 +95,7 @@ public class RacePlayerSession {
       if (this.player.isInsideVehicle()) {
          RacingPlugin.debug("%s is inside a vehicle. Attempting to eject it...", this.player.getName());
          this.allowedToExitVehicle = true;
-         this.player.getVehicle().eject();
+         Objects.requireNonNull(this.player.getVehicle()).eject();
          this.allowedToExitVehicle = false;
          RacingPlugin.debug("Result of ejecting %s from vehicle: %B", this.player.getName(), this.player.getVehicle() == null);
       }
@@ -273,7 +274,7 @@ public class RacePlayerSession {
 
    private void spawnVehicle(EntityType type, Location location) {
       RacingPlugin.debug("Attempting to spawn vehicle of type %s at %s", type, location);
-      this.vehicle = this.startLocation.getWorld().spawnEntity(location, type);
+      this.vehicle = Objects.requireNonNull(this.startLocation.getWorld()).spawnEntity(location, type);
       RacingPlugin.debug("Spawned vehicle at " + this.vehicle.getLocation());
    }
 
@@ -282,7 +283,7 @@ public class RacePlayerSession {
       RacingPlugin.debug("Disable pig AI");
       ((Steerable)this.vehicle).setSaddle(true);
       RacingPlugin.debug("Giving pig a saddle");
-      ((Attributable)this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(this.raceSession.getRace().getPigSpeed());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getPigSpeed());
       RacingPlugin.debug("Setting movementspeed on pig to " + this.raceSession.getRace().getPigSpeed());
    }
 
@@ -291,7 +292,7 @@ public class RacePlayerSession {
       RacingPlugin.debug("Disable strider AI");
       ((Steerable)this.vehicle).setSaddle(true);
       RacingPlugin.debug("Giving strider a saddle");
-      ((Attributable)this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(this.raceSession.getRace().getStriderSpeed());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getStriderSpeed());
       RacingPlugin.debug("Setting movementspeed on strider to " + this.raceSession.getRace().getStriderSpeed());
    }
 
@@ -306,7 +307,7 @@ public class RacePlayerSession {
       RacingPlugin.debug("Giving horse a saddle");
       ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getHorseJumpStrength());
       RacingPlugin.debug("Setting horse jump strength to" + this.raceSession.getRace().getHorseJumpStrength());
-      ((Attributable)this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(this.raceSession.getRace().getHorseSpeed());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHorseSpeed());
       RacingPlugin.debug("Setting horse movement speed to " + this.raceSession.getRace().getHorseSpeed());
       if (horseData != null) {
          RacingPlugin.debug("Transferring old horse values to new horse");
@@ -325,11 +326,11 @@ public class RacePlayerSession {
 
    public void freezeHorse() {
       ((AbstractHorse)this.vehicle).setJumpStrength(0.0D);
-      ((Attributable)this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.0D);
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(0.0D);
    }
 
    private void unfreezeHorse() {
-      ((Attributable)this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(this.raceSession.getRace().getHorseSpeed());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHorseSpeed());
       ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getHorseJumpStrength());
    }
 

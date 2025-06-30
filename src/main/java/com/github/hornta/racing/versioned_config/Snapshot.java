@@ -7,7 +7,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Snapshot<T extends Enum<T>> {
-   private NodeMap<T> nodes;
+   private final NodeMap<T> nodes;
    private final YamlConfiguration configuration;
 
    Snapshot(NodeMap<T> nodes, YamlConfiguration configuration) {
@@ -27,15 +27,15 @@ public class Snapshot<T extends Enum<T>> {
       } else {
          Node<T> value = this.nodes.get(key);
          Object obj;
-         switch(value.getType()) {
-         case DOUBLE:
-            obj = this.configuration.getDouble(value.getPath());
-            break;
-         case LONG:
-            obj = this.configuration.getLong(value.getPath());
-            break;
-         default:
-            obj = this.configuration.get(value.getPath());
+         switch (value.getType()) {
+            case DOUBLE:
+               obj = this.configuration.getDouble(value.getPath());
+               break;
+            case LONG:
+               obj = this.configuration.getLong(value.getPath());
+               break;
+            default:
+               obj = this.configuration.get(value.getPath());
          }
 
          Function<Object, Object> converter = value.getConverter();
@@ -54,7 +54,7 @@ public class Snapshot<T extends Enum<T>> {
    protected void update(Patch<T> patch) {
       Iterator<Operation<T>> var2 = patch.getOperations().iterator();
 
-      while(var2.hasNext()) {
+      while (var2.hasNext()) {
          Operation<T> operation = (Operation)var2.next();
          switch(operation.getType()) {
          case ADD:
@@ -68,10 +68,10 @@ public class Snapshot<T extends Enum<T>> {
    }
 
    protected void applyConfiguration(YamlConfiguration configuration) {
-      Iterator var2 = this.nodes.iterator();
+      Iterator<Node<T>> var2 = this.nodes.iterator();
 
-      while(var2.hasNext()) {
-         Node<T> node = (Node)var2.next();
+      while (var2.hasNext()) {
+         Node<T> node = var2.next();
          Object value = configuration.get(node.getPath());
          node.setCurrentValue(value);
          this.configuration.set(node.getPath(), value);
@@ -82,7 +82,7 @@ public class Snapshot<T extends Enum<T>> {
    private void addNode(Node<T> node) {
       Object value;
       if (node.getDefaultValue().getClass().isEnum()) {
-         value = ((Enum)node.getDefaultValue()).name().toUpperCase(Locale.ENGLISH);
+         value = ((Enum<?>)node.getDefaultValue()).name().toUpperCase(Locale.ENGLISH);
       } else {
          value = node.getDefaultValue();
       }

@@ -54,7 +54,7 @@ public class RaceCheckpoint extends RacePoint implements Comparable<RaceCheckpoi
    }
 
    public List<Player> getPlayers() {
-      return new ArrayList(this.players);
+      return new ArrayList<>(this.players);
    }
 
    public int compareTo(RaceCheckpoint o) {

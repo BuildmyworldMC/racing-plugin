@@ -13,12 +13,11 @@ public enum HDTopListVersion {
       HDTopListVersion[] var1 = copyOfValues;
       int var2 = var1.length;
 
-      for(int var3 = 0; var3 < var2; ++var3) {
-         HDTopListVersion value = var1[var3];
-         if (value.name().equals(name)) {
-            return value;
-         }
-      }
+       for (HDTopListVersion value : var1) {
+           if (value.name().equals(name)) {
+               return value;
+           }
+       }
 
       throw new IllegalArgumentException("Couldn't translate " + name + " into a HDTopListVersion");
    }
@@ -47,7 +46,7 @@ public enum HDTopListVersion {
    static {
       int counter = 0;
 
-      for(Iterator var1 = EnumSet.allOf(HDTopListVersion.class).iterator(); var1.hasNext(); ++counter) {
+      for(Iterator<HDTopListVersion> var1 = EnumSet.allOf(HDTopListVersion.class).iterator(); var1.hasNext(); ++counter) {
          HDTopListVersion v = (HDTopListVersion)var1.next();
          v.setOrder(counter);
       }

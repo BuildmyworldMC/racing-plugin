@@ -42,9 +42,9 @@ public class Translations {
       Map<String, InputStream> streams = new HashMap<>();
       Reflections reflections = new Reflections((String)null, new Scanner[]{new ResourcesScanner()});
       Set<String> resourceList = reflections.getResources(ymlResources);
-      Iterator var4 = resourceList.iterator();
+      Iterator<String> var4 = resourceList.iterator();
 
-      while(var4.hasNext()) {
+      while (var4.hasNext()) {
          String resource = (String)var4.next();
          String filename = resource.lastIndexOf(47) == -1 ? resource : resource.substring(resource.lastIndexOf(47) + 1);
          String path = ((String[])reflections.getStore().get(ResourcesScanner.class, filename).toArray(new String[0]))[0];
@@ -69,39 +69,36 @@ public class Translations {
    private void readLanguageFiles(File translationsDirectory) {
       File[] files = translationsDirectory.listFiles();
       if (files != null) {
-         File[] var3 = files;
-         int var4 = files.length;
+          int var4 = files.length;
 
-         for(int var5 = 0; var5 < var4; ++var5) {
-            File file = var3[var5];
-            if (!file.isFile()) {
-               this.readLanguageFiles(file);
-            } else if (file.getName().endsWith(".yml")) {
-               this.languageFiles.put(getFilenameWithoutExtension(file), file);
-            }
-         }
+          for (File file : files) {
+              if (!file.isFile()) {
+                  this.readLanguageFiles(file);
+              } else if (file.getName().endsWith(".yml")) {
+                  this.languageFiles.put(getFilenameWithoutExtension(file), file);
+              }
+          }
 
       }
    }
 
-   public boolean saveDefaults() {
+   public void saveDefaults() {
       this.translationsDirectory.mkdirs();
-      Iterator var1 = this.getResourceTranslationStreams().entrySet().iterator();
+      Iterator<Entry<String, InputStream>> var1 = this.getResourceTranslationStreams().entrySet().iterator();
 
-      while(var1.hasNext()) {
-         Entry entry = (Entry)var1.next();
+      while (var1.hasNext()) {
+         Entry<String, InputStream> entry = var1.next();
 
          try {
             File destination = new File(this.plugin.getDataFolder(), ((String)entry.getKey()).replaceAll(this.plugin.getDescription().getName() + "/", ""));
             boolean result = this.saveTranslationResource(entry, destination);
             if (!result) {
-               return false;
+               return;
             }
-         } catch (IllegalArgumentException var5) {
+         } catch (IllegalArgumentException ignored) {
          }
       }
 
-      return true;
    }
 
    private boolean saveTranslationResource(Entry<String, InputStream> resource, File dest) {
@@ -109,10 +106,10 @@ public class Translations {
          this.plugin.getLogger().log(Level.INFO, "Found existing translation file in " + dest.getName() + ".");
          YamlConfiguration destYaml = YamlConfiguration.loadConfiguration(dest);
          YamlConfiguration resourceYaml = YamlConfiguration.loadConfiguration(new InputStreamReader((InputStream)resource.getValue(), StandardCharsets.UTF_8));
-         Iterator var5 = destYaml.getKeys(true).iterator();
+         Iterator<String> var5 = destYaml.getKeys(true).iterator();
 
          String key;
-         while(var5.hasNext()) {
+         while (var5.hasNext()) {
             key = (String)var5.next();
             if (!resourceYaml.contains(key)) {
                destYaml.set(key, (Object)null);
@@ -122,7 +119,7 @@ public class Translations {
 
          var5 = resourceYaml.getKeys(true).iterator();
 
-         while(var5.hasNext()) {
+         while (var5.hasNext()) {
             key = (String)var5.next();
             if (!destYaml.isSet(key)) {
                destYaml.set(key, resourceYaml.get(key));
@@ -150,7 +147,7 @@ public class Translations {
    }
 
    public void saveResource(String resourcePath, String outPath) {
-      if (resourcePath != null && !resourcePath.equals("")) {
+      if (resourcePath != null && !resourcePath.isEmpty()) {
          resourcePath = resourcePath.replace('\\', '/');
          InputStream in = this.plugin.getResource(resourcePath);
          if (in == null) {

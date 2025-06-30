@@ -17,9 +17,9 @@ import org.bukkit.entity.Player;
 public class CommandListHDTopList implements ICommandHandler {
    public void handle(CommandSender commandSender, String[] args, int i) {
       MessageManager.sendMessage(commandSender, MessageKey.HD_TOP_LIST_LIST_HEADER);
-      Iterator var4 = HDTopListManager.getTopLists().iterator();
+      Iterator<HDTopList> var4 = HDTopListManager.getTopLists().iterator();
 
-      while(var4.hasNext()) {
+      while (var4.hasNext()) {
          HDTopList topList = (HDTopList)var4.next();
          TextComponent tc = new TextComponent();
          MessageManager.setValue("top_list", (Object)topList.getName());

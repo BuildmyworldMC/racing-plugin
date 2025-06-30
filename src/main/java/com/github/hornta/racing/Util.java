@@ -86,7 +86,7 @@ public class Util {
             }
 
             if (amount != 0L) {
-               if (unit == units.get(units.size() - 1)) {
+               if (unit == units.getLast()) {
                   stringBuilder.append(df.format((double)((float)amount / 1000.0F)));
                } else {
                   stringBuilder.append(amount);

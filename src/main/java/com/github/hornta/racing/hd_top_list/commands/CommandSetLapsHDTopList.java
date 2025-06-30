@@ -12,7 +12,8 @@ public class CommandSetLapsHDTopList implements ICommandHandler {
    public void handle(CommandSender commandSender, String[] args, int i) {
       HDTopList topList = HDTopListManager.getTopList(args[0]);
       int laps = Integer.parseInt(args[1]);
-      int oldLaps = topList.getLaps();
+       assert topList != null;
+       int oldLaps = topList.getLaps();
       topList.setLaps(laps);
       RacingPlugin.getHdTopListManager().updateDirtyTopLists(() -> {
          MessageManager.setValue("old_laps", (Object)oldLaps);

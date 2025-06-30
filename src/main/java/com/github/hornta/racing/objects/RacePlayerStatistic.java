@@ -89,7 +89,7 @@ public class RacePlayerStatistic {
 
    public String getStatValue(RaceStatType statType, int laps) {
       String value = "";
-      switch(statType) {
+      switch (statType) {
          case WIN_RATIO:
             float var10000 = (float)this.wins / (float)this.runs;
             value = (int)(var10000 * 100.0F) + "%";

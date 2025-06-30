@@ -4,6 +4,8 @@ import com.github.hornta.racing.events.ConfigReloadedEvent;
 import com.github.hornta.racing.messenger.MessageManager;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -99,7 +101,7 @@ public class ScoreboardManager implements Listener {
    public void addScoreboard(Player player, String raceName, int laps) {
       this.translationMap.put("heading", this.convertHeading(raceName, laps));
       String mainHeading = (String)this.translationMap.get("heading");
-      Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+      Scoreboard board = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
       String SCOREBOARD_OBJECTIVE = "hornta.Racing";
       Objective objective = board.registerNewObjective(player.getName(), SCOREBOARD_OBJECTIVE, mainHeading);
       objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -119,7 +121,7 @@ public class ScoreboardManager implements Listener {
    }
 
    public void removeScoreboard(Player player) {
-      player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+      player.setScoreboard(Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard());
    }
 
    public void updateWorldRecord(Player player, long timeMillis) {
@@ -130,7 +132,7 @@ public class ScoreboardManager implements Listener {
       if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_ENABLED)) {
          Scoreboard board = player.getScoreboard();
          if (!name.isEmpty() && (Boolean)this.configMap.get(this.WORLD_RECORD_HOLDER)) {
-            board.getTeam(this.WORLD_RECORD_HOLDER).setPrefix(this.convertText(name));
+            Objects.requireNonNull(board.getTeam(this.WORLD_RECORD_HOLDER)).setPrefix(this.convertText(name));
          }
       }
 
@@ -143,7 +145,7 @@ public class ScoreboardManager implements Listener {
    public void updateWorldRecordFastestLapHolder(Player player, String name) {
       Scoreboard board = player.getScoreboard();
       if (!name.isEmpty() && (Boolean)this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER)) {
-         board.getTeam(this.WORLD_RECORD_FASTEST_LAP_HOLDER).setPrefix(this.convertText(name));
+         Objects.requireNonNull(board.getTeam(this.WORLD_RECORD_FASTEST_LAP_HOLDER)).setPrefix(this.convertText(name));
       }
 
    }
@@ -183,7 +185,8 @@ public class ScoreboardManager implements Listener {
          Scoreboard board = player.getScoreboard();
          if ((Boolean)this.configMap.get(scoreboardTeam)) {
             Team team = board.getTeam(scoreboardTeam);
-            team.setPrefix(this.convertText(value));
+             assert team != null;
+             team.setPrefix(this.convertText(value));
          }
       }
 

@@ -14,7 +14,8 @@ public class CommandSetStatHDTopList implements ICommandHandler {
    public void handle(CommandSender commandSender, String[] args, int i) {
       HDTopList topList = HDTopListManager.getTopList(args[0]);
       RaceStatType statType = RaceStatType.valueOf(args[1].toUpperCase(Locale.ENGLISH));
-      RaceStatType oldStat = topList.getStatType();
+       assert topList != null;
+       RaceStatType oldStat = topList.getStatType();
       topList.setStatType(statType);
       RacingPlugin.getHdTopListManager().updateDirtyTopLists(() -> {
          MessageManager.setValue("old_stat", (Object)oldStat.name());

@@ -13,17 +13,17 @@ public class Util {
    }
 
    public static Set<String> getLeafs(YamlConfiguration configuration) {
-      List<String> keys = new ArrayList(configuration.getKeys(true));
+      List<String> keys = new ArrayList<>(configuration.getKeys(true));
       Collections.reverse(keys);
       Set<String> leafs = new HashSet<>();;
-      Iterator var3 = keys.iterator();
+      Iterator<String> var3 = keys.iterator();
 
-      while(var3.hasNext()) {
+      while (var3.hasNext()) {
          String key = (String)var3.next();
          boolean hasSubstring = false;
-         Iterator var6 = leafs.iterator();
+         Iterator<String> var6 = leafs.iterator();
 
-         while(var6.hasNext()) {
+         while (var6.hasNext()) {
             String checkKey = (String)var6.next();
             if (checkKey.contains(key)) {
                hasSubstring = true;

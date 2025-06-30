@@ -2,6 +2,7 @@ package com.github.hornta.racing.objects;
 
 import com.github.hornta.racing.enums.RaceSignType;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -46,7 +47,7 @@ public class RaceSign {
    }
 
    public static String createKey(Block block) {
-      String var10000 = block.getLocation().getWorld().getName();
+      String var10000 = Objects.requireNonNull(block.getLocation().getWorld()).getName();
       return var10000 + "_" + block.getLocation().getBlockX() + "_" + block.getLocation().getBlockY() + "_" + block.getLocation().getBlockZ();
    }
 }

@@ -9,7 +9,7 @@ final class StringReplacer {
    }
 
    static String replace(String input, Pattern regex, Function<Matcher, String> callback) {
-      StringBuffer resultString = new StringBuffer();
+      StringBuilder resultString = new StringBuilder();
       Matcher regexMatcher = regex.matcher(input);
 
       boolean didFound;

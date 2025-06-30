@@ -80,20 +80,18 @@ public class SongManager implements Listener {
 
       File[] files = directory.listFiles();
       if (files != null) {
-         File[] var3 = files;
-         int var4 = files.length;
+          int var4 = files.length;
 
-         for(int var5 = 0; var5 < var4; ++var5) {
-            File file = var3[var5];
-            if (file.isDirectory()) {
-               this.loadSongs(file);
-            } else if (file.isFile()) {
-               String name = Util.getFilenameWithoutExtension(file).toLowerCase(Locale.ENGLISH).replaceAll(" ", "_").replaceAll("[^A-Za-z0-9_]", "");
-               Song song = NBSDecoder.parse(file);
-               this.songsByName.put(name, song);
-               this.songNames.add(name);
-            }
-         }
+          for (File file : files) {
+              if (file.isDirectory()) {
+                  this.loadSongs(file);
+              } else if (file.isFile()) {
+                  String name = Util.getFilenameWithoutExtension(file).toLowerCase(Locale.ENGLISH).replaceAll(" ", "_").replaceAll("[^A-Za-z0-9_]", "");
+                  Song song = NBSDecoder.parse(file);
+                  this.songsByName.put(name, song);
+                  this.songNames.add(name);
+              }
+          }
 
       }
    }

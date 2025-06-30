@@ -15,7 +15,7 @@ public class RGB {
    }
 
    private static float randomWithin() {
-      return 0.0F + 1.0F * random.nextFloat();
+      return 0.0F + random.nextFloat();
    }
 
    public static RGB randomLightColor() {

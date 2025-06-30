@@ -287,8 +287,8 @@ public class RacingManager implements Listener {
 
    @EventHandler
    void onRaceSessionResult(RaceSessionResultEvent event) {
-      List<PlayerSessionResult> sortedPlayerResults = (List) event.getResult().getPlayerResults().values().stream()
-            .sorted(Comparator.comparingLong(PlayerSessionResult::getRaceDuration)).collect(Collectors.toList());
+      List<PlayerSessionResult> sortedPlayerResults = event.getResult().getPlayerResults().values().stream()
+            .sorted(Comparator.comparingLong(PlayerSessionResult::getRaceDuration)).toList();
       Collection<String> resultMessages = new ArrayList<>();
       Race race = event.getResult().getRaceSession().getRace();
       MessageManager.setValue("race_name", (Object) race.getName());
@@ -322,10 +322,10 @@ public class RacingManager implements Listener {
       if ((Boolean) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.BROADCAST_RESULT_MESSAGE)) {
          Bukkit.broadcastMessage(joinedResultMessage);
       } else {
-         List<Player> playersToMessage = (List) event.getResult().getPlayerResults().values().stream()
+         List<Player> playersToMessage = event.getResult().getPlayerResults().values().stream()
                .map((playerResultx) -> {
                   return Bukkit.getPlayer(playerResultx.getPlayerId());
-               }).filter(Objects::nonNull).collect(Collectors.toList());
+               }).filter(Objects::nonNull).toList();
          Iterator<Player> var14 = playersToMessage.iterator();
 
          while (var14.hasNext()) {
@@ -419,11 +419,11 @@ public class RacingManager implements Listener {
    void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
       RaceSession session = this.getParticipatingRace(event.getPlayer());
       if (session != null && session.getState() != RaceSessionState.PREPARING) {
-         List<String> blockedCommands = (List) RacingPlugin.getInstance().getConfiguration()
+         List blockedCommands = RacingPlugin.getInstance().getConfiguration()
                .get(ConfigKey.BLOCKED_COMMANDS);
          String entryLabel = event.getMessage().split(" ")[0].replace("/", "");
          String[] entryArgs = event.getMessage().replace("/" + entryLabel, "").trim().split(" ");
-         Iterator<String> var6 = blockedCommands.iterator();
+         Iterator var6 = blockedCommands.iterator();
 
          String blockedCommand;
          boolean skip;
@@ -705,11 +705,11 @@ public class RacingManager implements Listener {
       List<RaceSession> sessions = this.getRaceSessions(race);
       RaceSession session = null;
       if (!sessions.isEmpty()) {
-         session = (RaceSession) sessions.get(0);
+         session = (RaceSession) sessions.getFirst();
       }
 
       if (this.getNonJoinableGameModes().contains(player.getGameMode())) {
-         MessageManager.setValue("game_mode", (Enum) player.getGameMode());
+         MessageManager.setValue("game_mode", player.getGameMode());
          MessageManager.sendMessage(player, MessageKey.JOIN_RACE_GAME_MODE);
       } else if (this.getNonJoinableWorlds().contains(player.getWorld())) {
          MessageManager.sendMessage(player, MessageKey.JOIN_RACE_WORLD);
@@ -772,7 +772,7 @@ public class RacingManager implements Listener {
       Race race = this.getRace(raceName);
       List sessions;
       if (race == null) {
-         sessions = (List) this.races.stream().filter((r) -> {
+         sessions = this.races.stream().filter((r) -> {
             return r.getState() == RaceState.ENABLED;
          }).collect(Collectors.toList());
          if (sessions.isEmpty()) {
@@ -792,7 +792,7 @@ public class RacingManager implements Listener {
          if (!sessions.isEmpty()) {
             MessageManager.sendMessage(commandSender, MessageKey.START_RACE_ALREADY_STARTED);
             return StartRaceStatus.ERROR;
-         } else if (race.getStartPoints().size() < 1) {
+         } else if (race.getStartPoints().isEmpty()) {
             MessageManager.sendMessage(commandSender, MessageKey.START_RACE_MISSING_STARTPOINT);
             return StartRaceStatus.ERROR;
          } else if (race.getCheckpoints().isEmpty()) {
@@ -849,17 +849,17 @@ public class RacingManager implements Listener {
    }
 
    public Set<GameMode> getNonJoinableGameModes() {
-      List<String> value = (List) RacingPlugin.getInstance().getConfiguration()
+      List value = (List) RacingPlugin.getInstance().getConfiguration()
             .get(ConfigKey.PREVENT_JOIN_FROM_GAME_MODE);
       Set<GameMode> gameModes = new HashSet<>();
-      Iterator<String> var3 = value.iterator();
+      Iterator var3 = value.iterator();
 
       while (var3.hasNext()) {
          String gameMode = (String) var3.next();
 
          try {
             gameModes.add(GameMode.valueOf(gameMode.toUpperCase(Locale.ENGLISH)));
-         } catch (IllegalArgumentException var6) {
+         } catch (IllegalArgumentException ignored) {
          }
       }
 
@@ -867,9 +867,9 @@ public class RacingManager implements Listener {
    }
 
    public Set<World> getNonJoinableWorlds() {
-      List<String> value = (List) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_WORLD);
+      List value = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_WORLD);
       Set<World> worlds = new HashSet<>();
-      Iterator<String> var3 = value.iterator();
+      Iterator var3 = value.iterator();
 
       while (var3.hasNext()) {
          String world = (String) var3.next();

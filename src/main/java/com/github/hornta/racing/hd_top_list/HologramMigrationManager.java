@@ -17,7 +17,7 @@ public class HologramMigrationManager {
       } else if (migration.from().isGreater(migration.to())) {
          throw new IllegalArgumentException("Migration from() must not be greater than to()");
       } else {
-         Iterator var2 = this.migrations.iterator();
+         Iterator<IHologramFileMigration> var2 = this.migrations.iterator();
 
          IHologramFileMigration iFileMigration;
          do {
@@ -48,19 +48,17 @@ public class HologramMigrationManager {
       if (version.isGreater(currentVersion)) {
          throw new ParseRaceException("Hologram top list version greater than plugin hologram top list version not supported.");
       } else if (version != currentVersion) {
-         Iterator var4 = this.migrations.iterator();
 
-         while(var4.hasNext()) {
-            IHologramFileMigration migration = (IHologramFileMigration)var4.next();
-            HDTopListVersion fromVersion = HDTopListVersion.fromString(yaml.getString("version"));
-            if (migration.from() == fromVersion) {
-               migration.migrate(yaml);
-               yaml.set("version", migration.to().toString());
-               Logger var10000 = RacingPlugin.logger();
-               String var10001 = fromVersion.toString();
-               var10000.info("Migrate hologram top list from version " + var10001 + " to " + migration.to().toString());
-            }
-         }
+          for (IHologramFileMigration migration : this.migrations) {
+              HDTopListVersion fromVersion = HDTopListVersion.fromString(yaml.getString("version"));
+              if (migration.from() == fromVersion) {
+                  migration.migrate(yaml);
+                  yaml.set("version", migration.to().toString());
+                  Logger var10000 = RacingPlugin.logger();
+                  String var10001 = fromVersion.toString();
+                  var10000.info("Migrate hologram top list from version " + var10001 + " to " + migration.to().toString());
+              }
+          }
 
       }
    }

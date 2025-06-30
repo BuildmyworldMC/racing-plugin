@@ -10,8 +10,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Configuration<T extends Enum<T>> {
-   private final NodeMap<T> nodes2;
-   private final File file;
+    private final File file;
    private YamlConfiguration configuration;
    private final List<Migration<T>> migrations;
    private Snapshot<T> snapshot;
@@ -19,7 +18,7 @@ public class Configuration<T extends Enum<T>> {
 
    public Configuration(File file, List<Migration<T>> migrations) {
       this.file = file;
-      this.nodes2 = new NodeMap();
+       NodeMap<T> nodes2 = new NodeMap<>();
       this.migrations = migrations;
    }
 
@@ -31,12 +30,12 @@ public class Configuration<T extends Enum<T>> {
          YamlConfiguration defaultSnapshotCfg = new YamlConfiguration();
          defaultSnapshotCfg.set("version", 0);
          NodeMap<T> defaultSnapshotNodes = this.getNodeMapBeforeVersion(currentCfgVersion, defaultSnapshotCfg);
-         Snapshot<T> defaultSnapshot = new Snapshot(defaultSnapshotNodes, defaultSnapshotCfg);
+         Snapshot<T> defaultSnapshot = new Snapshot<>(defaultSnapshotNodes, defaultSnapshotCfg);
          defaultSnapshot.applyConfiguration(this.configuration);
-         Iterator var5 = this.migrations.iterator();
+         Iterator<Migration<T>> var5 = this.migrations.iterator();
 
-         while(var5.hasNext()) {
-            Migration<T> migration = (Migration)var5.next();
+         while (var5.hasNext()) {
+            Migration<T> migration = var5.next();
             if (migration.getVersion() > currentCfgVersion) {
                Patch<T> patch = migration.createPatch(defaultSnapshot);
                defaultSnapshot.update(patch);
@@ -45,7 +44,7 @@ public class Configuration<T extends Enum<T>> {
          }
 
          if (!this.migrations.isEmpty()) {
-            defaultSnapshot.getConfiguration().set("version", ((Migration)this.migrations.get(this.migrations.size() - 1)).getVersion());
+            defaultSnapshot.getConfiguration().set("version", ((Migration<?>)this.migrations.getLast()).getVersion());
          }
 
          this.snapshot = defaultSnapshot;
@@ -82,38 +81,37 @@ public class Configuration<T extends Enum<T>> {
       } else {
          int version = this.configuration.getInt("version");
          if (version > 0) {
-            Set<Integer> versions = (Set)this.migrations.stream().map(Migration::getVersion).collect(Collectors.toSet());
+            Set<Integer> versions = this.migrations.stream().map(Migration::getVersion).collect(Collectors.toSet());
             if (!versions.contains(version)) {
                throw new ConfigurationException("Configuration file has version %d but such a version does not exist", new Object[]{version});
             }
          }
 
-         NodeMap<T> snapshotNodes = new NodeMap();
+         NodeMap<T> snapshotNodes = new NodeMap<>();
          YamlConfiguration snapshotConfig = new YamlConfiguration();
          snapshotConfig.set("version", 0);
-         Snapshot<T> snapshot = new Snapshot(snapshotNodes, snapshotConfig);
+         Snapshot<T> snapshot = new Snapshot<>(snapshotNodes, snapshotConfig);
          NodeMap<T> nodesUsedInValidation = null;
-         Iterator var6 = this.migrations.iterator();
+         Iterator<Migration<T>> var6 = this.migrations.iterator();
 
-         while(var6.hasNext()) {
-            Migration<T> migration = (Migration)var6.next();
+         while (var6.hasNext()) {
+            Migration<T> migration = var6.next();
             Patch<T> patch = migration.createPatch(snapshot);
             snapshot.update(patch);
             if (migration.getVersion() <= version) {
-               nodesUsedInValidation = new NodeMap(snapshot.getNodes());
+               nodesUsedInValidation = new NodeMap<>(snapshot.getNodes());
             }
          }
 
          if (nodesUsedInValidation == null) {
-            nodesUsedInValidation = new NodeMap(snapshot.getNodes());
+            nodesUsedInValidation = new NodeMap<>(snapshot.getNodes());
          }
 
          if (version != 0) {
             Set<String> leafs = Util.getLeafs(this.configuration);
             Iterator var15 = nodesUsedInValidation.iterator();
-
             while(var15.hasNext()) {
-               Node<T> node = (Node)var15.next();
+               Node node = (Node) var15.next();
                if (!this.configuration.isSet(node.getPath())) {
                   throw new ConfigurationException("Expected path %s to be found in configuration but none was set", new Object[]{node.getPath()});
                }
@@ -135,10 +133,10 @@ public class Configuration<T extends Enum<T>> {
 
                boolean hasPath = false;
                Node<T> foundNode = null;
-               Iterator var11 = nodesUsedInValidation.iterator();
+               Iterator<Node<T>> var11 = nodesUsedInValidation.iterator();
 
-               while(var11.hasNext()) {
-                  Node<T> node = (Node)var11.next();
+               while (var11.hasNext()) {
+                  Node<T> node = var11.next();
                   if (node.getPath().equals(path)) {
                      foundNode = node;
                      hasPath = true;
@@ -158,17 +156,17 @@ public class Configuration<T extends Enum<T>> {
 
    private NodeMap<T> getNodeMapBeforeVersion(int version, YamlConfiguration cfg) {
       cfg.set("version", 0);
-      NodeMap<T> nodeMap = new NodeMap();
-      Snapshot<T> snapshot = new Snapshot(nodeMap, cfg);
-      Iterator var5 = this.migrations.iterator();
+      NodeMap<T> nodeMap = new NodeMap<>();
+      Snapshot<T> snapshot = new Snapshot<>(nodeMap, cfg);
+      Iterator<Migration<T>> var5 = this.migrations.iterator();
 
-      while(var5.hasNext()) {
-         Migration<T> migration = (Migration)var5.next();
+      while (var5.hasNext()) {
+         Migration<T> migration = var5.next();
          if (migration.getVersion() > version) {
             break;
          }
 
-         Patch<T> patch = migration.createPatch(new Snapshot(nodeMap, cfg));
+         Patch<T> patch = migration.createPatch(new Snapshot<>(nodeMap, cfg));
          snapshot.update(patch);
       }
 
@@ -185,12 +183,10 @@ public class Configuration<T extends Enum<T>> {
    protected void cleanup() {
       Set<String> leafs = Util.getLeafs(this.configuration);
       leafs.remove("version");
-      Iterator var2 = leafs.iterator();
 
-      while(var2.hasNext()) {
-         String path = (String)var2.next();
-         this.tryDeletePathRecursively(path);
-      }
+       for (String path : leafs) {
+           this.tryDeletePathRecursively(path);
+       }
 
    }
 
@@ -206,15 +202,15 @@ public class Configuration<T extends Enum<T>> {
    }
 
    protected boolean hasPath(String path) {
-      Iterator var2 = this.snapshot.getNodes().iterator();
+      Iterator<Node<T>> var2 = this.snapshot.getNodes().iterator();
 
-      Node value;
+      Node<T> value;
       do {
          if (!var2.hasNext()) {
             return false;
          }
 
-         value = (Node)var2.next();
+         value = var2.next();
       } while(!value.getPath().equals(path));
 
       return true;

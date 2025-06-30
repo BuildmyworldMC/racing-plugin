@@ -37,9 +37,9 @@ public class CheckpointParticleTask extends BukkitRunnable {
       List<Player> players = this.checkpoint.getPlayers();
       boolean isInside = false;
       if (this.isEditing) {
-         Iterator var3 = Bukkit.getOnlinePlayers().iterator();
+         Iterator<? extends Player> var3 = Bukkit.getOnlinePlayers().iterator();
 
-         while(var3.hasNext()) {
+         while (var3.hasNext()) {
             Player player = (Player)var3.next();
             if (this.checkpoint.isInside(player)) {
                isInside = true;

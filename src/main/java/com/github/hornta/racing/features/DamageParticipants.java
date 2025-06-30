@@ -10,10 +10,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class DamageParticipants implements Listener {
    @EventHandler
    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-      if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
-         Player a = (Player)event.getEntity();
-         Player b = (Player)event.getDamager();
-         RaceSession raceSessionA = RacingPlugin.getInstance().getRacingManager().getParticipatingRace(a);
+      if (event.getEntity() instanceof Player a && event.getDamager() instanceof Player b) {
+          RaceSession raceSessionA = RacingPlugin.getInstance().getRacingManager().getParticipatingRace(a);
          RaceSession raceSessionB = RacingPlugin.getInstance().getRacingManager().getParticipatingRace(b);
          if (raceSessionA != null && raceSessionA.isCurrentlyRacing(a) || raceSessionB != null && raceSessionB.isCurrentlyRacing(b)) {
             event.setCancelled(true);

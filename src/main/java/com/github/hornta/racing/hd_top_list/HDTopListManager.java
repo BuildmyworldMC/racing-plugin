@@ -64,7 +64,7 @@ public class HDTopListManager implements Listener {
    }
 
    public static HDTopList getTopList(String name) {
-      Iterator var1 = instance.topLists.iterator();
+      Iterator<HDTopList> var1 = instance.topLists.iterator();
 
       HDTopList topList;
       do {
@@ -140,10 +140,10 @@ public class HDTopListManager implements Listener {
    }
 
    public void updateDirtyTopLists(Runnable runnable) {
-      List<HDTopList> dirtyTopLists = (List) this.topLists.stream().filter(HDTopList::isDirty)
+      List<HDTopList> dirtyTopLists = this.topLists.stream().filter(HDTopList::isDirty)
             .collect(Collectors.toList());
       this.updateToplists(dirtyTopLists);
-      Iterator var3 = dirtyTopLists.iterator();
+      Iterator<HDTopList> var3 = dirtyTopLists.iterator();
 
       while (var3.hasNext()) {
          HDTopList topList = (HDTopList) var3.next();
@@ -164,7 +164,7 @@ public class HDTopListManager implements Listener {
 
    @EventHandler
    void onRaceResetTop(RaceResetTopEvent event) {
-      this.updateToplists((Iterable) this.topLists.stream().filter((topList) -> {
+      this.updateToplists(this.topLists.stream().filter((topList) -> {
          return topList.getRace() == event.getRace();
       }).collect(Collectors.toList()));
    }
@@ -184,7 +184,7 @@ public class HDTopListManager implements Listener {
 
    @EventHandler
    void onRaceChangeName(RaceChangeNameEvent event) {
-      this.updateToplists((Iterable) this.topLists.stream().filter((hdTopList) -> {
+      this.updateToplists(this.topLists.stream().filter((hdTopList) -> {
          return event.getRace() == hdTopList.getRace();
       }).collect(Collectors.toList()));
    }
@@ -192,7 +192,7 @@ public class HDTopListManager implements Listener {
    @EventHandler
    void onDeleteRace(DeleteRaceEvent event) {
       Collection<HDTopList> toRemove = new ArrayList<>();
-      Iterator var3 = this.topLists.iterator();
+      Iterator<HDTopList> var3 = this.topLists.iterator();
 
       HDTopList topList;
       while (var3.hasNext()) {
@@ -213,7 +213,7 @@ public class HDTopListManager implements Listener {
 
    @EventHandler
    void onUnloadRace(UnloadRaceEvent event) {
-      Iterator var2 = this.topLists.iterator();
+      Iterator<HDTopList> var2 = this.topLists.iterator();
 
       while (var2.hasNext()) {
          HDTopList topList = (HDTopList) var2.next();
@@ -229,7 +229,7 @@ public class HDTopListManager implements Listener {
 
    @EventHandler
    void onRaceResultUpdatedEvent(RaceResultUpdatedEvent event) {
-      this.updateToplists((Iterable) this.topLists.stream().filter((hdTopList) -> {
+      this.updateToplists(this.topLists.stream().filter((hdTopList) -> {
          return event.getRace() == hdTopList.getRace();
       }).collect(Collectors.toList()));
    }
@@ -303,11 +303,11 @@ public class HDTopListManager implements Listener {
 
          (new BukkitRunnable() {
             public void run() {
-               Iterator var1 = names.entrySet().iterator();
+               Iterator<Entry<HDTopList, List<String>>> var1 = names.entrySet().iterator();
 
                while (var1.hasNext()) {
-                  Entry<HDTopList, List<String>> entry = (Entry) var1.next();
-                  HDTopListManager.updateText((HDTopList) entry.getKey(), (List) entry.getValue());
+                  Entry<HDTopList, List<String>> entry = var1.next();
+                  HDTopListManager.updateText((HDTopList) entry.getKey(), entry.getValue());
                }
 
             }
@@ -316,7 +316,7 @@ public class HDTopListManager implements Listener {
    }
 
    private void deleteTopList(HDTopList topList) {
-      this.deleteTopList((HDTopList) topList, (Consumer) null);
+      this.deleteTopList((HDTopList) topList, null);
    }
 
    private void deleteTopList(HDTopList topList, Consumer<Boolean> callback) {

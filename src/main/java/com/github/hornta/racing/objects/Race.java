@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.Listener;
@@ -313,7 +312,7 @@ public class Race implements Listener {
    }
 
    public RaceStartPoint getStartPoint(Location location) {
-      Iterator var2 = this.startPoints.iterator();
+      Iterator<RaceStartPoint> var2 = this.startPoints.iterator();
 
       RaceStartPoint startPoint;
       do {

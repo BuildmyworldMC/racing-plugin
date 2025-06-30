@@ -27,9 +27,9 @@ class RaceCountdown {
                this.cancel();
                callback.run();
             } else {
-               Iterator var1 = RaceCountdown.this.playerSessions.iterator();
+               Iterator<RacePlayerSession> var1 = RaceCountdown.this.playerSessions.iterator();
 
-               while(var1.hasNext()) {
+               while (var1.hasNext()) {
                   RacePlayerSession session = (RacePlayerSession)var1.next();
                   session.getPlayer().sendTitle(String.valueOf(RaceCountdown.this.countdown), MessageManager.getMessage(MessageKey.RACE_COUNTDOWN), 0, 21, 0);
                }

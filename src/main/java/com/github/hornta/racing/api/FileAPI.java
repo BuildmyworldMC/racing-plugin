@@ -38,16 +38,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.time.DateTimeException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -128,11 +119,10 @@ public class FileAPI implements RacingAPI {
          if (files == null) {
             return races;
          } else {
-            File[] var3 = files;
-            int var4 = files.length;
+             int var4 = files.length;
 
-            for(int var5 = 0; var5 < var4; ++var5) {
-               File file = var3[var5];
+            for (int var5 = 0; var5 < var4; ++var5) {
+               File file = files[var5];
                if (file.isFile()) {
                   YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 
@@ -157,9 +147,9 @@ public class FileAPI implements RacingAPI {
       }).thenAccept((configurations) -> {
          Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
             List<Race> races = new ArrayList<>();
-            Iterator var4 = configurations.iterator();
+            Iterator<YamlConfiguration> var4 = configurations.iterator();
 
-            while(var4.hasNext()) {
+            while (var4.hasNext()) {
                YamlConfiguration config = (YamlConfiguration)var4.next();
 
                try {
@@ -401,9 +391,9 @@ public class FileAPI implements RacingAPI {
          RacingPlugin.logger().log(Level.SEVERE, "Couldn't find checkpoints section");
          return checkpoints;
       } else {
-         Iterator var4 = section.getKeys(false).iterator();
+         Iterator<String> var4 = section.getKeys(false).iterator();
 
-         while(var4.hasNext()) {
+         while (var4.hasNext()) {
             String key = (String)var4.next();
 
             UUID id;
@@ -447,9 +437,9 @@ public class FileAPI implements RacingAPI {
          yaml.createSection("checkpoints");
       }
 
-      Iterator var3 = checkpoints.iterator();
+      Iterator<RaceCheckpoint> var3 = checkpoints.iterator();
 
-      while(var3.hasNext()) {
+      while (var3.hasNext()) {
          RaceCheckpoint checkpoint = (RaceCheckpoint)var3.next();
          String key = "checkpoints." + checkpoint.getId();
          yaml.set(key + ".position", checkpoint.getPosition());
@@ -467,9 +457,9 @@ public class FileAPI implements RacingAPI {
          RacingPlugin.logger().log(Level.SEVERE, "Couldn't find startpoints section");
          return startPoints;
       } else {
-         Iterator var4 = section.getKeys(false).iterator();
+         Iterator<String> var4 = section.getKeys(false).iterator();
 
-         while(var4.hasNext()) {
+         while (var4.hasNext()) {
             String key = (String)var4.next();
 
             UUID id;
@@ -508,9 +498,9 @@ public class FileAPI implements RacingAPI {
          yaml.createSection("startPoints");
       }
 
-      Iterator var3 = startPoints.iterator();
+      Iterator<RaceStartPoint> var3 = startPoints.iterator();
 
-      while(var3.hasNext()) {
+      while (var3.hasNext()) {
          RaceStartPoint startPoint = (RaceStartPoint)var3.next();
          String key = "startPoints." + startPoint.getId();
          yaml.set(key + ".position", startPoint.getPosition());
@@ -526,11 +516,11 @@ public class FileAPI implements RacingAPI {
       if (entries == null) {
          throw new ParseRaceException("Couldn't parse `results` list");
       } else {
-         Iterator var3 = entries.iterator();
+         Iterator<Map<String, Object>> var3 = entries.iterator();
 
-         while(true) {
+         while (true) {
             if (var3.hasNext()) {
-               Map entry = (Map)var3.next();
+               Map<String, Object> entry = var3.next();
 
                UUID playerId;
                try {
@@ -545,7 +535,7 @@ public class FileAPI implements RacingAPI {
                   int singleRuns = (Integer)entry.get("single_runs");
                   int wins = (Integer)entry.get("wins");
                   long fastestLap = (long)(Integer)entry.get("fastestLap");
-                  Map<Integer, Long> records = (Map)entry.get("records");
+                  Map records = (Map)entry.get("records");
                   results.add(new RacePlayerStatistic(playerId, playerName, wins, runs, singleRuns, fastestLap, records));
                   continue;
                }
@@ -560,9 +550,9 @@ public class FileAPI implements RacingAPI {
 
    public static void writeResults(Iterable<RacePlayerStatistic> results, ConfigurationSection yaml) {
       Collection<Map<String, Object>> writeList = new ArrayList<>();
-      Iterator var3 = results.iterator();
+      Iterator<RacePlayerStatistic> var3 = results.iterator();
 
-      while(var3.hasNext()) {
+      while (var3.hasNext()) {
          RacePlayerStatistic entry = (RacePlayerStatistic)var3.next();
          Map<String, Object> writeObject = new LinkedHashMap<>();
          writeObject.put("player_id", entry.getPlayerId().toString());
@@ -584,9 +574,9 @@ public class FileAPI implements RacingAPI {
       if (section == null) {
          throw new ParseRaceException("Missing field `potion_effects`");
       } else {
-         Iterator var4 = section.getKeys(false).iterator();
+         Iterator<String> var4 = section.getKeys(false).iterator();
 
-         while(var4.hasNext()) {
+         while (var4.hasNext()) {
             String key = (String)var4.next();
             PotionEffectType type = PotionEffectType.getByName(key);
             if (type == null) {
@@ -607,9 +597,9 @@ public class FileAPI implements RacingAPI {
 
    private void writePotionEffects(Set<RacePotionEffect> potionEffects, YamlConfiguration yaml) {
       yaml.createSection("potion_effects");
-      Iterator var3 = potionEffects.iterator();
+      Iterator<RacePotionEffect> var3 = potionEffects.iterator();
 
-      while(var3.hasNext()) {
+      while (var3.hasNext()) {
          RacePotionEffect potionEffect = (RacePotionEffect)var3.next();
          String key = "potion_effects." + potionEffect.getType().getName();
          yaml.set(key + ".amplifier", potionEffect.getAmplifier());
@@ -623,10 +613,10 @@ public class FileAPI implements RacingAPI {
       if (entries == null) {
          throw new ParseRaceException("Couldn't parse signs list");
       } else {
-         Iterator var4 = entries.iterator();
+         Iterator<Map<String, Object>> var4 = entries.iterator();
 
-         while(var4.hasNext()) {
-            Map<String, Object> entry = (Map)var4.next();
+         while (var4.hasNext()) {
+            Map<String, Object> entry = var4.next();
             int x = (Integer)entry.get("x");
             int y = (Integer)entry.get("y");
             int z = (Integer)entry.get("z");
@@ -681,9 +671,9 @@ public class FileAPI implements RacingAPI {
 
    private void writeSigns(Set<RaceSign> signs, YamlConfiguration yaml) {
       List<Map<String, Object>> writeList = new ArrayList<>();
-      Iterator var4 = signs.iterator();
+      Iterator<RaceSign> var4 = signs.iterator();
 
-      while(var4.hasNext()) {
+      while (var4.hasNext()) {
          RaceSign sign = (RaceSign)var4.next();
          Map<String, Object> writeSign = new LinkedHashMap<>();
          writeSign.put("x", sign.getSign().getLocation().getBlockX());
@@ -747,7 +737,7 @@ public class FileAPI implements RacingAPI {
       yaml.set(path + ".z", location.getZ());
       yaml.set(path + ".pitch", location.getPitch());
       yaml.set(path + ".yaw", location.getYaw());
-      yaml.set(path + ".world", location.getWorld().getName());
+      yaml.set(path + ".world", Objects.requireNonNull(location.getWorld()).getName());
    }
 
    private List<RaceCommand> parseCommands(YamlConfiguration yaml) {
@@ -760,8 +750,8 @@ public class FileAPI implements RacingAPI {
          String command;
          int recipient;
          boolean isEnabled;
-         for(Iterator var4 = entries.iterator(); var4.hasNext(); commands.add(new RaceCommand(commandType, isEnabled, command, recipient))) {
-            Map<String, Object> entry = (Map)var4.next();
+         for (Iterator<Map<String, Object>> var4 = entries.iterator(); var4.hasNext(); commands.add(new RaceCommand(commandType, isEnabled, command, recipient))) {
+            Map<String, Object> entry = var4.next();
             if (!entry.containsKey("when")) {
                throw new ParseRaceException("Couldn't find field `commands[].when`");
             }
@@ -824,7 +814,7 @@ public class FileAPI implements RacingAPI {
       List<Map<String, Object>> writeList = new ArrayList<>();
 
       LinkedHashMap writeObject;
-      for(Iterator var4 = commands.iterator(); var4.hasNext(); writeList.add(writeObject)) {
+      for(Iterator<RaceCommand> var4 = commands.iterator(); var4.hasNext(); writeList.add(writeObject)) {
          RaceCommand command = (RaceCommand)var4.next();
          writeObject = new LinkedHashMap<>();
          writeObject.put("when", command.getCommandType().toString().toLowerCase(Locale.ENGLISH));

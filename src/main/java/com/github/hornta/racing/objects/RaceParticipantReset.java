@@ -32,7 +32,7 @@ public class RaceParticipantReset {
       this.gameMode = playerSession.getPlayer().getGameMode();
       this.walkSpeed = playerSession.getPlayer().getWalkSpeed();
       this.foodLevel = playerSession.getPlayer().getFoodLevel();
-      this.potionEffects = new ArrayList(playerSession.getPlayer().getActivePotionEffects());
+      this.potionEffects = new ArrayList<>(playerSession.getPlayer().getActivePotionEffects());
       this.health = playerSession.getPlayer().getHealth();
       this.fireTicks = playerSession.getPlayer().getFireTicks();
       this.allowFlight = playerSession.getPlayer().getAllowFlight();
@@ -82,9 +82,9 @@ public class RaceParticipantReset {
       playerSession.getPlayer().getInventory().clear();
       RacingPlugin.debug("Inventory of %s was cleared. Contents: %s", playerSession.getPlayer().getName(), playerSession.getPlayer().getInventory().getContents());
       RacingPlugin.debug("Attempting to remove potion effects on %s", playerSession.getPlayer().getName());
-      Iterator var5 = playerSession.getPlayer().getActivePotionEffects().iterator();
+      Iterator<PotionEffect> var5 = playerSession.getPlayer().getActivePotionEffects().iterator();
 
-      while(var5.hasNext()) {
+      while (var5.hasNext()) {
          PotionEffect effect = (PotionEffect)var5.next();
          playerSession.getPlayer().removePotionEffect(effect.getType());
          RacingPlugin.debug("Removed potion effect %s on %s", effect.getType(), playerSession.getPlayer().getName());
@@ -111,9 +111,9 @@ public class RaceParticipantReset {
 
    public void restore() {
       RacingPlugin.debug("Removing potion effects on %s...", this.playerSession.getPlayer().getName());
-      Iterator var1 = this.playerSession.getPlayer().getActivePotionEffects().iterator();
+      Iterator<PotionEffect> var1 = this.playerSession.getPlayer().getActivePotionEffects().iterator();
 
-      while(var1.hasNext()) {
+      while (var1.hasNext()) {
          PotionEffect effect = (PotionEffect)var1.next();
          this.playerSession.getPlayer().removePotionEffect(effect.getType());
          RacingPlugin.debug("Removed potion effect %s on %s", effect.getType(), this.playerSession.getPlayer().getName());

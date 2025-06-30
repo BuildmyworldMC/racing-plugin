@@ -17,7 +17,7 @@ public class RaceMigrationManager {
       } else if (migration.from().isGreater(migration.to())) {
          throw new IllegalArgumentException("Migration from() must not be greater than to()");
       } else {
-         Iterator var2 = this.migrations.iterator();
+         Iterator<IRaceFileMigration> var2 = this.migrations.iterator();
 
          IRaceFileMigration iRaceFileMigration;
          do {
@@ -48,9 +48,9 @@ public class RaceMigrationManager {
       if (version.isGreater(currentVersion)) {
          throw new ParseRaceException("Race version greater than plugin race version not supported.");
       } else if (version != currentVersion) {
-         Iterator var4 = this.migrations.iterator();
+         Iterator<IRaceFileMigration> var4 = this.migrations.iterator();
 
-         while(var4.hasNext()) {
+         while (var4.hasNext()) {
             IRaceFileMigration migration = (IRaceFileMigration)var4.next();
             RaceVersion fromVersion = RaceVersion.fromString(yaml.getString("version"));
             if (migration.from() == fromVersion) {

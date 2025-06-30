@@ -33,7 +33,7 @@ public class Translation {
       Iterator var6 = yamlKeys.iterator();
 
       String string;
-      while(var6.hasNext()) {
+      while (var6.hasNext()) {
          string = (String)var6.next();
          if (!yaml.isConfigurationSection(string) && !yaml.isString(string)) {
             validationErrors.add("Expected \"" + string + "\" in \"" + this.file.getName() + "\" to be of type string.");
@@ -49,7 +49,7 @@ public class Translation {
       if (validationErrors.isEmpty()) {
          var6 = identifiers.entrySet().iterator();
 
-         while(var6.hasNext()) {
+         while (var6.hasNext()) {
             Entry<Enum, String> entry = (Entry)var6.next();
             if (yaml.contains((String)entry.getValue())) {
                this.translations.put(entry.getKey(), yaml.getString((String)entry.getValue()));
@@ -60,7 +60,7 @@ public class Translation {
          plugin.getLogger().log(Level.SEVERE, "*** " + this.file.getName() + " has bad values ***");
          var6 = validationErrors.iterator();
 
-         while(var6.hasNext()) {
+         while (var6.hasNext()) {
             string = (String)var6.next();
             plugin.getLogger().log(Level.SEVERE, "*** " + string + " ***");
          }

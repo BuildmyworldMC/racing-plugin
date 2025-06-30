@@ -59,36 +59,36 @@ public class Node<T extends Enum<T>> {
 
    public boolean isExpectedType(ConfigurationSection configurationSection) {
       boolean isExpectedType = false;
-      switch(this.type) {
-      case LIST:
-         isExpectedType = configurationSection.isList(this.path);
-         break;
-      case LONG:
-         isExpectedType = configurationSection.isLong(this.path);
-         break;
-      case COLOR:
-         isExpectedType = configurationSection.isColor(this.path);
-         break;
-      case STRING:
-         isExpectedType = configurationSection.isString(this.path);
-         break;
-      case VECTOR:
-         isExpectedType = configurationSection.isVector(this.path);
-         break;
-      case BOOLEAN:
-         isExpectedType = configurationSection.isBoolean(this.path);
-         break;
-      case INTEGER:
-         isExpectedType = configurationSection.isInt(this.path);
-         break;
-      case ITEM_STACK:
-         isExpectedType = configurationSection.isItemStack(this.path);
-         break;
-      case OFFLINE_PLAYER:
-         isExpectedType = configurationSection.isOfflinePlayer(this.path);
-         break;
-      case DOUBLE:
-         isExpectedType = configurationSection.isDouble(this.path) || configurationSection.isInt(this.path);
+      switch (this.type) {
+         case LIST:
+            isExpectedType = configurationSection.isList(this.path);
+            break;
+         case LONG:
+            isExpectedType = configurationSection.isLong(this.path);
+            break;
+         case COLOR:
+            isExpectedType = configurationSection.isColor(this.path);
+            break;
+         case STRING:
+            isExpectedType = configurationSection.isString(this.path);
+            break;
+         case VECTOR:
+            isExpectedType = configurationSection.isVector(this.path);
+            break;
+         case BOOLEAN:
+            isExpectedType = configurationSection.isBoolean(this.path);
+            break;
+         case INTEGER:
+            isExpectedType = configurationSection.isInt(this.path);
+            break;
+         case ITEM_STACK:
+            isExpectedType = configurationSection.isItemStack(this.path);
+            break;
+         case OFFLINE_PLAYER:
+            isExpectedType = configurationSection.isOfflinePlayer(this.path);
+            break;
+         case DOUBLE:
+            isExpectedType = configurationSection.isDouble(this.path) || configurationSection.isInt(this.path);
       }
 
       return isExpectedType;

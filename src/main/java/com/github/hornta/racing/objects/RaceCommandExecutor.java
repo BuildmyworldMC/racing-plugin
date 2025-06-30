@@ -18,12 +18,12 @@ public class RaceCommandExecutor implements Listener {
    @EventHandler
    void onExecuteCommand(ExecuteCommandEvent event) {
       Race race = event.getRaceSession().getRace();
-      List<RaceCommand> commands = (List)race.getCommands().stream().filter((commandx) -> {
+      List<RaceCommand> commands = race.getCommands().stream().filter((commandx) -> {
          return commandx.isEnabled() && commandx.getCommandType() == event.getCommandType();
-      }).collect(Collectors.toList());
-      Iterator var4 = commands.iterator();
+      }).toList();
+      Iterator<RaceCommand> var4 = commands.iterator();
 
-      while(true) {
+      while (true) {
          while(var4.hasNext()) {
             RaceCommand command = (RaceCommand)var4.next();
             if (command.getCommandType() != RaceCommandType.ON_RACE_FINISH && command.getCommandType() != RaceCommandType.ON_PLAYER_FINISH) {
@@ -33,13 +33,13 @@ public class RaceCommandExecutor implements Listener {
                MessageManager.setValue("race", (Object)race.getName());
                this.dispatchCommand(command);
             } else {
-               List<PlayerSessionResult> completedPlayerResults = (List)event.getRaceSession().getResult().getPlayerResults().values().stream().filter(PlayerSessionResult::hasCompletedRace).sorted(Comparator.comparingLong(PlayerSessionResult::getRaceDuration)).collect(Collectors.toList());
+               List<PlayerSessionResult> completedPlayerResults = event.getRaceSession().getResult().getPlayerResults().values().stream().filter(PlayerSessionResult::hasCompletedRace).sorted(Comparator.comparingLong(PlayerSessionResult::getRaceDuration)).collect(Collectors.toList());
                int recipientIndex;
                if (command.getRecipient() == 0) {
                   recipientIndex = 1;
-                  Iterator var11 = completedPlayerResults.iterator();
+                  Iterator<PlayerSessionResult> var11 = completedPlayerResults.iterator();
 
-                  while(var11.hasNext()) {
+                  while (var11.hasNext()) {
                      PlayerSessionResult result = (PlayerSessionResult)var11.next();
                      OfflinePlayer player = Bukkit.getOfflinePlayer(result.getPlayerId());
                      MessageManager.setValue("player_name", (Object)player.getName());

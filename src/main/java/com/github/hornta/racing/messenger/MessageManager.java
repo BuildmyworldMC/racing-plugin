@@ -49,9 +49,9 @@ public class MessageManager {
                delimiter = (String)options.get(PlaceholderOption.DELIMITER);
             }
 
-            return String.join(delimiter, (Iterable)placeholderValues.get(placeholder));
+            return String.join(delimiter, placeholderValues.get(placeholder));
          } else {
-            return placeholderKeys.containsKey(placeholder) ? this.getTranslation((Enum)placeholderKeys.get(placeholder)) : m.group();
+            return placeholderKeys.containsKey(placeholder) ? this.getTranslation(placeholderKeys.get(placeholder)) : m.group();
          }
       });
    }
@@ -98,11 +98,11 @@ public class MessageManager {
 
    private static Map<PlaceholderOption, String> getPlaceholderOptions(String options) {
       options = options.trim();
-      Map<PlaceholderOption, String> map = new EnumMap(PlaceholderOption.class);
+      Map<PlaceholderOption, String> map = new EnumMap<>(PlaceholderOption.class);
       String[] var2 = options.split(",");
       int var3 = var2.length;
 
-      for(int var4 = 0; var4 < var3; ++var4) {
+      for (int var4 = 0; var4 < var3; ++var4) {
          String option = var2[var4];
          option = option.trim();
          PlaceholderOption key;
