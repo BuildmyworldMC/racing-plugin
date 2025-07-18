@@ -42,7 +42,7 @@ public class RaceParticipantReset {
       this.saturation = playerSession.getPlayer().getSaturation();
       ItemStack cursorItem = playerSession.getPlayer().getItemOnCursor();
       if (cursorItem.getAmount() > 0) {
-         HashMap<Integer, ItemStack> rest = playerSession.getPlayer().getInventory().addItem(new ItemStack[]{cursorItem});
+         HashMap<Integer, ItemStack> rest = playerSession.getPlayer().getInventory().addItem(cursorItem);
          RacingPlugin.debug("Add items to inventory from cursor before closing inventory of %s", playerSession.getPlayer().getName());
          if (!rest.isEmpty()) {
             playerSession.getPlayer().setItemOnCursor((ItemStack)rest.get(0));
@@ -82,15 +82,13 @@ public class RaceParticipantReset {
       playerSession.getPlayer().getInventory().clear();
       RacingPlugin.debug("Inventory of %s was cleared. Contents: %s", playerSession.getPlayer().getName(), playerSession.getPlayer().getInventory().getContents());
       RacingPlugin.debug("Attempting to remove potion effects on %s", playerSession.getPlayer().getName());
-      Iterator<PotionEffect> var5 = playerSession.getPlayer().getActivePotionEffects().iterator();
 
-      while (var5.hasNext()) {
-         PotionEffect effect = (PotionEffect)var5.next();
-         playerSession.getPlayer().removePotionEffect(effect.getType());
-         RacingPlugin.debug("Removed potion effect %s on %s", effect.getType(), playerSession.getPlayer().getName());
-      }
+       for (PotionEffect effect : playerSession.getPlayer().getActivePotionEffects()) {
+           playerSession.getPlayer().removePotionEffect(effect.getType());
+           RacingPlugin.debug("Removed potion effect %s on %s", effect.getType(), playerSession.getPlayer().getName());
+       }
 
-      int countdown = (Integer)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.COUNTDOWN);
+      int countdown = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.COUNTDOWN);
       RacingPlugin.debug("Attempting to add jump potion effect on %s", playerSession.getPlayer().getName());
       playerSession.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, countdown * 20, 128));
       RacingPlugin.debug("Potion effect %s added to %s", playerSession.getPlayer().getPotionEffect(PotionEffectType.JUMP_BOOST), playerSession.getPlayer().getName());
@@ -111,13 +109,11 @@ public class RaceParticipantReset {
 
    public void restore() {
       RacingPlugin.debug("Removing potion effects on %s...", this.playerSession.getPlayer().getName());
-      Iterator<PotionEffect> var1 = this.playerSession.getPlayer().getActivePotionEffects().iterator();
 
-      while (var1.hasNext()) {
-         PotionEffect effect = (PotionEffect)var1.next();
-         this.playerSession.getPlayer().removePotionEffect(effect.getType());
-         RacingPlugin.debug("Removed potion effect %s on %s", effect.getType(), this.playerSession.getPlayer().getName());
-      }
+       for (PotionEffect effect : this.playerSession.getPlayer().getActivePotionEffects()) {
+           this.playerSession.getPlayer().removePotionEffect(effect.getType());
+           RacingPlugin.debug("Removed potion effect %s on %s", effect.getType(), this.playerSession.getPlayer().getName());
+       }
 
       this.playerSession.getPlayer().addPotionEffects(this.potionEffects);
       RacingPlugin.debug("Restored potion effects of %s", this.playerSession.getPlayer().getName());

@@ -60,16 +60,16 @@ public class ScoreboardManager implements Listener {
       this.headingFormat = MessageManager.getMessage(MessageKey.SCOREBOARD_HEADING_FORMAT);
       this.titleFormat = MessageManager.getMessage(MessageKey.SCOREBOARD_TITLE_FORMAT);
       this.textFormat = MessageManager.getMessage(MessageKey.SCOREBOARD_TEXT_FORMAT);
-      this.displayMillis = (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_DISPLAY_MILLISECONDS);
-      this.configMap.put(this.WORLD_RECORD, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD));
-      this.configMap.put(this.WORLD_RECORD_HOLDER, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_HOLDER));
-      this.configMap.put(this.WORLD_RECORD_FASTEST_LAP, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_FASTEST_LAP));
-      this.configMap.put(this.WORLD_RECORD_FASTEST_LAP_HOLDER, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_FASTEST_LAP_HOLDER));
-      this.configMap.put(this.PERSONAL_RECORD, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_PERSONAL_RECORD));
-      this.configMap.put(this.PERSONAL_RECORD_LAP_TIME, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_PERSONAL_RECORD_FASTEST_LAP));
-      this.configMap.put(this.RACE_TIME, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_TIME));
-      this.configMap.put(this.RACE_CURRENT_LAP_TIME, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_LAP_TIME));
-      this.configMap.put(this.RACE_FASTEST_LAP_TIME, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_FASTEST_LAP));
+      this.displayMillis = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_DISPLAY_MILLISECONDS);
+      this.configMap.put(this.WORLD_RECORD, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD));
+      this.configMap.put(this.WORLD_RECORD_HOLDER, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_HOLDER));
+      this.configMap.put(this.WORLD_RECORD_FASTEST_LAP, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_FASTEST_LAP));
+      this.configMap.put(this.WORLD_RECORD_FASTEST_LAP_HOLDER, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_FASTEST_LAP_HOLDER));
+      this.configMap.put(this.PERSONAL_RECORD, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_PERSONAL_RECORD));
+      this.configMap.put(this.PERSONAL_RECORD_LAP_TIME, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_PERSONAL_RECORD_FASTEST_LAP));
+      this.configMap.put(this.RACE_TIME, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_TIME));
+      this.configMap.put(this.RACE_CURRENT_LAP_TIME, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_LAP_TIME));
+      this.configMap.put(this.RACE_FASTEST_LAP_TIME, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_FASTEST_LAP));
       this.translationMap.put("heading", this.convertHeading("Racing", 1));
       this.translationMap.put("noTimeStats", MessageManager.getMessage(MessageKey.SCOREBOARD_NO_TIME_STATS));
       this.translationMap.put("noNameStats", MessageManager.getMessage(MessageKey.SCOREBOARD_NO_NAME_STATS));
@@ -84,23 +84,23 @@ public class ScoreboardManager implements Listener {
 
    @EventHandler
    void onConfigReloaded(ConfigReloadedEvent event) {
-      this.displayMillis = (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_DISPLAY_MILLISECONDS);
+      this.displayMillis = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_DISPLAY_MILLISECONDS);
       this.configMap.clear();
-      this.configMap.put(this.WORLD_RECORD, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD));
-      this.configMap.put(this.WORLD_RECORD_HOLDER, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_HOLDER));
-      this.configMap.put(this.WORLD_RECORD_FASTEST_LAP, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_FASTEST_LAP));
-      this.configMap.put(this.WORLD_RECORD_FASTEST_LAP_HOLDER, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_FASTEST_LAP_HOLDER));
-      this.configMap.put(this.PERSONAL_RECORD, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_PERSONAL_RECORD));
-      this.configMap.put(this.PERSONAL_RECORD_LAP_TIME, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_PERSONAL_RECORD_FASTEST_LAP));
-      this.configMap.put(this.RACE_TIME, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_TIME));
-      this.configMap.put(this.RACE_CURRENT_LAP_TIME, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_LAP_TIME));
-      this.configMap.put(this.RACE_FASTEST_LAP_TIME, (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_FASTEST_LAP));
+      this.configMap.put(this.WORLD_RECORD, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD));
+      this.configMap.put(this.WORLD_RECORD_HOLDER, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_HOLDER));
+      this.configMap.put(this.WORLD_RECORD_FASTEST_LAP, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_FASTEST_LAP));
+      this.configMap.put(this.WORLD_RECORD_FASTEST_LAP_HOLDER, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_WORLD_RECORD_FASTEST_LAP_HOLDER));
+      this.configMap.put(this.PERSONAL_RECORD, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_PERSONAL_RECORD));
+      this.configMap.put(this.PERSONAL_RECORD_LAP_TIME, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_PERSONAL_RECORD_FASTEST_LAP));
+      this.configMap.put(this.RACE_TIME, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_TIME));
+      this.configMap.put(this.RACE_CURRENT_LAP_TIME, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_LAP_TIME));
+      this.configMap.put(this.RACE_FASTEST_LAP_TIME, RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_FASTEST_LAP));
       this.rowsNeeded = this.calculateNumberOfRowsNeeded();
    }
 
    public void addScoreboard(Player player, String raceName, int laps) {
       this.translationMap.put("heading", this.convertHeading(raceName, laps));
-      String mainHeading = (String)this.translationMap.get("heading");
+      String mainHeading = this.translationMap.get("heading");
       Scoreboard board = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
       String SCOREBOARD_OBJECTIVE = "hornta.Racing";
       Objective objective = board.registerNewObjective(player.getName(), SCOREBOARD_OBJECTIVE, mainHeading);
@@ -131,7 +131,7 @@ public class ScoreboardManager implements Listener {
    public void updateWorldRecordHolder(Player player, String name) {
       if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_ENABLED)) {
          Scoreboard board = player.getScoreboard();
-         if (!name.isEmpty() && (Boolean)this.configMap.get(this.WORLD_RECORD_HOLDER)) {
+         if (!name.isEmpty() && this.configMap.get(this.WORLD_RECORD_HOLDER)) {
             Objects.requireNonNull(board.getTeam(this.WORLD_RECORD_HOLDER)).setPrefix(this.convertText(name));
          }
       }
@@ -144,7 +144,7 @@ public class ScoreboardManager implements Listener {
 
    public void updateWorldRecordFastestLapHolder(Player player, String name) {
       Scoreboard board = player.getScoreboard();
-      if (!name.isEmpty() && (Boolean)this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER)) {
+      if (!name.isEmpty() && this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER)) {
          Objects.requireNonNull(board.getTeam(this.WORLD_RECORD_FASTEST_LAP_HOLDER)).setPrefix(this.convertText(name));
       }
 
@@ -167,15 +167,15 @@ public class ScoreboardManager implements Listener {
    }
 
    public void updatePersonalBestLapTime(Player player, long pbLapTime) {
-      String value = pbLapTime != Long.MAX_VALUE ? this.formatTime(pbLapTime) : (String)this.translationMap.get("noTimeStats");
-      this.updateString(player, value + (String)this.translationMap.get("personalRecord"), this.PERSONAL_RECORD_LAP_TIME);
+      String value = pbLapTime != Long.MAX_VALUE ? this.formatTime(pbLapTime) : this.translationMap.get("noTimeStats");
+      this.updateString(player, value + this.translationMap.get("personalRecord"), this.PERSONAL_RECORD_LAP_TIME);
    }
 
    private void updateTime(Player player, long timeMillis, String scoreboardTeam) {
       if (timeMillis != Long.MAX_VALUE) {
          this.updateString(player, this.formatTime(timeMillis), scoreboardTeam);
       } else {
-         this.updateString(player, (String)this.translationMap.get("noTimeStats"), scoreboardTeam);
+         this.updateString(player, this.translationMap.get("noTimeStats"), scoreboardTeam);
       }
 
    }
@@ -183,7 +183,7 @@ public class ScoreboardManager implements Listener {
    private void updateString(Player player, String value, String scoreboardTeam) {
       if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.SCOREBOARD_ENABLED)) {
          Scoreboard board = player.getScoreboard();
-         if ((Boolean)this.configMap.get(scoreboardTeam)) {
+         if (this.configMap.get(scoreboardTeam)) {
             Team team = board.getTeam(scoreboardTeam);
              assert team != null;
              team.setPrefix(this.convertText(value));
@@ -199,71 +199,71 @@ public class ScoreboardManager implements Listener {
    }
 
    private void addWorldRecords(ScoreboardManager.PlayerScoreboard playerBoard) {
-      if ((Boolean)this.configMap.get(this.WORLD_RECORD) || (Boolean)this.configMap.get(this.WORLD_RECORD_HOLDER)) {
-         Score onlineName = playerBoard.objective.getScore(this.convertTitle((String)this.translationMap.get(this.WORLD_RECORD)));
+      if (this.configMap.get(this.WORLD_RECORD) || this.configMap.get(this.WORLD_RECORD_HOLDER)) {
+         Score onlineName = playerBoard.objective.getScore(this.convertTitle(this.translationMap.get(this.WORLD_RECORD)));
          onlineName.setScore(playerBoard.decreaseAndGetCount());
-         if ((Boolean)this.configMap.get(this.WORLD_RECORD)) {
-            this.addTeamToEntry(playerBoard, (String)this.translationMap.get("noTimeStats"), this.WORLD_RECORD);
+         if (this.configMap.get(this.WORLD_RECORD)) {
+            this.addTeamToEntry(playerBoard, this.translationMap.get("noTimeStats"), this.WORLD_RECORD);
          }
 
-         if ((Boolean)this.configMap.get(this.WORLD_RECORD_HOLDER)) {
-            this.addTeamToEntry(playerBoard, (String)this.translationMap.get("noNameStats"), this.WORLD_RECORD_HOLDER);
+         if (this.configMap.get(this.WORLD_RECORD_HOLDER)) {
+            this.addTeamToEntry(playerBoard, this.translationMap.get("noNameStats"), this.WORLD_RECORD_HOLDER);
          }
       }
 
    }
 
    private void addWorldRecordsFastestLap(ScoreboardManager.PlayerScoreboard playerBoard) {
-      if ((Boolean)this.configMap.get(this.WORLD_RECORD_FASTEST_LAP) || (Boolean)this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER)) {
-         Score onlineName = playerBoard.objective.getScore(this.convertTitle((String)this.translationMap.get(this.WORLD_RECORD_FASTEST_LAP)));
+      if (this.configMap.get(this.WORLD_RECORD_FASTEST_LAP) || this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER)) {
+         Score onlineName = playerBoard.objective.getScore(this.convertTitle(this.translationMap.get(this.WORLD_RECORD_FASTEST_LAP)));
          onlineName.setScore(playerBoard.decreaseAndGetCount());
-         if ((Boolean)this.configMap.get(this.WORLD_RECORD_FASTEST_LAP)) {
-            this.addTeamToEntry(playerBoard, (String)this.translationMap.get("noTimeStats"), this.WORLD_RECORD_FASTEST_LAP);
+         if (this.configMap.get(this.WORLD_RECORD_FASTEST_LAP)) {
+            this.addTeamToEntry(playerBoard, this.translationMap.get("noTimeStats"), this.WORLD_RECORD_FASTEST_LAP);
          }
 
-         if ((Boolean)this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER)) {
-            this.addTeamToEntry(playerBoard, (String)this.translationMap.get("noNameStats"), this.WORLD_RECORD_FASTEST_LAP_HOLDER);
+         if (this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER)) {
+            this.addTeamToEntry(playerBoard, this.translationMap.get("noNameStats"), this.WORLD_RECORD_FASTEST_LAP_HOLDER);
          }
       }
 
    }
 
    private void addPersonalRecords(ScoreboardManager.PlayerScoreboard playerBoard) {
-      if ((Boolean)this.configMap.get(this.PERSONAL_RECORD) || (Boolean)this.configMap.get(this.PERSONAL_RECORD_LAP_TIME)) {
-         Score onlineName = playerBoard.objective.getScore(this.convertTitle((String)this.translationMap.get(this.PERSONAL_RECORD)));
+      if (this.configMap.get(this.PERSONAL_RECORD) || this.configMap.get(this.PERSONAL_RECORD_LAP_TIME)) {
+         Score onlineName = playerBoard.objective.getScore(this.convertTitle(this.translationMap.get(this.PERSONAL_RECORD)));
          onlineName.setScore(playerBoard.decreaseAndGetCount());
-         if ((Boolean)this.configMap.get(this.PERSONAL_RECORD)) {
-            this.addTeamToEntry(playerBoard, (String)this.translationMap.get("noTimeStats"), this.PERSONAL_RECORD);
+         if (this.configMap.get(this.PERSONAL_RECORD)) {
+            this.addTeamToEntry(playerBoard, this.translationMap.get("noTimeStats"), this.PERSONAL_RECORD);
          }
 
-         if ((Boolean)this.configMap.get(this.PERSONAL_RECORD_LAP_TIME)) {
-            this.addTeamToEntry(playerBoard, (String)this.translationMap.get("noNameStats"), this.PERSONAL_RECORD_LAP_TIME);
+         if (this.configMap.get(this.PERSONAL_RECORD_LAP_TIME)) {
+            this.addTeamToEntry(playerBoard, this.translationMap.get("noNameStats"), this.PERSONAL_RECORD_LAP_TIME);
          }
       }
 
    }
 
    private void addRaceTime(ScoreboardManager.PlayerScoreboard playerBoard) {
-      if ((Boolean)this.configMap.get(this.RACE_TIME) || (Boolean)this.configMap.get(this.RACE_CURRENT_LAP_TIME)) {
-         Score onlineName = playerBoard.objective.getScore(this.convertTitle((String)this.translationMap.get(this.RACE_TIME)));
+      if (this.configMap.get(this.RACE_TIME) || this.configMap.get(this.RACE_CURRENT_LAP_TIME)) {
+         Score onlineName = playerBoard.objective.getScore(this.convertTitle(this.translationMap.get(this.RACE_TIME)));
          onlineName.setScore(playerBoard.decreaseAndGetCount());
-         if ((Boolean)this.configMap.get(this.RACE_TIME)) {
-            this.addTeamToEntry(playerBoard, (String)this.translationMap.get("noTimeStats"), this.RACE_TIME);
+         if (this.configMap.get(this.RACE_TIME)) {
+            this.addTeamToEntry(playerBoard, this.translationMap.get("noTimeStats"), this.RACE_TIME);
          }
 
-         if ((Boolean)this.configMap.get(this.RACE_CURRENT_LAP_TIME)) {
-            this.addTeamToEntry(playerBoard, (String)this.translationMap.get("noNameStats"), this.RACE_CURRENT_LAP_TIME);
+         if (this.configMap.get(this.RACE_CURRENT_LAP_TIME)) {
+            this.addTeamToEntry(playerBoard, this.translationMap.get("noNameStats"), this.RACE_CURRENT_LAP_TIME);
          }
       }
 
    }
 
    private void addRaceFastestLapTime(ScoreboardManager.PlayerScoreboard playerBoard) {
-      if ((Boolean)this.configMap.get(this.RACE_FASTEST_LAP_TIME)) {
-         Score onlineName = playerBoard.objective.getScore(this.convertTitle((String)this.translationMap.get(this.RACE_FASTEST_LAP_TIME)));
+      if (this.configMap.get(this.RACE_FASTEST_LAP_TIME)) {
+         Score onlineName = playerBoard.objective.getScore(this.convertTitle(this.translationMap.get(this.RACE_FASTEST_LAP_TIME)));
          onlineName.setScore(playerBoard.decreaseAndGetCount());
-         if ((Boolean)this.configMap.get(this.RACE_FASTEST_LAP_TIME)) {
-            this.addTeamToEntry(playerBoard, (String)this.translationMap.get("noTimeStats"), this.RACE_FASTEST_LAP_TIME);
+         if (this.configMap.get(this.RACE_FASTEST_LAP_TIME)) {
+            this.addTeamToEntry(playerBoard, this.translationMap.get("noTimeStats"), this.RACE_FASTEST_LAP_TIME);
          }
       }
 
@@ -290,23 +290,23 @@ public class ScoreboardManager implements Listener {
 
    private int calculateNumberOfRowsNeeded() {
       int rowsNeeded = 0;
-      if ((Boolean)this.configMap.get(this.WORLD_RECORD) || (Boolean)this.configMap.get(this.WORLD_RECORD_HOLDER)) {
-         rowsNeeded += (Boolean)this.configMap.get(this.WORLD_RECORD) && (Boolean)this.configMap.get(this.WORLD_RECORD_HOLDER) ? 3 : 2;
+      if (this.configMap.get(this.WORLD_RECORD) || this.configMap.get(this.WORLD_RECORD_HOLDER)) {
+         rowsNeeded += this.configMap.get(this.WORLD_RECORD) && this.configMap.get(this.WORLD_RECORD_HOLDER) ? 3 : 2;
       }
 
-      if ((Boolean)this.configMap.get(this.WORLD_RECORD_FASTEST_LAP) || (Boolean)this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER)) {
-         rowsNeeded += (Boolean)this.configMap.get(this.WORLD_RECORD_FASTEST_LAP) && (Boolean)this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER) ? 3 : 2;
+      if (this.configMap.get(this.WORLD_RECORD_FASTEST_LAP) || this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER)) {
+         rowsNeeded += this.configMap.get(this.WORLD_RECORD_FASTEST_LAP) && this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER) ? 3 : 2;
       }
 
-      if ((Boolean)this.configMap.get(this.PERSONAL_RECORD) || (Boolean)this.configMap.get(this.PERSONAL_RECORD_LAP_TIME)) {
-         rowsNeeded += (Boolean)this.configMap.get(this.PERSONAL_RECORD) && (Boolean)this.configMap.get(this.PERSONAL_RECORD_LAP_TIME) ? 3 : 2;
+      if (this.configMap.get(this.PERSONAL_RECORD) || this.configMap.get(this.PERSONAL_RECORD_LAP_TIME)) {
+         rowsNeeded += this.configMap.get(this.PERSONAL_RECORD) && this.configMap.get(this.PERSONAL_RECORD_LAP_TIME) ? 3 : 2;
       }
 
-      if ((Boolean)this.configMap.get(this.RACE_TIME) || (Boolean)this.configMap.get(this.RACE_CURRENT_LAP_TIME)) {
-         rowsNeeded += (Boolean)this.configMap.get(this.RACE_TIME) && (Boolean)this.configMap.get(this.RACE_CURRENT_LAP_TIME) ? 3 : 2;
+      if (this.configMap.get(this.RACE_TIME) || this.configMap.get(this.RACE_CURRENT_LAP_TIME)) {
+         rowsNeeded += this.configMap.get(this.RACE_TIME) && this.configMap.get(this.RACE_CURRENT_LAP_TIME) ? 3 : 2;
       }
 
-      rowsNeeded += (Boolean)this.configMap.get(this.RACE_FASTEST_LAP_TIME) ? 2 : 0;
+      rowsNeeded += this.configMap.get(this.RACE_FASTEST_LAP_TIME) ? 2 : 0;
       return rowsNeeded;
    }
 

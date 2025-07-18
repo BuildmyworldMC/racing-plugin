@@ -17,10 +17,10 @@ public class CommandRaces extends RacingCommand implements ICommandHandler {
    public void handle(CommandSender commandSender, String[] args, int typedArgs) {
       List<Race> races = this.racingManager.getRaces();
       MessageManager.setValue("races", races.stream().map((race) -> {
-         MessageManager.setValue("race", (Object)race.getName());
+         MessageManager.setValue("race", race.getName());
          return MessageManager.getMessage(MessageKey.LIST_RACES_ITEM);
       }).collect(Collectors.joining("§f, ")));
-      MessageManager.setValue("num_race", (Object)races.size());
+      MessageManager.setValue("num_race", races.size());
       MessageManager.sendMessage(commandSender, MessageKey.LIST_RACES_LIST);
    }
 }

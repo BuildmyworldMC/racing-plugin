@@ -16,12 +16,12 @@ public class CommandUnsetSong extends RacingCommand implements ICommandHandler {
    public void handle(CommandSender commandSender, String[] args, int typedArgs) {
       Race race = this.racingManager.getRace(args[0]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else if (race.getSong() == null) {
          MessageManager.sendMessage(commandSender, MessageKey.RACE_UNSET_SONG_ALREADY_UNSET);
       } else {
-         race.setSong((String)null);
+         race.setSong(null);
          this.racingManager.updateRace(race, () -> {
             MessageManager.sendMessage(commandSender, MessageKey.RACE_UNSET_SONG_SUCCESS);
          });

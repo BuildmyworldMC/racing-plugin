@@ -18,13 +18,10 @@ public class CommandHelp implements ICommandHandler {
 
       List<String> helpTexts = RacingPlugin.getInstance().getCommando().getHelpTexts(player);
       MessageManager.sendMessage(commandSender, MessageKey.RACE_HELP_TITLE);
-      Iterator var6 = helpTexts.iterator();
 
-      while(var6.hasNext()) {
-         String helpText = (String)var6.next();
-         MessageManager.setValue("text", (Object)helpText);
-         MessageManager.sendMessage(commandSender, MessageKey.RACE_HELP_ITEM);
-      }
-
+       for (String helpText : helpTexts) {
+           MessageManager.setValue("text", helpText);
+           MessageManager.sendMessage(commandSender, MessageKey.RACE_HELP_ITEM);
+       }
    }
 }

@@ -14,11 +14,7 @@ import org.bukkit.command.CommandSender;
 
 public class RaceStateArgumentHandler implements IArgumentHandler {
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)Arrays.stream(RaceState.values()).map(Enum::name).map((s) -> {
-         return s.toLowerCase(Locale.ENGLISH);
-      }).filter((state) -> {
-         return state.startsWith(argument.toLowerCase(Locale.ENGLISH));
-      }).collect(Collectors.toCollection(LinkedHashSet::new));
+      return Arrays.stream(RaceState.values()).map(Enum::name).map((s) -> s.toLowerCase(Locale.ENGLISH)).filter((state) -> state.startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {
@@ -26,7 +22,7 @@ public class RaceStateArgumentHandler implements IArgumentHandler {
    }
 
    public void whenInvalid(ValidationResult result) {
-      MessageManager.setValue("state", (Object)result.getValue());
+      MessageManager.setValue("state", result.getValue());
       MessageManager.setValue("states", Arrays.stream(RaceState.values()).map(Enum::name).collect(Collectors.joining(", ")));
       MessageManager.sendMessage(result.getCommandSender(), MessageKey.STATE_NOT_FOUND);
    }

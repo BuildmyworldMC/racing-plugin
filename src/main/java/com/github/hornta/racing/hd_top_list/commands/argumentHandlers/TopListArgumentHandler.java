@@ -29,7 +29,7 @@ public class TopListArgumentHandler implements IArgumentHandler {
          message = MessageKey.HD_TOP_LIST_CREATE_ALREADY_EXIST;
       }
 
-      MessageManager.setValue("name", (Object)result.getValue());
+      MessageManager.setValue("name", result.getValue());
       MessageManager.sendMessage(result.getCommandSender(), message);
    }
 

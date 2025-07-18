@@ -18,7 +18,7 @@ public class CommandResetTop extends RacingCommand implements ICommandHandler {
       Race race = this.racingManager.getRace(args[0]);
       race.resetResults();
       this.racingManager.updateRace(race, () -> {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.RACE_RESET_TOP);
          Bukkit.getPluginManager().callEvent(new RaceResetTopEvent(race));
       });

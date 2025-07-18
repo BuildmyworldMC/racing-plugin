@@ -32,8 +32,8 @@ public class CommandProcessor {
          } else {
             int argIndex = 0;
 
-            for(Iterator var3 = this.command.getArguments().iterator(); var3.hasNext(); ++argIndex) {
-               ICarbonArgument argument = (ICarbonArgument)var3.next();
+            for (Iterator<ICarbonArgument> var3 = this.command.getArguments().iterator(); var3.hasNext(); ++argIndex) {
+               ICarbonArgument argument = var3.next();
                if (argument.isCatchRemaining() && !this.inputArgs.isEmpty()) {
                   String arg = String.join(" ", this.inputArgs.subList(argIndex, this.inputArgs.size()));
                   if (arg.isEmpty()) {
@@ -49,8 +49,8 @@ public class CommandProcessor {
             List<String> commandArgs = new ArrayList<>();;
             argIndex = 0;
 
-            for(Iterator var15 = this.command.getArguments().iterator(); var15.hasNext(); ++argIndex) {
-               ICarbonArgument argument = (ICarbonArgument)var15.next();
+            for (Iterator<ICarbonArgument> var15 = this.command.getArguments().iterator(); var15.hasNext(); ++argIndex) {
+               ICarbonArgument argument = var15.next();
                if (argument.getPermission() != null && !this.sender.hasPermission(argument.getPermission())) {
                   break;
                }
@@ -67,11 +67,11 @@ public class CommandProcessor {
                   if (defaultValue == null) {
                      stringValue = "";
                   } else if (defaultValue instanceof Integer) {
-                     stringValue = String.valueOf((Integer)defaultValue);
+                     stringValue = String.valueOf(defaultValue);
                   } else if (defaultValue instanceof Double) {
-                     stringValue = String.valueOf((Double)defaultValue);
+                     stringValue = String.valueOf(defaultValue);
                   } else if (defaultValue instanceof Boolean) {
-                     stringValue = String.valueOf((Boolean)defaultValue);
+                     stringValue = String.valueOf(defaultValue);
                   } else {
                      stringValue = (String)defaultValue;
                   }
@@ -88,7 +88,7 @@ public class CommandProcessor {
                   return;
                }
 
-               String input = (String)this.inputArgs.get(argIndex);
+               String input = this.inputArgs.get(argIndex);
                ValidationStatus status = this.getValidationStatus(argument, input, prevArgs);
                if (status != null) {
                   ValidationResult validationResult = new ValidationResult(status, this.command, argument, this.sender, input, prevArgs);
@@ -106,7 +106,7 @@ public class CommandProcessor {
                commandArgs.add(this.inputArgs.get(argIndex));
             }
 
-            this.command.getHandler().handle(this.sender, (String[])commandArgs.toArray(new String[0]), typedArgs);
+            this.command.getHandler().handle(this.sender, commandArgs.toArray(new String[0]), typedArgs);
          }
       }
    }
@@ -167,13 +167,13 @@ public class CommandProcessor {
       String[] deps = new String[argument.getDependencies().size()];
       int i = 0;
 
-      for(Iterator var4 = argument.getDependencies().iterator(); var4.hasNext(); ++i) {
-         ICarbonArgument dependency = (ICarbonArgument)var4.next();
+      for (Iterator<ICarbonArgument> var4 = argument.getDependencies().iterator(); var4.hasNext(); ++i) {
+         ICarbonArgument dependency = var4.next();
          if (!this.command.getArguments().contains(dependency)) {
             throw new Error("The specified dependency couldn't be found in command arguments");
          }
 
-         deps[i] = (String)this.inputArgs.get(this.command.getArguments().indexOf(dependency));
+         deps[i] = this.inputArgs.get(this.command.getArguments().indexOf(dependency));
       }
 
       return deps;

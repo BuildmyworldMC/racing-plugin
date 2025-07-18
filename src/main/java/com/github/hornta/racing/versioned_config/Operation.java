@@ -4,6 +4,12 @@ public class Operation<T extends Enum<T>> {
    private final Operation.Type type;
    private final T id;
 
+   protected enum Type {
+      ADD,
+      REMOVE,
+      RENAME;
+   }
+
    public Operation(Operation.Type type, T id) {
       this.type = type;
       this.id = id;
@@ -20,11 +26,5 @@ public class Operation<T extends Enum<T>> {
 
    public T getId() {
       return this.id;
-   }
-
-   protected static enum Type {
-      ADD,
-      REMOVE,
-      RENAME;
    }
 }

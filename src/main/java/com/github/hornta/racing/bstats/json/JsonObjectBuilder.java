@@ -43,9 +43,7 @@ public class JsonObjectBuilder {
       if (values == null) {
          throw new IllegalArgumentException("JSON values must not be null");
       } else {
-         String escapedValues = (String)Arrays.stream(values).map((value) -> {
-            return "\"" + escape(value) + "\"";
-         }).collect(Collectors.joining(","));
+         String escapedValues = Arrays.stream(values).map((value) -> "\"" + escape(value) + "\"").collect(Collectors.joining(","));
          this.appendFieldUnescaped(key, "[" + escapedValues + "]");
          return this;
       }
@@ -55,7 +53,7 @@ public class JsonObjectBuilder {
       if (values == null) {
          throw new IllegalArgumentException("JSON values must not be null");
       } else {
-         String escapedValues = (String)Arrays.stream(values).mapToObj(String::valueOf).collect(Collectors.joining(","));
+         String escapedValues = Arrays.stream(values).mapToObj(String::valueOf).collect(Collectors.joining(","));
          this.appendFieldUnescaped(key, "[" + escapedValues + "]");
          return this;
       }
@@ -65,7 +63,7 @@ public class JsonObjectBuilder {
       if (values == null) {
          throw new IllegalArgumentException("JSON values must not be null");
       } else {
-         String escapedValues = (String)Arrays.stream(values).map(JsonObjectBuilder.JsonObject::toString).collect(Collectors.joining(","));
+         String escapedValues = Arrays.stream(values).map(JsonObjectBuilder.JsonObject::toString).collect(Collectors.joining(","));
          this.appendFieldUnescaped(key, "[" + escapedValues + "]");
          return this;
       }

@@ -18,7 +18,7 @@ public class CommandReload implements ICommandHandler {
       try {
          RacingPlugin.getInstance().getConfiguration().reload();
       } catch (ConfigurationException var8) {
-         MessageManager.setValue("reason", (Object)var8.getMessage());
+         MessageManager.setValue("reason", var8.getMessage());
          MessageManager.sendMessage(commandSender, MessageKey.RELOAD_FAILED);
          return;
       }
@@ -28,7 +28,7 @@ public class CommandReload implements ICommandHandler {
          RacingPlugin.getInstance().getTranslations().saveDefaults();
          translation = RacingPlugin.getInstance().getTranslations().createTranslation((String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.LANGUAGE));
       } catch (MessengerException var7) {
-         MessageManager.setValue("reason", (Object)var7.getMessage());
+         MessageManager.setValue("reason", var7.getMessage());
          MessageManager.sendMessage(commandSender, MessageKey.RELOAD_MESSAGES_FAILED);
          return;
       }
@@ -40,7 +40,7 @@ public class CommandReload implements ICommandHandler {
          try {
             RacingPlugin.getInstance().getRacingManager().load();
          } catch (ParseRaceException var6) {
-            MessageManager.setValue("error", (Object)var6.getMessage());
+            MessageManager.setValue("error", var6.getMessage());
             MessageManager.sendMessage(commandSender, MessageKey.RELOAD_RACES_FAILED);
             return;
          }

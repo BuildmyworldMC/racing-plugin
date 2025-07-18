@@ -19,19 +19,19 @@ public class CommandAddStartPoint extends RacingCommand implements ICommandHandl
       Race race = this.racingManager.getRace(args[0]);
       int position = Integer.parseInt(args[1]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else {
          Entity player = (Entity)commandSender;
          if (position > race.getStartPoints().size() + 1) {
-            MessageManager.setValue("max", (Object)(race.getStartPoints().size() + 1));
+            MessageManager.setValue("max", (race.getStartPoints().size() + 1));
             MessageManager.sendMessage(commandSender, MessageKey.RACE_ADD_STARTPOINT_POSITION_OUT_OF_BOUNDS);
          } else if (race.getStartPoint(player.getLocation()) != null) {
             MessageManager.sendMessage(commandSender, MessageKey.RACE_ADD_STARTPOINT_IS_OCCUPIED);
          } else {
             this.racingManager.addStartPoint(Util.centerOnBlockHorizontally(player.getLocation()), race, position, (startPoint) -> {
-               MessageManager.setValue("race_name", (Object)race.getName());
-               MessageManager.setValue("position", (Object)startPoint.getPosition());
+               MessageManager.setValue("race_name", race.getName());
+               MessageManager.setValue("position", startPoint.getPosition());
                MessageManager.sendMessage(player, MessageKey.RACE_ADD_STARTPOINT_SUCCESS);
             });
          }

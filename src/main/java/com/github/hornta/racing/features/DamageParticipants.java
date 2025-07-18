@@ -17,6 +17,5 @@ public class DamageParticipants implements Listener {
             event.setCancelled(true);
          }
       }
-
    }
 }

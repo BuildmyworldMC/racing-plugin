@@ -81,32 +81,21 @@ public class RacePlayerStatistic {
    }
 
    public void setRecord(int laps, long time) {
-      if (!this.records.containsKey(laps) || ((Number)this.records.get(laps)).longValue() > time) {
+      if (!this.records.containsKey(laps) || this.records.get(laps) > time) {
          this.records.put(laps, time);
       }
-
    }
 
    public String getStatValue(RaceStatType statType, int laps) {
-      String value = "";
-      switch (statType) {
-         case WIN_RATIO:
-            float var10000 = (float)this.wins / (float)this.runs;
-            value = (int)(var10000 * 100.0F) + "%";
-            break;
-         case FASTEST:
-            value = Util.getTimeLeft(this.getRecord(laps));
-            break;
-         case FASTEST_LAP:
-            value = Util.getTimeLeft(this.fastestLap);
-            break;
-         case WINS:
-            value = String.valueOf(this.getWins());
-            break;
-         case RUNS:
-            value = String.valueOf(this.getRuns());
-         }
-
-      return value;
+       return switch (statType) {
+           case WIN_RATIO -> {
+               float var10000 = (float) this.wins / (float) this.runs;
+               yield (int) (var10000 * 100.0F) + "%";
+           }
+           case FASTEST -> Util.getTimeLeft(this.getRecord(laps));
+           case FASTEST_LAP -> Util.getTimeLeft(this.fastestLap);
+           case WINS -> String.valueOf(this.getWins());
+           case RUNS -> String.valueOf(this.getRuns());
+       };
    }
 }

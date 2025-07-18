@@ -4,7 +4,6 @@ import com.github.hornta.racing.RacingPlugin;
 import com.github.hornta.racing.enums.Permission;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import java.util.Iterator;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

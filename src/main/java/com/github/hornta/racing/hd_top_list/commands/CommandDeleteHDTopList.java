@@ -14,7 +14,6 @@ public class CommandDeleteHDTopList implements ICommandHandler {
          } else {
             MessageManager.sendMessage(commandSender, MessageKey.HD_TOP_LIST_DELETE_ERROR_FAIL_DELETE_FILE);
          }
-
       });
    }
 }

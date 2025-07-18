@@ -178,12 +178,12 @@ public class RacingPlugin extends JavaPlugin {
       if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
          RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
          if (rsp != null) {
-            this.vaultEconomy = (Economy)rsp.getProvider();
+            this.vaultEconomy = rsp.getProvider();
          }
 
          RegisteredServiceProvider<Chat> rsp2 = this.getServer().getServicesManager().getRegistration(Chat.class);
          if (rsp2 != null) {
-            this.vaultChat = (Chat)rsp2.getProvider();
+            this.vaultChat = rsp2.getProvider();
          }
       }
 

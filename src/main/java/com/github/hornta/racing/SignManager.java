@@ -56,7 +56,6 @@ class SignManager implements Listener {
            this.raceSigns.put(sign.getKey(), sign);
            this.racesBySign.put(sign, event.getRace());
        }
-
    }
 
    @EventHandler
@@ -65,7 +64,6 @@ class SignManager implements Listener {
            this.raceSigns.remove(sign.getKey());
            this.racesBySign.remove(sign);
        }
-
    }
 
    @EventHandler
@@ -129,7 +127,7 @@ class SignManager implements Listener {
          this.raceSigns.put(raceSign.getKey(), raceSign);
          this.racesBySign.put(raceSign, race);
          this.updateSign(raceSign);
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(player, MessageKey.SIGN_REGISTERED);
       });
    }
@@ -148,9 +146,8 @@ class SignManager implements Listener {
          }
 
          if (parent.getType() == Material.AIR) {
-            this.removeSign(event, (Player)null);
+            this.removeSign(event, null);
          }
-
       }
    }
 
@@ -166,19 +163,18 @@ class SignManager implements Listener {
    private void removeSign(BlockEvent event, Player player) {
       RaceSign sign = this.getRaceSignFromBlock(event.getBlock());
       if (sign != null) {
-         Race race = (Race)this.racesBySign.get(sign);
+         Race race = this.racesBySign.get(sign);
          if (race != null) {
             race.getSigns().remove(sign);
-            this.racingManager.updateRace((Race)this.racesBySign.get(sign), () -> {
+            this.racingManager.updateRace(this.racesBySign.get(sign), () -> {
                this.raceSigns.remove(sign.getKey());
                this.racesBySign.remove(sign);
-               MessageManager.setValue("race_name", (Object)race.getName());
+               MessageManager.setValue("race_name", race.getName());
                if (player != null) {
                   MessageManager.sendMessage(player, MessageKey.SIGN_UNREGISTERED);
                } else {
                   RacingPlugin.logger().log(Level.INFO, MessageManager.getMessage(MessageKey.SIGN_UNREGISTERED));
                }
-
             });
          }
       }
@@ -192,14 +188,14 @@ class SignManager implements Listener {
             if (sign.getSignType() == RaceSignType.JOIN) {
                RaceSession currentSession = this.racingManager.getParticipatingRace(event.getPlayer());
                if (currentSession == null) {
-                  this.racingManager.joinRace((Race)this.racesBySign.get(sign), event.getPlayer(), JoinType.SIGN, sign.getLaps());
+                  this.racingManager.joinRace(this.racesBySign.get(sign), event.getPlayer(), JoinType.SIGN, sign.getLaps());
                } else {
                   currentSession.leave(event.getPlayer());
                }
             } else if (sign.getSignType() == RaceSignType.INFO) {
-               CommandInfo.sendInfoMessage(event.getPlayer(), (Race)this.racesBySign.get(sign));
+               CommandInfo.sendInfoMessage(event.getPlayer(), this.racesBySign.get(sign));
             } else {
-               Race race = (Race)this.racesBySign.get(sign);
+               Race race = this.racesBySign.get(sign);
                if (race != null) {
                   int laps = sign.getLaps();
                   RaceStatType statType = switch (sign.getSignType()) {
@@ -211,29 +207,28 @@ class SignManager implements Listener {
                       default -> throw new IllegalArgumentException("Unexpected case: " + sign.getSignType().name());
                   };
 
-                   CommandTop.sendTopMessage(event.getPlayer(), race, laps, statType);
+                  CommandTop.sendTopMessage(event.getPlayer(), race, laps, statType);
                }
             }
-
          }
       }
    }
 
    private RaceSign getRaceSignFromBlock(Block block) {
-      return !wallSignMaterials.contains(block.getType()) && !signPostMaterial.contains(block.getType()) ? null : (RaceSign)this.raceSigns.get(RaceSign.createKey(block));
+      return !wallSignMaterials.contains(block.getType()) && !signPostMaterial.contains(block.getType()) ? null : this.raceSigns.get(RaceSign.createKey(block));
    }
 
    private void updateSign(RaceSign sign) {
-      Race race = (Race)this.racesBySign.get(sign);
+      Race race = (this.racesBySign.get(sign));
       MessageKey messageKey;
       switch(sign.getSignType()) {
          case FASTEST:
-            MessageManager.setValue("laps", (Object)sign.getLaps());
+            MessageManager.setValue("laps", sign.getLaps());
             messageKey = MessageKey.RACE_SIGN_FASTEST_LINES;
             break;
          case JOIN:
             List<RaceSession> sessions = this.racingManager.getRaceSessions(race);
-            RaceSession session = sessions.isEmpty() ? null : (RaceSession)sessions.getFirst();
+            RaceSession session = sessions.isEmpty() ? null : sessions.getFirst();
             int laps = sign.getLaps();
             MessageKey statusKey;
             if (session == null) {
@@ -246,10 +241,10 @@ class SignManager implements Listener {
                laps = session.getLaps();
             }
 
-            MessageManager.setValue("status", (Object)MessageManager.getMessage(statusKey));
-            MessageManager.setValue("laps", (Object)laps);
-            MessageManager.setValue("current_participants", (Object)(session == null ? 0 : session.getAmountOfParticipants()));
-            MessageManager.setValue("max_participants", (Object)race.getStartPoints().size());
+            MessageManager.setValue("status", MessageManager.getMessage(statusKey));
+            MessageManager.setValue("laps", laps);
+            MessageManager.setValue("current_participants", (session == null ? 0 : session.getAmountOfParticipants()));
+            MessageManager.setValue("max_participants", race.getStartPoints().size());
             messageKey = MessageKey.RACE_SIGN_LINES;
             break;
          case WINS:
@@ -258,12 +253,12 @@ class SignManager implements Listener {
          case RUNS:
          case INFO:
          default:
-            MessageManager.setValue("stat_name", (Object)sign.getSignType().name().replace("_", " "));
+            MessageManager.setValue("stat_name", sign.getSignType().name().replace("_", " "));
             messageKey = MessageKey.RACE_SIGN_STATS_LINES;
             break;
       }
 
-      MessageManager.setValue("race_name", (Object)race.getName());
+      MessageManager.setValue("race_name", race.getName());
       String[] contents = MessageManager.getMessage(messageKey).split("\n");
       this.setSignLines(sign.getSign(), contents);
    }

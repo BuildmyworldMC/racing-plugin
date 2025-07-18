@@ -18,16 +18,16 @@ public class CommandRaceSetSpawn extends RacingCommand implements ICommandHandle
    public void handle(CommandSender commandSender, String[] args, int typedArgs) {
       Race race = this.racingManager.getRace(args[0]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else {
          race.setSpawn(Util.centerOnBlockHorizontally(((Entity)commandSender).getLocation()));
          this.racingManager.updateRace(race, () -> {
-            MessageManager.setValue("race_name", (Object)race.getName());
-            MessageManager.setValue("x", (Object)race.getSpawn().getX());
-            MessageManager.setValue("y", (Object)race.getSpawn().getY());
-            MessageManager.setValue("z", (Object)race.getSpawn().getZ());
-            MessageManager.setValue("world", (Object)race.getSpawn().getWorld().getName());
+            MessageManager.setValue("race_name", race.getName());
+            MessageManager.setValue("x", race.getSpawn().getX());
+            MessageManager.setValue("y", race.getSpawn().getY());
+            MessageManager.setValue("z", race.getSpawn().getZ());
+            MessageManager.setValue("world", race.getSpawn().getWorld().getName());
             MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_SPAWN_SUCCESS);
          });
       }

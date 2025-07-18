@@ -16,11 +16,11 @@ public class CommandDeleteRace extends RacingCommand implements ICommandHandler 
    public void handle(CommandSender commandSender, String[] args, int typedArgs) {
       Race race = this.racingManager.getRace(args[0]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else {
          this.racingManager.deleteRace(race, () -> {
-            MessageManager.setValue("race_name", (Object)race.getName());
+            MessageManager.setValue("race_name", race.getName());
             MessageManager.sendMessage(commandSender, MessageKey.DELETE_RACE_SUCCESS);
          });
       }

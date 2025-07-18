@@ -5,7 +5,6 @@ import com.github.hornta.racing.MessageKey;
 import com.github.hornta.racing.RacingPlugin;
 import com.github.hornta.racing.messenger.MessageManager;
 import java.util.Collection;
-import java.util.Iterator;
 import org.bukkit.scheduler.BukkitRunnable;
 
 class RaceCountdown {
@@ -20,19 +19,17 @@ class RaceCountdown {
    }
 
    void start(final Runnable callback) {
-      this.countdown = (Integer)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.COUNTDOWN);
+      this.countdown = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.COUNTDOWN);
       this.task = new BukkitRunnable() {
          public void run() {
             if (RaceCountdown.this.countdown < 1) {
                this.cancel();
                callback.run();
             } else {
-               Iterator<RacePlayerSession> var1 = RaceCountdown.this.playerSessions.iterator();
 
-               while (var1.hasNext()) {
-                  RacePlayerSession session = (RacePlayerSession)var1.next();
-                  session.getPlayer().sendTitle(String.valueOf(RaceCountdown.this.countdown), MessageManager.getMessage(MessageKey.RACE_COUNTDOWN), 0, 21, 0);
-               }
+                for (RacePlayerSession session : RaceCountdown.this.playerSessions) {
+                    session.getPlayer().sendTitle(String.valueOf(RaceCountdown.this.countdown), MessageManager.getMessage(MessageKey.RACE_COUNTDOWN), 0, 21, 0);
+                }
 
                --RaceCountdown.this.countdown;
             }
@@ -46,6 +43,5 @@ class RaceCountdown {
          this.task.cancel();
          this.task = null;
       }
-
    }
 }

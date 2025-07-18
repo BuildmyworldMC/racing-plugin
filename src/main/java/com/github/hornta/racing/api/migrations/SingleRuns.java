@@ -18,13 +18,12 @@ public class SingleRuns implements IRaceFileMigration {
 
    public void migrate(YamlConfiguration yamlConfiguration) {
       Collection<Map<String, Object>> results = (Collection<Map<String, Object>>) yamlConfiguration.getList("results");
-      Iterator var3 = results.iterator();
 
-      while(var3.hasNext()) {
-         Map<String, Object> r = (Map)var3.next();
-         int runs = (Integer)r.get("runs");
-         r.put("single_runs", runs);
-      }
+       assert results != null;
+       for (Map<String, Object> result : results) {
+           int runs = (Integer) result.get("runs");
+           result.put("single_runs", runs);
+       }
 
       yamlConfiguration.set("results", results);
    }

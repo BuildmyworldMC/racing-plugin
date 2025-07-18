@@ -36,7 +36,7 @@ public class Metrics {
 
          try {
             config.save(configFile);
-         } catch (IOException var11) {
+         } catch (IOException ignored) {
          }
       }
 
@@ -48,7 +48,7 @@ public class Metrics {
       Consumer<JsonObjectBuilder> var10007 = this::appendPlatformData;
       Consumer<JsonObjectBuilder> var10008 = this::appendServiceData;
       Consumer<Runnable> var10009 = (submitDataTask) -> {
-         Bukkit.getScheduler().runTask((Plugin) plugin, (Runnable) submitDataTask);
+         Bukkit.getScheduler().runTask(plugin, submitDataTask);
       };
       Objects.requireNonNull(plugin);
       this.metricsBase = new MetricsBase("bukkit", serverUUID, serviceId, enabled, var10007, var10008, var10009, plugin::isEnabled, (message, error) -> {
@@ -81,7 +81,7 @@ public class Metrics {
    private int getPlayerAmount() {
       try {
          Method onlinePlayersMethod = Class.forName("org.bukkit.Server").getMethod("getOnlinePlayers");
-         return onlinePlayersMethod.getReturnType().equals(Collection.class) ? ((Collection)onlinePlayersMethod.invoke(Bukkit.getServer())).size() : ((Player[])onlinePlayersMethod.invoke(Bukkit.getServer())).length;
+         return onlinePlayersMethod.getReturnType().equals(Collection.class) ? ((Collection<?>)onlinePlayersMethod.invoke(Bukkit.getServer())).size() : ((Player[])onlinePlayersMethod.invoke(Bukkit.getServer())).length;
       } catch (Exception var2) {
          return Bukkit.getOnlinePlayers().size();
       }

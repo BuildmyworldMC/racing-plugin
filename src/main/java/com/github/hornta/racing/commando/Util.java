@@ -8,25 +8,24 @@ import java.util.Queue;
 import java.util.Set;
 
 public class Util {
-   private static Map<Class<?>, Set<Class<?>>> memoizedInterfaces = new HashMap<>();
+   private static final Map<Class<?>, Set<Class<?>>> memoizedInterfaces = new HashMap<>();
 
    public static Set<Class<?>> getSuperInterfaces(Class<?> clazz) {
       if (memoizedInterfaces.containsKey(clazz)) {
-         return (Set)memoizedInterfaces.get(clazz);
+         return memoizedInterfaces.get(clazz);
       } else {
-         Queue<Class<?>> queue = new LinkedList();
+         Queue<Class<?>> queue = new LinkedList<>();
          Set<Class<?>> types = new HashSet<>();;
          queue.add(clazz);
          types.add(clazz);
 
          while(!queue.isEmpty()) {
-            Class<?> curr = (Class)queue.poll();
+            Class<?> curr = queue.poll();
             Class<?>[] supers = curr.getInterfaces();
-            Class[] var5 = supers;
-            int var6 = supers.length;
+             int var6 = supers.length;
 
             for(int var7 = 0; var7 < var6; ++var7) {
-               Class<?> next = var5[var7];
+               Class<?> next = ((Class[]) supers)[var7];
                if (next != null && !types.contains(next)) {
                   types.add(next);
                   queue.add(next);

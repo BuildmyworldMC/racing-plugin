@@ -19,7 +19,8 @@ public class CommandSetRaceState extends RacingCommand implements ICommandHandle
       Race race = this.racingManager.getRace(args[0]);
       RaceState newState = RaceState.fromString(args[1]);
       if (race.getState() == newState) {
-         MessageManager.setValue("state", (Object)newState.name());
+          assert newState != null;
+          MessageManager.setValue("state", newState.name());
          MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_STATE_NOCHANGE);
       } else if (race.getState() == RaceState.ENABLED && this.racingManager.hasOngoingSession(race)) {
          MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_STATE_ONGOING);
@@ -28,8 +29,8 @@ public class CommandSetRaceState extends RacingCommand implements ICommandHandle
          race.setState(newState);
          this.racingManager.updateRace(race, () -> {
             Bukkit.getPluginManager().callEvent(new RaceChangeStateEvent(race));
-            MessageManager.setValue("old_state", (Enum)oldState);
-            MessageManager.setValue("new_state", (Enum)newState);
+            MessageManager.setValue("old_state", oldState);
+            MessageManager.setValue("new_state", newState);
             MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_STATE_SUCCESS);
          });
       }

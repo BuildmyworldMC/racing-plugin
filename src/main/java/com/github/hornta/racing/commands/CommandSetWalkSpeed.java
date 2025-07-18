@@ -17,12 +17,12 @@ public class CommandSetWalkSpeed extends RacingCommand implements ICommandHandle
       Race race = this.racingManager.getRace(args[0]);
       float speed = Float.parseFloat(args[1]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else {
          race.setWalkSpeed(speed);
          this.racingManager.updateRace(race, () -> {
-            MessageManager.setValue("walk_speed", (Object)speed);
+            MessageManager.setValue("walk_speed", speed);
             MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_WALKSPEED);
          });
       }

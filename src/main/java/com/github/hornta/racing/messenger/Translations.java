@@ -40,27 +40,25 @@ public class Translations {
 
    private Map<String, InputStream> getResourceTranslationStreams() {
       Map<String, InputStream> streams = new HashMap<>();
-      Reflections reflections = new Reflections((String)null, new Scanner[]{new ResourcesScanner()});
+      Reflections reflections = new Reflections(null, new Scanner[]{new ResourcesScanner()});
       Set<String> resourceList = reflections.getResources(ymlResources);
-      Iterator<String> var4 = resourceList.iterator();
 
-      while (var4.hasNext()) {
-         String resource = (String)var4.next();
-         String filename = resource.lastIndexOf(47) == -1 ? resource : resource.substring(resource.lastIndexOf(47) + 1);
-         String path = ((String[])reflections.getStore().get(ResourcesScanner.class, filename).toArray(new String[0]))[0];
-         if (this.translationResource.matcher(path).matches()) {
-            streams.put(path, this.getClass().getClassLoader().getResourceAsStream(path));
-         }
-      }
+       for (String resource : resourceList) {
+           String filename = resource.lastIndexOf(47) == -1 ? resource : resource.substring(resource.lastIndexOf(47) + 1);
+           String path = ((String[]) reflections.getStore().get(ResourcesScanner.class, filename).toArray(new String[0]))[0];
+           if (this.translationResource.matcher(path).matches()) {
+               streams.put(path, this.getClass().getClassLoader().getResourceAsStream(path));
+           }
+       }
 
       return streams;
    }
 
    public Translation createTranslation(String language) throws MessengerException {
       if (!this.languageFiles.containsKey(language)) {
-         throw new MessengerException("Couldn't find translation `%s`", new Object[]{language});
+         throw new MessengerException("Couldn't find translation `%s`", (Object) new String[]{language});
       } else {
-         Translation translation = new Translation((File)this.languageFiles.get(language), language);
+         Translation translation = new Translation(this.languageFiles.get(language), language);
          translation.load(this.plugin, this.messageManager.getIdentifiers());
          return translation;
       }
@@ -69,7 +67,6 @@ public class Translations {
    private void readLanguageFiles(File translationsDirectory) {
       File[] files = translationsDirectory.listFiles();
       if (files != null) {
-          int var4 = files.length;
 
           for (File file : files) {
               if (!file.isFile()) {
@@ -78,41 +75,35 @@ public class Translations {
                   this.languageFiles.put(getFilenameWithoutExtension(file), file);
               }
           }
-
       }
    }
 
    public void saveDefaults() {
-      this.translationsDirectory.mkdirs();
-      Iterator<Entry<String, InputStream>> var1 = this.getResourceTranslationStreams().entrySet().iterator();
-
-      while (var1.hasNext()) {
-         Entry<String, InputStream> entry = var1.next();
-
-         try {
-            File destination = new File(this.plugin.getDataFolder(), ((String)entry.getKey()).replaceAll(this.plugin.getDescription().getName() + "/", ""));
-            boolean result = this.saveTranslationResource(entry, destination);
-            if (!result) {
-               return;
-            }
-         } catch (IllegalArgumentException ignored) {
-         }
-      }
-
+       this.translationsDirectory.mkdirs();
+       for (Entry<String, InputStream> entry : this.getResourceTranslationStreams().entrySet()) {
+           try {
+               File destination = new File(this.plugin.getDataFolder(), (entry.getKey()).replaceAll(this.plugin.getDescription().getName() + "/", ""));
+               boolean result = this.saveTranslationResource(entry, destination);
+               if (!result) {
+                   return;
+               }
+           } catch (IllegalArgumentException ignored) {
+           }
+       }
    }
 
    private boolean saveTranslationResource(Entry<String, InputStream> resource, File dest) {
       if (dest.exists()) {
          this.plugin.getLogger().log(Level.INFO, "Found existing translation file in " + dest.getName() + ".");
          YamlConfiguration destYaml = YamlConfiguration.loadConfiguration(dest);
-         YamlConfiguration resourceYaml = YamlConfiguration.loadConfiguration(new InputStreamReader((InputStream)resource.getValue(), StandardCharsets.UTF_8));
+         YamlConfiguration resourceYaml = YamlConfiguration.loadConfiguration(new InputStreamReader(resource.getValue(), StandardCharsets.UTF_8));
          Iterator<String> var5 = destYaml.getKeys(true).iterator();
 
          String key;
          while (var5.hasNext()) {
-            key = (String)var5.next();
+            key = var5.next();
             if (!resourceYaml.contains(key)) {
-               destYaml.set(key, (Object)null);
+               destYaml.set(key, null);
                this.plugin.getLogger().log(Level.INFO, "Deleted unused key `" + key + "` from `" + dest.getName() + "`.");
             }
          }
@@ -120,7 +111,7 @@ public class Translations {
          var5 = resourceYaml.getKeys(true).iterator();
 
          while (var5.hasNext()) {
-            key = (String)var5.next();
+            key = var5.next();
             if (!destYaml.isSet(key)) {
                destYaml.set(key, resourceYaml.get(key));
                this.plugin.getLogger().log(Level.INFO, "Added missing key `" + key + "` to `" + dest.getName() + "`.");
@@ -135,7 +126,7 @@ public class Translations {
          }
       } else {
          try {
-            this.saveResource((String)resource.getKey(), ((String)resource.getKey()).replaceAll(this.plugin.getDescription().getName() + "/", ""));
+            this.saveResource(resource.getKey(), (resource.getKey()).replaceAll(this.plugin.getDescription().getName() + "/", ""));
          } catch (IllegalArgumentException var7) {
             this.plugin.getLogger().log(Level.SEVERE, var7.getMessage(), var7);
          }

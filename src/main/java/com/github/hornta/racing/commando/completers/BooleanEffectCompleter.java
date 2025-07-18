@@ -11,9 +11,7 @@ public class BooleanEffectCompleter implements IArgumentHandler {
    private static final Set<String> items = new HashSet<>();
 
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)items.stream().filter((name) -> {
-         return name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH));
-      }).collect(Collectors.toCollection(LinkedHashSet::new));
+      return items.stream().filter((name) -> name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {

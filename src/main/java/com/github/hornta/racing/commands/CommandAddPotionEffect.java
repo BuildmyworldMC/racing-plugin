@@ -20,14 +20,14 @@ public class CommandAddPotionEffect extends RacingCommand implements ICommandHan
       PotionEffectType type = PotionEffectType.getByName(args[1]);
       int amplifier = Integer.parseInt(args[2]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else {
          race.addPotionEffect(new RacePotionEffect(type, amplifier));
          this.racingManager.updateRace(race, () -> {
-            MessageManager.setValue("potion_effect", (Object)type.getName());
-            MessageManager.setValue("amplifier", (Object)amplifier);
-            MessageManager.setValue("race_name", (Object)race.getName());
+            MessageManager.setValue("potion_effect", type.getName());
+            MessageManager.setValue("amplifier", amplifier);
+            MessageManager.setValue("race_name", race.getName());
             MessageManager.sendMessage(commandSender, MessageKey.RACE_ADD_POTION_EFFECT);
          });
       }

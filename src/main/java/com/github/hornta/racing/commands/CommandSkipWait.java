@@ -22,13 +22,9 @@ public class CommandSkipWait extends RacingCommand implements ICommandHandler {
       if (sessions.isEmpty()) {
          MessageManager.sendMessage(commandSender, MessageKey.RACE_SKIP_WAIT_NOT_STARTED);
       } else {
-         Iterator var6 = sessions.iterator();
-
-         while(var6.hasNext()) {
-            RaceSession session = (RaceSession)var6.next();
-            session.skipToCountdown();
-         }
-
+          for (RaceSession session : sessions) {
+              session.skipToCountdown();
+          }
       }
    }
 }

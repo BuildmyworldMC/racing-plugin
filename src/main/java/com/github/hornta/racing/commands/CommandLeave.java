@@ -20,7 +20,7 @@ public class CommandLeave extends RacingCommand implements ICommandHandler {
          MessageManager.sendMessage(commandSender, MessageKey.RACE_LEAVE_NOT_PARTICIPATING);
       } else {
          session.leave(player);
-         MessageManager.setValue("race_name", (Object)session.getRace().getName());
+         MessageManager.setValue("race_name", session.getRace().getName());
          MessageManager.sendMessage(commandSender, MessageKey.RACE_LEAVE_SUCCESS);
       }
    }

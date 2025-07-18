@@ -11,6 +11,8 @@ import com.github.hornta.racing.objects.RaceStartPoint;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 
+import java.util.Objects;
+
 public class CommandMoveStartPoint extends RacingCommand implements ICommandHandler {
    public CommandMoveStartPoint(RacingManager racingManager) {
       super(racingManager);
@@ -31,12 +33,12 @@ public class CommandMoveStartPoint extends RacingCommand implements ICommandHand
             MessageManager.sendMessage(commandSender, MessageKey.RACE_MOVE_STARTPOINT_OCCUPIED);
          } else {
             this.racingManager.moveStartPoint(Util.centerOnBlockHorizontally(player.getLocation()), race, startPoint, () -> {
-               MessageManager.setValue("race_name", (Object)race.getName());
-               MessageManager.setValue("position", (Object)startPoint.getPosition());
-               MessageManager.setValue("x", (Object)startPoint.getLocation().getX());
-               MessageManager.setValue("x", (Object)startPoint.getLocation().getY());
-               MessageManager.setValue("x", (Object)startPoint.getLocation().getZ());
-               MessageManager.setValue("world", (Object)startPoint.getLocation().getWorld().getName());
+               MessageManager.setValue("race_name", race.getName());
+               MessageManager.setValue("position", startPoint.getPosition());
+               MessageManager.setValue("x", startPoint.getLocation().getX());
+               MessageManager.setValue("x", startPoint.getLocation().getY());
+               MessageManager.setValue("x", startPoint.getLocation().getZ());
+               MessageManager.setValue("world", Objects.requireNonNull(startPoint.getLocation().getWorld()).getName());
                MessageManager.sendMessage(player, MessageKey.RACE_MOVE_STARTPOINT_SUCCESS);
             });
          }

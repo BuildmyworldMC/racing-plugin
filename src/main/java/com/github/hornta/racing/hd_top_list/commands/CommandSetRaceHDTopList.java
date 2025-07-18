@@ -17,8 +17,8 @@ public class CommandSetRaceHDTopList implements ICommandHandler {
        Race oldRace = topList.getRace();
       topList.setRace(race);
       RacingPlugin.getHdTopListManager().updateDirtyTopLists(() -> {
-         MessageManager.setValue("old_race", (Object)oldRace.getName());
-         MessageManager.setValue("new_race", (Object)race.getName());
+         MessageManager.setValue("old_race", oldRace.getName());
+         MessageManager.setValue("new_race", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.HD_TOP_LIST_SET_RACE);
       });
    }

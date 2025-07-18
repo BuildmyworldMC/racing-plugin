@@ -13,6 +13,5 @@ public class TeleportOnLeave implements Listener {
       if (event.getRaceSession().getState() == RaceSessionState.COUNTDOWN || event.getRaceSession().getState() == RaceSessionState.STARTED) {
          PaperLib.teleportAsync(event.getPlayerSession().getPlayer(), event.getRaceSession().getRace().getSpawn(), TeleportCause.PLUGIN);
       }
-
    }
 }

@@ -11,11 +11,7 @@ import org.bukkit.command.CommandSender;
 
 public class WorldNormalCompleter implements IArgumentHandler {
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)Bukkit.getWorlds().stream().filter((world) -> {
-         return world.getEnvironment() == Environment.NORMAL;
-      }).map(World::getName).filter((name) -> {
-         return name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH));
-      }).collect(Collectors.toCollection(LinkedHashSet::new));
+      return Bukkit.getWorlds().stream().filter((world) -> world.getEnvironment() == Environment.NORMAL).map(World::getName).filter((name) -> name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {

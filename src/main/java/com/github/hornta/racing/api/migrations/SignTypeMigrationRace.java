@@ -19,12 +19,11 @@ public class SignTypeMigrationRace implements IRaceFileMigration {
 
    public void migrate(YamlConfiguration yamlConfiguration) {
       List<Map<String, Object>> entries = (List<Map<String, Object>>) yamlConfiguration.getList("signs");
-      Iterator var3 = entries.iterator();
 
-      while(var3.hasNext()) {
-         Map<String, Object> sign = (Map)var3.next();
-         sign.put("type", RaceSignType.JOIN.name());
-      }
+       assert entries != null;
+       for (Map<String, Object> entry : entries) {
+           entry.put("type", RaceSignType.JOIN.name());
+       }
 
       yamlConfiguration.set("signs", entries);
    }

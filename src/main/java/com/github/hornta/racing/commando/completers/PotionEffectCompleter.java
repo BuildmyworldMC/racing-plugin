@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.potion.PotionEffectType;
 
 public class PotionEffectCompleter implements IArgumentHandler {
-   private Set<String> items = (Set)Arrays.stream(PotionEffectType.class.getDeclaredFields()).map(Field::getName).filter((name) -> {
+   private final Set<String> items = Arrays.stream(PotionEffectType.class.getDeclaredFields()).map(Field::getName).filter((name) -> {
       for(int i = 0; i < name.length(); ++i) {
          if (Character.isLowerCase(name.charAt(i))) {
             return false;
@@ -21,9 +21,7 @@ public class PotionEffectCompleter implements IArgumentHandler {
    }).collect(Collectors.toCollection(LinkedHashSet::new));
 
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)this.items.stream().filter((name) -> {
-         return name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH));
-      }).collect(Collectors.toSet());
+      return this.items.stream().filter((name) -> name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toSet());
    }
 
    public boolean test(Set<String> items, String argument) {

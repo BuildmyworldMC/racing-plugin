@@ -16,17 +16,17 @@ public class CommandSetSong extends RacingCommand implements ICommandHandler {
    public void handle(CommandSender commandSender, String[] args, int typedArgs) {
       Race race = this.racingManager.getRace(args[0]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else if (args[1].equals(race.getSong())) {
-         MessageManager.setValue("song", (Object)race.getSong());
+         MessageManager.setValue("song", race.getSong());
          MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_SONG_NOCHANGE);
       } else {
          String oldSong = race.getSong();
          race.setSong(args[1]);
          this.racingManager.updateRace(race, () -> {
-            MessageManager.setValue("old_song", (Object)oldSong);
-            MessageManager.setValue("new_song", (Object)args[0]);
+            MessageManager.setValue("old_song", oldSong);
+            MessageManager.setValue("new_song", args[0]);
             MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_SONG_SUCCESS);
          });
       }

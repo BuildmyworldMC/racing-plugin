@@ -26,30 +26,27 @@ public class CommandTop extends RacingCommand implements ICommandHandler {
    }
 
    public static void sendTopMessage(CommandSender target, Race race, int laps, RaceStatType statType) {
-      MessageManager.setValue("type", (Object)statType.getFormattedStat(laps));
-      MessageManager.setValue("race_name", (Object)race.getName());
+      MessageManager.setValue("type", statType.getFormattedStat(laps));
+      MessageManager.setValue("race_name", race.getName());
       MessageManager.sendMessage(target, MessageKey.RACE_TOP_HEADER);
       Set<RacePlayerStatistic> results = race.getResults(statType, laps);
       int i = 1;
-      Iterator var6 = results.iterator();
 
-      while(var6.hasNext()) {
-         RacePlayerStatistic result = (RacePlayerStatistic)var6.next();
-         Util.setTimeUnitValues();
-         String value = result.getStatValue(statType, laps);
-         MessageManager.setValue("position", (Object)(i++));
-         MessageManager.setValue("value", (Object)value);
-         MessageManager.setValue("player_name", (Object)result.getPlayerName());
-         MessageManager.sendMessage(target, MessageKey.RACE_TOP_ITEM);
-         if (i == 10) {
-            break;
-         }
-      }
+       for (RacePlayerStatistic result : results) {
+           Util.setTimeUnitValues();
+           String value = result.getStatValue(statType, laps);
+           MessageManager.setValue("position", (i++));
+           MessageManager.setValue("value", value);
+           MessageManager.setValue("player_name", result.getPlayerName());
+           MessageManager.sendMessage(target, MessageKey.RACE_TOP_ITEM);
+           if (i == 10) {
+               break;
+           }
+       }
 
-      for(int k = i; k <= 10; ++k) {
-         MessageManager.setValue("position", (Object)k);
+      for (int k = i; k <= 10; ++k) {
+         MessageManager.setValue("position", k);
          MessageManager.sendMessage(target, MessageKey.RACE_TOP_ITEM_NONE);
       }
-
    }
 }

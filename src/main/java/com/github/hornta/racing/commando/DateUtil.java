@@ -17,11 +17,11 @@ public final class DateUtil {
    private DateUtil() {
    }
 
-   public static long parseDuration(String time, boolean future) {
-      return parseDuration(new GregorianCalendar(), time, future);
+   public static void parseDuration(String time, boolean future) {
+      parseDuration(new GregorianCalendar(), time, future);
    }
 
-   public static long parseDuration(Calendar from, String time, boolean future) throws IllegalArgumentException {
+   public static void parseDuration(Calendar from, String time, boolean future) throws IllegalArgumentException {
       Matcher matcher = TIME_PATTERN.matcher(time);
       int years = 0;
       int months = 0;
@@ -116,7 +116,7 @@ public final class DateUtil {
             c = max;
          }
 
-         return c.getTimeInMillis() / 1000L;
+         c.getTimeInMillis();
       }
    }
 
@@ -170,7 +170,7 @@ public final class DateUtil {
             }
          }
 
-         return sb.length() == 0 ? "<now>" : sb.toString().trim();
+         return sb.isEmpty() ? "<now>" : sb.toString().trim();
       }
    }
 }

@@ -14,11 +14,7 @@ import org.bukkit.command.CommandSender;
 
 public class StartOrderArgumentHandler implements IArgumentHandler {
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)Arrays.stream(StartOrder.values()).map(Enum::name).map((s) -> {
-         return s.toLowerCase(Locale.ENGLISH);
-      }).filter((state) -> {
-         return state.startsWith(argument.toLowerCase(Locale.ENGLISH));
-      }).collect(Collectors.toCollection(LinkedHashSet::new));
+      return Arrays.stream(StartOrder.values()).map(Enum::name).map((s) -> s.toLowerCase(Locale.ENGLISH)).filter((state) -> state.startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {
@@ -26,7 +22,7 @@ public class StartOrderArgumentHandler implements IArgumentHandler {
    }
 
    public void whenInvalid(ValidationResult result) {
-      MessageManager.setValue("order", (Object)result.getValue());
+      MessageManager.setValue("order", result.getValue());
       MessageManager.setValue("orders", Arrays.stream(StartOrder.values()).map(Enum::name).collect(Collectors.joining(", ")));
       MessageManager.sendMessage(result.getCommandSender(), MessageKey.START_ORDER_NOT_FOUND);
    }

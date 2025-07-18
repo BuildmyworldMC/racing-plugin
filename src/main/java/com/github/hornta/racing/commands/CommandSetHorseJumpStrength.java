@@ -17,12 +17,12 @@ public class CommandSetHorseJumpStrength extends RacingCommand implements IComma
       Race race = this.racingManager.getRace(args[0]);
       float jumpStrength = Float.parseFloat(args[1]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else {
-         race.setHorseJumpStrength((double)jumpStrength);
+         race.setHorseJumpStrength(jumpStrength);
          this.racingManager.updateRace(race, () -> {
-            MessageManager.setValue("jump_strength", (Object)jumpStrength);
+            MessageManager.setValue("jump_strength", jumpStrength);
             MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_HORSE_JUMP_STRENGTH);
          });
       }

@@ -10,10 +10,7 @@ public enum HDTopListVersion {
    private int order;
 
    public static HDTopListVersion fromString(String name) {
-      HDTopListVersion[] var1 = copyOfValues;
-      int var2 = var1.length;
-
-       for (HDTopListVersion value : var1) {
+       for (HDTopListVersion value : copyOfValues) {
            if (value.name().equals(name)) {
                return value;
            }
@@ -47,9 +44,8 @@ public enum HDTopListVersion {
       int counter = 0;
 
       for(Iterator<HDTopListVersion> var1 = EnumSet.allOf(HDTopListVersion.class).iterator(); var1.hasNext(); ++counter) {
-         HDTopListVersion v = (HDTopListVersion)var1.next();
+         HDTopListVersion v = var1.next();
          v.setOrder(counter);
       }
-
    }
 }

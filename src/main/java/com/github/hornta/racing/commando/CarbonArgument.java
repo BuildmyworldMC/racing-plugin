@@ -69,15 +69,13 @@ public class CarbonArgument implements ICarbonArgument {
    public DefaultArgument getDefaultValue(Class<?> senderType) {
       if (!this.defaultValues.containsKey(senderType)) {
          Set<Class<?>> interfaces = Util.getSuperInterfaces(senderType);
-         Iterator var3 = interfaces.iterator();
 
-         while(var3.hasNext()) {
-            Class<?> theInterface = (Class)var3.next();
-            if (this.defaultValues.containsKey(theInterface)) {
-               this.defaultValues.put(senderType, this.defaultValues.get(theInterface));
-               break;
-            }
-         }
+          for (Class<?> anInterface : interfaces) {
+              if (this.defaultValues.containsKey(anInterface)) {
+                  this.defaultValues.put(senderType, this.defaultValues.get(anInterface));
+                  break;
+              }
+          }
       }
 
       return (DefaultArgument)this.defaultValues.get(senderType);
@@ -171,7 +169,7 @@ public class CarbonArgument implements ICarbonArgument {
          } else if (maxLength < this.minLength) {
             throw new Error("Maximum length can't be below minimum length");
          } else {
-            this.max = (double)maxLength;
+            this.max = maxLength;
             this.touchedMaxLength = true;
             return this;
          }
@@ -318,7 +316,8 @@ public class CarbonArgument implements ICarbonArgument {
                      }
 
                      try {
-                        this.handler = (IArgumentHandler)this.type.getCompleter().getConstructor().newInstance();
+                         assert this.type.getCompleter() != null;
+                         this.handler = (IArgumentHandler)this.type.getCompleter().getConstructor().newInstance();
                      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException var2) {
                         throw new Error("Something went from when instantiating type completer");
                      }

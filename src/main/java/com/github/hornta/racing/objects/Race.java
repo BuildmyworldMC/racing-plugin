@@ -66,111 +66,90 @@ public class Race implements Listener {
       this.striderSpeed = striderSpeed;
       this.horseSpeed = horseSpeed;
       this.horseJumpStrength = horseJumpStrength;
-      Iterator<RacePlayerStatistic> var28 = results.iterator();
 
-      while (var28.hasNext()) {
-         RacePlayerStatistic playerStatistic = (RacePlayerStatistic)var28.next();
-         this.resultByPlayerId.put(playerStatistic.getPlayerId(), playerStatistic);
-      }
+       for (RacePlayerStatistic playerStatistic : results) {
+           this.resultByPlayerId.put(playerStatistic.getPlayerId(), playerStatistic);
+       }
 
       RaceStatType[] var33 = RaceStatType.values();
-      int var34 = var33.length;
 
-      for (int var30 = 0; var30 < var34; ++var30) {
-         RaceStatType statType = var33[var30];
-         Set<RacePlayerStatistic> stats = new TreeSet<>((o1, o2) -> {
-            int order;
-            switch (statType) {
-               case WINS:
-                  order = o2.getWins() - o1.getWins();
-                  break;
-               case FASTEST_LAP:
-                  order = (int)(o1.getFastestLap() - o2.getFastestLap());
-                  break;
-               case WIN_RATIO:
-                  order = (int)((float)o2.getWins() / (float)(o2.getRuns() - o2.getSingleRuns()) * 100.0F - (float)o1.getWins() / (float)(o1.getRuns() - o1.getSingleRuns()) * 100.0F);
-                  break;
-               case RUNS:
-                  order = o2.getRuns() - o1.getRuns();
-                  break;
-               case FASTEST:
-               default:
-                  order = 0;
-            }
+       for (RaceStatType statType : var33) {
+           Set<RacePlayerStatistic> stats = new TreeSet<>((o1, o2) -> {
+               int order = switch (statType) {
+                   case WINS -> o2.getWins() - o1.getWins();
+                   case FASTEST_LAP -> (int) (o1.getFastestLap() - o2.getFastestLap());
+                   case WIN_RATIO ->
+                           (int) ((float) o2.getWins() / (float) (o2.getRuns() - o2.getSingleRuns()) * 100.0F - (float) o1.getWins() / (float) (o1.getRuns() - o1.getSingleRuns()) * 100.0F);
+                   case RUNS -> o2.getRuns() - o1.getRuns();
+                   default -> 0;
+               };
 
-            return order == 0 ? o1.getPlayerId().compareTo(o2.getPlayerId()) : order;
-         });
-         this.resultsByStat.put(statType, stats);
-         stats.addAll(results);
-      }
+               return order == 0 ? o1.getPlayerId().compareTo(o2.getPlayerId()) : order;
+           });
+           this.resultsByStat.put(statType, stats);
+           stats.addAll(results);
+       }
 
       this.commands = commands;
    }
 
-   public void addResult(RaceSessionResult raceResult) {
+   public void addResult(RaceSessionResult raceResult) throws CloneNotSupportedException {
       List<PlayerSessionResult> completedPlayers = raceResult.getPlayerResults().values().stream().filter(PlayerSessionResult::hasCompletedRace).sorted(Comparator.comparingLong(PlayerSessionResult::getRaceDuration)).toList();
-      Iterator<PlayerSessionResult> var3 = raceResult.getPlayerResults().values().iterator();
 
-      while (var3.hasNext()) {
-         PlayerSessionResult playerResult = (PlayerSessionResult)var3.next();
-         RacePlayerStatistic playerStatistic = (RacePlayerStatistic)this.resultByPlayerId.get(playerResult.getPlayerId());
-         boolean wasSingleRun = raceResult.getRaceSession().getNumJoinedParticipants() == 1;
-         boolean wonRace = completedPlayers.indexOf(playerResult) == 0;
-         String playerName = Bukkit.getOfflinePlayer(playerResult.getPlayerId()).getName();
-         RacePlayerStatistic newStat;
-         if (playerStatistic != null) {
-            newStat = playerStatistic.clone();
-            newStat.setPlayerName(playerName);
-            newStat.setRuns(newStat.getRuns() + 1);
-            if (wasSingleRun) {
-               newStat.setSingleRuns(newStat.getSingleRuns() + 1);
-            }
+       for (PlayerSessionResult playerResult : raceResult.getPlayerResults().values()) {
+           RacePlayerStatistic playerStatistic = this.resultByPlayerId.get(playerResult.getPlayerId());
+           boolean wasSingleRun = raceResult.getRaceSession().getNumJoinedParticipants() == 1;
+           boolean wonRace = completedPlayers.indexOf(playerResult) == 0;
+           String playerName = Bukkit.getOfflinePlayer(playerResult.getPlayerId()).getName();
+           RacePlayerStatistic newStat;
+           if (playerStatistic != null) {
+               newStat = playerStatistic.clone();
+               newStat.setPlayerName(playerName);
+               newStat.setRuns(newStat.getRuns() + 1);
+               if (wasSingleRun) {
+                   newStat.setSingleRuns(newStat.getSingleRuns() + 1);
+               }
 
-            if (wonRace && !wasSingleRun) {
-               newStat.setWins(newStat.getWins() + 1);
-            }
+               if (wonRace && !wasSingleRun) {
+                   newStat.setWins(newStat.getWins() + 1);
+               }
 
-            if (newStat.getFastestLap() > playerResult.getFastestLapDuration()) {
-               newStat.setFastestLap(playerResult.getFastestLapDuration());
-            }
+               if (newStat.getFastestLap() > playerResult.getFastestLapDuration()) {
+                   newStat.setFastestLap(playerResult.getFastestLapDuration());
+               }
 
-            int laps = playerResult.getLastLap();
-            if (newStat.getRecord(laps) > playerResult.getRaceDuration()) {
-               newStat.setRecord(laps, playerResult.getRaceDuration());
-            }
-         } else {
-            Map<Integer, Long> records = new HashMap<>();
-            records.put(playerResult.getLastLap(), playerResult.getRaceDuration());
-            newStat = new RacePlayerStatistic(playerResult.getPlayerId(), playerName, wonRace && !wasSingleRun ? 1 : 0, 1, wasSingleRun ? 1 : 0, playerResult.getFastestLapDuration(), records);
-         }
+               int laps = playerResult.getLastLap();
+               if (newStat.getRecord(laps) > playerResult.getRaceDuration()) {
+                   newStat.setRecord(laps, (long)playerResult.getRaceDuration());
+               }
+           } else {
+               Map<Integer, Long> records = new HashMap<>();
+               records.put(playerResult.getLastLap(), playerResult.getRaceDuration());
+               newStat = new RacePlayerStatistic(playerResult.getPlayerId(), playerName, wonRace && !wasSingleRun ? 1 : 0, 1, wasSingleRun ? 1 : 0, playerResult.getFastestLapDuration(), records);
+           }
 
-         this.resultByPlayerId.put(newStat.getPlayerId(), newStat);
-         RaceStatType[] var16 = RaceStatType.values();
-         int var11 = var16.length;
+           this.resultByPlayerId.put(newStat.getPlayerId(), newStat);
+           RaceStatType[] var16 = RaceStatType.values();
 
-         for (int var12 = 0; var12 < var11; ++var12) {
-            RaceStatType statType = var16[var12];
-            Set<RacePlayerStatistic> resultSet = this.resultsByStat.get(statType);
-            if (playerStatistic != null) {
-               resultSet.remove(playerStatistic);
-            }
+           for (RaceStatType statType : var16) {
+               Set<RacePlayerStatistic> resultSet = this.resultsByStat.get(statType);
+               if (playerStatistic != null) {
+                   resultSet.remove(playerStatistic);
+               }
 
-            resultSet.add(newStat);
-         }
-      }
+               resultSet.add(newStat);
+           }
+       }
 
    }
 
    public void resetResults() {
       this.resultByPlayerId.clear();
       RaceStatType[] var1 = RaceStatType.values();
-      int var2 = var1.length;
 
-      for (int var3 = 0; var3 < var2; ++var3) {
-         RaceStatType statType = var1[var3];
-         this.resultsByStat.get(statType).clear();
-      }
-
+       for (RaceStatType statType : var1) {
+           this.resultsByStat.get(statType).clear();
+       }
    }
 
    public Set<RacePlayerStatistic> getResults(RaceStatType type, int laps) {
@@ -183,9 +162,7 @@ public class Race implements Listener {
          return order == 0 ? o1.getPlayerId().compareTo(o2.getPlayerId()) : order;
       });
       stats.addAll(this.getResults(RaceStatType.FASTEST_LAP, 0));
-      stats.removeIf((entry) -> {
-         return entry.getRecord(laps) == Long.MAX_VALUE;
-      });
+      stats.removeIf((entry) -> entry.getRecord(laps) == Long.MAX_VALUE);
       return stats;
    }
 
@@ -213,7 +190,7 @@ public class Race implements Listener {
          if (!it.hasNext()) {
             return;
          }
-      } while(((RacePotionEffect)it.next()).getType() != type);
+      } while(it.next().getType() != type);
 
       it.remove();
    }
@@ -267,60 +244,60 @@ public class Race implements Listener {
    }
 
    public RaceCheckpoint getCheckpoint(int position) {
-      Iterator<RaceCheckpoint> var2 = this.checkpoints.iterator();
+      Iterator<RaceCheckpoint> checkpoints = this.checkpoints.iterator();
 
       RaceCheckpoint checkpoint;
       do {
-         if (!var2.hasNext()) {
+         if (!checkpoints.hasNext()) {
             return null;
          }
 
-         checkpoint = (RaceCheckpoint)var2.next();
+         checkpoint = checkpoints.next();
       } while(checkpoint.getPosition() != position);
 
       return checkpoint;
    }
 
    public RaceCheckpoint getCheckpoint(Location location) {
-      Iterator<RaceCheckpoint> var2 = this.checkpoints.iterator();
+      Iterator<RaceCheckpoint> checkpoints = this.checkpoints.iterator();
 
       RaceCheckpoint checkpoint;
       do {
-         if (!var2.hasNext()) {
+         if (!checkpoints.hasNext()) {
             return null;
          }
 
-         checkpoint = (RaceCheckpoint)var2.next();
+         checkpoint = checkpoints.next();
       } while(checkpoint.getLocation().getBlockX() != location.getBlockX() || checkpoint.getLocation().getBlockY() != location.getBlockY() || checkpoint.getLocation().getBlockZ() != location.getBlockZ());
 
       return checkpoint;
    }
 
    public RaceStartPoint getStartPoint(int position) {
-      Iterator<RaceStartPoint> var2 = this.startPoints.iterator();
+      Iterator<RaceStartPoint> startPoints = this.startPoints.iterator();
 
       RaceStartPoint startPoint;
       do {
-         if (!var2.hasNext()) {
+         if (!startPoints.hasNext()) {
             return null;
          }
 
-         startPoint = (RaceStartPoint)var2.next();
+         startPoint = startPoints.next();
       } while(startPoint.getPosition() != position);
 
       return startPoint;
    }
 
    public RaceStartPoint getStartPoint(Location location) {
-      Iterator<RaceStartPoint> var2 = this.startPoints.iterator();
+      Iterator<RaceStartPoint> startPoints = this.startPoints.iterator();
 
       RaceStartPoint startPoint;
       do {
-         if (!var2.hasNext()) {
+         if (!startPoints.hasNext()) {
             return null;
          }
 
-         startPoint = (RaceStartPoint)var2.next();
+         startPoint = startPoints.next();
       } while(startPoint.getLocation().getBlockX() != location.getBlockX() || startPoint.getLocation().getBlockY() != location.getBlockY() || startPoint.getLocation().getBlockZ() != location.getBlockZ());
 
       return startPoint;

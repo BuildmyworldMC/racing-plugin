@@ -1,5 +1,7 @@
 package com.github.hornta.racing.versioned_config;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -7,7 +9,7 @@ public class NodeMap<T extends Enum<T>> implements Iterable<Node<T>> {
    private final LinkedHashMap<T, Node<T>> nodes;
 
    NodeMap() {
-      this.nodes = new LinkedHashMap<>();;
+      this.nodes = new LinkedHashMap<>();
    }
 
    NodeMap(NodeMap<T> nodeMap) {
@@ -27,10 +29,10 @@ public class NodeMap<T extends Enum<T>> implements Iterable<Node<T>> {
    }
 
    public Node<T> get(T id) {
-      return (Node)this.nodes.get(id);
+      return this.nodes.get(id);
    }
 
-   public Iterator<Node<T>> iterator() {
+   public @NotNull Iterator<Node<T>> iterator() {
       return this.nodes.values().iterator();
    }
 }

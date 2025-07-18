@@ -38,7 +38,7 @@ public class FileStorage {
    private final HologramMigrationManager migrationManager = new HologramMigrationManager();
 
    public FileStorage(Plugin plugin) {
-      this.directory = new File(plugin.getDataFolder(), (String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.HD_TOP_LIST_DIRECTORY));
+      this.directory = new File(plugin.getDataFolder(), RacingPlugin.getInstance().getConfiguration().get(ConfigKey.HD_TOP_LIST_DIRECTORY));
    }
 
    public void load(Consumer<List<HDTopList>> callback) {
@@ -48,8 +48,6 @@ public class FileStorage {
           if (files == null) {
               return cfgFiles;
           } else {
-              int var4 = files.length;
-
               for (File file : files) {
                   if (file.isFile()) {
                       YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
@@ -75,11 +73,8 @@ public class FileStorage {
       }).thenAccept((configurations) -> {
           Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
               List<HDTopList> topLists = new ArrayList<>();
-              Iterator<YamlConfiguration> var4 = configurations.iterator();
-  
-              while (var4.hasNext()) {
-                  YamlConfiguration config = (YamlConfiguration)var4.next();
-  
+
+              for (YamlConfiguration config : configurations) {
                   try {
                       topLists.add(this.parse(config));
                   } catch (Exception var7) {
@@ -124,7 +119,7 @@ public class FileStorage {
          yaml.set("version", topList.getVersion().name());
          yaml.set("name", topList.getName());
          yaml.set("race", topList.getRace().getId().toString());
-         this.writeLocation(topList.getHologram().getLocation(), yaml, "loc");
+         this.writeLocation(topList.getHologram().getLocation(), yaml);
          yaml.set("stat_type", topList.getStatType().name());
          yaml.set("laps", topList.getLaps());
 
@@ -162,7 +157,7 @@ public class FileStorage {
 
             Location location;
             try {
-               location = this.parseLocation(yaml, "loc");
+               location = this.parseLocation(yaml);
             } catch (ParseYamlLocationException var15) {
                throw new ParseHDTopListException("Couldn't parse location: " + var15.getMessage());
             }
@@ -209,28 +204,28 @@ public class FileStorage {
       }
    }
 
-   private Location parseLocation(ConfigurationSection section, String path) throws ParseYamlLocationException {
-      String xPath = path + ".x";
+   private Location parseLocation(ConfigurationSection section) throws ParseYamlLocationException {
+      String xPath = "loc" + ".x";
       if (!section.isDouble(xPath)) {
          throw new ParseYamlLocationException("Expected `" + xPath + "` to be an integer");
       } else {
-         String yPath = path + ".y";
+         String yPath = "loc" + ".y";
          if (!section.isDouble(yPath)) {
             throw new ParseYamlLocationException("Expected `" + yPath + "` to be an integer");
          } else {
-            String zPath = path + ".z";
+            String zPath = "loc" + ".z";
             if (!section.isDouble(zPath)) {
                throw new ParseYamlLocationException("Expected `" + zPath + "` to be an integer");
             } else {
-               String pitchPath = path + ".pitch";
+               String pitchPath = "loc" + ".pitch";
                if (!section.isDouble(pitchPath)) {
                   throw new ParseYamlLocationException("Expected `" + pitchPath + "` to be a double");
                } else {
-                  String yawPath = path + ".yaw";
+                  String yawPath = "loc" + ".yaw";
                   if (!section.isDouble(yawPath)) {
                      throw new ParseYamlLocationException("Expected `" + yawPath + "` to be a double");
                   } else {
-                     String worldPath = path + ".world";
+                     String worldPath = "loc" + ".world";
                      String worldName = section.getString(worldPath);
                      if (worldName == null) {
                         throw new ParseYamlLocationException("Expected `" + worldPath + "` to be a string");
@@ -250,12 +245,12 @@ public class FileStorage {
       }
    }
 
-   private void writeLocation(Location location, ConfigurationSection yaml, String path) {
-      yaml.set(path + ".x", location.getX());
-      yaml.set(path + ".y", location.getY());
-      yaml.set(path + ".z", location.getZ());
-      yaml.set(path + ".pitch", location.getPitch());
-      yaml.set(path + ".yaw", location.getYaw());
-      yaml.set(path + ".world", Objects.requireNonNull(location.getWorld()).getName());
+   private void writeLocation(Location location, ConfigurationSection yaml) {
+      yaml.set("loc" + ".x", location.getX());
+      yaml.set("loc" + ".y", location.getY());
+      yaml.set("loc" + ".z", location.getZ());
+      yaml.set("loc" + ".pitch", location.getPitch());
+      yaml.set("loc" + ".yaw", location.getYaw());
+      yaml.set("loc" + ".world", Objects.requireNonNull(location.getWorld()).getName());
    }
 }

@@ -16,7 +16,7 @@ final class StringReplacer {
       String replaced;
       for(didFound = false; regexMatcher.find(); regexMatcher.appendReplacement(resultString, Matcher.quoteReplacement(replaced))) {
          didFound = true;
-         replaced = (String)callback.apply(regexMatcher);
+         replaced = callback.apply(regexMatcher);
          if (replaced.equals(regexMatcher.group())) {
             didFound = false;
          }

@@ -32,19 +32,17 @@ public class Configuration<T extends Enum<T>> {
          NodeMap<T> defaultSnapshotNodes = this.getNodeMapBeforeVersion(currentCfgVersion, defaultSnapshotCfg);
          Snapshot<T> defaultSnapshot = new Snapshot<>(defaultSnapshotNodes, defaultSnapshotCfg);
          defaultSnapshot.applyConfiguration(this.configuration);
-         Iterator<Migration<T>> var5 = this.migrations.iterator();
 
-         while (var5.hasNext()) {
-            Migration<T> migration = var5.next();
-            if (migration.getVersion() > currentCfgVersion) {
-               Patch<T> patch = migration.createPatch(defaultSnapshot);
-               defaultSnapshot.update(patch);
-               defaultSnapshot.getConfiguration().set("version", migration.getVersion());
-            }
-         }
+          for (Migration<T> migration : this.migrations) {
+              if (migration.getVersion() > currentCfgVersion) {
+                  Patch<T> patch = migration.createPatch(defaultSnapshot);
+                  defaultSnapshot.update(patch);
+                  defaultSnapshot.getConfiguration().set("version", migration.getVersion());
+              }
+          }
 
          if (!this.migrations.isEmpty()) {
-            defaultSnapshot.getConfiguration().set("version", ((Migration<?>)this.migrations.getLast()).getVersion());
+            defaultSnapshot.getConfiguration().set("version", this.migrations.getLast().getVersion());
          }
 
          this.snapshot = defaultSnapshot;
@@ -83,7 +81,7 @@ public class Configuration<T extends Enum<T>> {
          if (version > 0) {
             Set<Integer> versions = this.migrations.stream().map(Migration::getVersion).collect(Collectors.toSet());
             if (!versions.contains(version)) {
-               throw new ConfigurationException("Configuration file has version %d but such a version does not exist", new Object[]{version});
+               throw new ConfigurationException("Configuration file has version %d but such a version does not exist", version);
             }
          }
 
@@ -92,16 +90,14 @@ public class Configuration<T extends Enum<T>> {
          snapshotConfig.set("version", 0);
          Snapshot<T> snapshot = new Snapshot<>(snapshotNodes, snapshotConfig);
          NodeMap<T> nodesUsedInValidation = null;
-         Iterator<Migration<T>> var6 = this.migrations.iterator();
 
-         while (var6.hasNext()) {
-            Migration<T> migration = var6.next();
-            Patch<T> patch = migration.createPatch(snapshot);
-            snapshot.update(patch);
-            if (migration.getVersion() <= version) {
-               nodesUsedInValidation = new NodeMap<>(snapshot.getNodes());
-            }
-         }
+          for (Migration<T> migration : this.migrations) {
+              Patch<T> patch = migration.createPatch(snapshot);
+              snapshot.update(patch);
+              if (migration.getVersion() <= version) {
+                  nodesUsedInValidation = new NodeMap<>(snapshot.getNodes());
+              }
+          }
 
          if (nodesUsedInValidation == null) {
             nodesUsedInValidation = new NodeMap<>(snapshot.getNodes());
@@ -113,7 +109,7 @@ public class Configuration<T extends Enum<T>> {
             while(var15.hasNext()) {
                Node node = (Node) var15.next();
                if (!this.configuration.isSet(node.getPath())) {
-                  throw new ConfigurationException("Expected path %s to be found in configuration but none was set", new Object[]{node.getPath()});
+                  throw new ConfigurationException("Expected path %s to be found in configuration but none was set", node.getPath());
                }
 
                this.testType(node);
@@ -133,19 +129,17 @@ public class Configuration<T extends Enum<T>> {
 
                boolean hasPath = false;
                Node<T> foundNode = null;
-               Iterator<Node<T>> var11 = nodesUsedInValidation.iterator();
 
-               while (var11.hasNext()) {
-                  Node<T> node = var11.next();
-                  if (node.getPath().equals(path)) {
-                     foundNode = node;
-                     hasPath = true;
-                     break;
-                  }
-               }
+                for (Node<T> node : nodesUsedInValidation) {
+                    if (node.getPath().equals(path)) {
+                        foundNode = node;
+                        hasPath = true;
+                        break;
+                    }
+                }
 
                if (!hasPath) {
-                  throw new ConfigurationException("Found unexpected path %s in configuration", new Object[]{path});
+                  throw new ConfigurationException("Found unexpected path %s in configuration", path);
                }
 
                this.testType(foundNode);
@@ -158,17 +152,15 @@ public class Configuration<T extends Enum<T>> {
       cfg.set("version", 0);
       NodeMap<T> nodeMap = new NodeMap<>();
       Snapshot<T> snapshot = new Snapshot<>(nodeMap, cfg);
-      Iterator<Migration<T>> var5 = this.migrations.iterator();
 
-      while (var5.hasNext()) {
-         Migration<T> migration = var5.next();
-         if (migration.getVersion() > version) {
-            break;
-         }
+       for (Migration<T> migration : this.migrations) {
+           if (migration.getVersion() > version) {
+               break;
+           }
 
-         Patch<T> patch = migration.createPatch(new Snapshot<>(nodeMap, cfg));
-         snapshot.update(patch);
-      }
+           Patch<T> patch = migration.createPatch(new Snapshot<>(nodeMap, cfg));
+           snapshot.update(patch);
+       }
 
       return nodeMap;
    }
@@ -176,7 +168,8 @@ public class Configuration<T extends Enum<T>> {
    private void testType(Node<T> node) throws ConfigurationException {
       Object o = this.configuration.get(node.getPath());
       if (!node.getType().isCorrectType(o)) {
-         throw new ConfigurationException("Expected path %s in configuration to be of type %s but found %s", new Object[]{node.getPath(), node.getType().name(), o.getClass()});
+          assert o != null;
+          throw new ConfigurationException("Expected path %s in configuration to be of type %s but found %s", node.getPath(), node.getType().name(), o.getClass());
       }
    }
 
@@ -192,7 +185,7 @@ public class Configuration<T extends Enum<T>> {
 
    private void tryDeletePathRecursively(String path) {
       if (!this.hasPath(path)) {
-         this.configuration.set(path, (Object)null);
+         this.configuration.set(path, null);
          int separatorIndex = path.lastIndexOf(46);
          if (separatorIndex != -1) {
             this.tryDeletePathRecursively(path.substring(0, separatorIndex));

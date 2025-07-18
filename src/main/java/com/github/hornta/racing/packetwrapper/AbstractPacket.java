@@ -3,7 +3,6 @@ package com.github.hornta.racing.packetwrapper;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import org.bukkit.entity.Player;
 

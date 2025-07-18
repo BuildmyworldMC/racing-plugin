@@ -46,7 +46,7 @@ public class MessageManager {
          String delimiter = "";
          if (placeholderValues.containsKey(placeholder)) {
             if (options.containsKey(PlaceholderOption.DELIMITER) && options.get(PlaceholderOption.DELIMITER) != null) {
-               delimiter = (String)options.get(PlaceholderOption.DELIMITER);
+               delimiter = options.get(PlaceholderOption.DELIMITER);
             }
 
             return String.join(delimiter, placeholderValues.get(placeholder));
@@ -102,23 +102,23 @@ public class MessageManager {
       String[] var2 = options.split(",");
       int var3 = var2.length;
 
-      for (int var4 = 0; var4 < var3; ++var4) {
-         String option = var2[var4];
-         option = option.trim();
-         PlaceholderOption key;
-         String value;
-         if (option.contains(":")) {
-            key = PlaceholderOption.fromString(option.substring(0, option.lastIndexOf(":")).trim());
-            value = option.substring(option.lastIndexOf(":") + 1).trim();
-         } else {
-            key = PlaceholderOption.fromString(option);
-            value = null;
-         }
+       for (String s : var2) {
+           String option = s;
+           option = option.trim();
+           PlaceholderOption key;
+           String value;
+           if (option.contains(":")) {
+               key = PlaceholderOption.fromString(option.substring(0, option.lastIndexOf(":")).trim());
+               value = option.substring(option.lastIndexOf(":") + 1).trim();
+           } else {
+               key = PlaceholderOption.fromString(option);
+               value = null;
+           }
 
-         if (key != null) {
-            map.put(key, value);
-         }
-      }
+           if (key != null) {
+               map.put(key, value);
+           }
+       }
 
       return map;
    }

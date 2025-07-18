@@ -18,12 +18,11 @@ public class SignLapsMigrationRace implements IRaceFileMigration {
 
    public void migrate(YamlConfiguration yamlConfiguration) {
       List<Map<String, Object>> entries = (List<Map<String, Object>>) yamlConfiguration.getList("signs");
-      Iterator var3 = entries.iterator();
 
-      while(var3.hasNext()) {
-         Map<String, Object> sign = (Map)var3.next();
-         sign.put("laps", 1);
-      }
+       assert entries != null;
+       for (Map<String, Object> entry : entries) {
+           entry.put("laps", 1);
+       }
 
       yamlConfiguration.set("signs", entries);
    }

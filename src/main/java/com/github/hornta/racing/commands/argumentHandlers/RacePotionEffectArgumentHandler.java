@@ -21,11 +21,7 @@ public class RacePotionEffectArgumentHandler implements IArgumentHandler {
    }
 
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)this.racingManager.getRace(prevArgs[0]).getPotionEffects().stream().map(RacePotionEffect::getType).map(PotionEffectType::getName).map((s) -> {
-         return s.toLowerCase(Locale.ENGLISH);
-      }).filter((type) -> {
-         return type.startsWith(argument.toLowerCase(Locale.ENGLISH));
-      }).collect(Collectors.toCollection(LinkedHashSet::new));
+      return this.racingManager.getRace(prevArgs[0]).getPotionEffects().stream().map(RacePotionEffect::getType).map(PotionEffectType::getName).map((s) -> s.toLowerCase(Locale.ENGLISH)).filter((type) -> type.startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {
@@ -33,8 +29,8 @@ public class RacePotionEffectArgumentHandler implements IArgumentHandler {
    }
 
    public void whenInvalid(ValidationResult result) {
-      MessageManager.setValue("race_name", (Object)result.getPrevArgs()[0]);
-      MessageManager.setValue("potion_effect", (Object)result.getValue());
+      MessageManager.setValue("race_name", result.getPrevArgs()[0]);
+      MessageManager.setValue("potion_effect", result.getValue());
       MessageManager.sendMessage(result.getCommandSender(), MessageKey.RACE_POTION_EFFECT_NOT_FOUND);
    }
 }

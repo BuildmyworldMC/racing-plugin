@@ -10,9 +10,7 @@ import org.bukkit.command.CommandSender;
 
 public class GameModeCompleter implements IArgumentHandler {
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)Arrays.stream(GameMode.values()).map(Enum::name).filter((name) -> {
-         return name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH));
-      }).collect(Collectors.toCollection(LinkedHashSet::new));
+      return Arrays.stream(GameMode.values()).map(Enum::name).filter((name) -> name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {

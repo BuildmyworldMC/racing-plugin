@@ -55,7 +55,7 @@ public class RacePlayerSession {
       this.player = player;
       this.chargedEntryFee = chargedEntryFee;
       if (raceSession.getRace().getResultByPlayerId().containsKey(player.getUniqueId())) {
-         this.personalBestLapTime = ((RacePlayerStatistic)raceSession.getRace().getResultByPlayerId().get(player.getUniqueId())).getFastestLap();
+         this.personalBestLapTime = raceSession.getRace().getResultByPlayerId().get(player.getUniqueId()).getFastestLap();
       }
 
    }
@@ -149,7 +149,7 @@ public class RacePlayerSession {
          location = this.startLocation;
       }
 
-      this.respawnInVehicle(location, (Runnable)null, (Runnable)null);
+      this.respawnInVehicle(location, null, null);
    }
 
    public void respawnInVehicle(Location location, Runnable runnable, Runnable fireTicksResetCallback) {

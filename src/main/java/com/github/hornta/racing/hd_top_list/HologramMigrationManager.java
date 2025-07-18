@@ -26,7 +26,7 @@ public class HologramMigrationManager {
                return;
             }
 
-            iFileMigration = (IHologramFileMigration)var2.next();
+            iFileMigration = var2.next();
             if (iFileMigration.from() == migration.from()) {
                throw new IllegalArgumentException("There is already a migration with the same from()");
             }
@@ -59,7 +59,6 @@ public class HologramMigrationManager {
                   var10000.info("Migrate hologram top list from version " + var10001 + " to " + migration.to().toString());
               }
           }
-
       }
    }
 }

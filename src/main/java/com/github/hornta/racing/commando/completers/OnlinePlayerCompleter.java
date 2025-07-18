@@ -10,9 +10,7 @@ import org.bukkit.command.CommandSender;
 
 public class OnlinePlayerCompleter implements IArgumentHandler {
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)Bukkit.getOnlinePlayers().stream().map(OfflinePlayer::getName).filter((name) -> {
-         return name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH));
-      }).collect(Collectors.toCollection(LinkedHashSet::new));
+      return Bukkit.getOnlinePlayers().stream().map(OfflinePlayer::getName).filter((name) -> name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {

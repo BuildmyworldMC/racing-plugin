@@ -51,8 +51,8 @@ public class Translation {
 
          while (var6.hasNext()) {
             Entry<Enum, String> entry = (Entry)var6.next();
-            if (yaml.contains((String)entry.getValue())) {
-               this.translations.put(entry.getKey(), yaml.getString((String)entry.getValue()));
+            if (yaml.contains(entry.getValue())) {
+               this.translations.put(entry.getKey(), yaml.getString(entry.getValue()));
             }
          }
 

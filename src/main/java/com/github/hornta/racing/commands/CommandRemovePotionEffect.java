@@ -18,13 +18,13 @@ public class CommandRemovePotionEffect extends RacingCommand implements ICommand
       Race race = this.racingManager.getRace(args[0]);
       PotionEffectType type = PotionEffectType.getByName(args[1]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else {
          race.removePotionEffect(type);
          this.racingManager.updateRace(race, () -> {
-            MessageManager.setValue("potion_effect", (Object)type.getName());
-            MessageManager.setValue("race_name", (Object)race.getName());
+            MessageManager.setValue("potion_effect", type.getName());
+            MessageManager.setValue("race_name", race.getName());
             MessageManager.sendMessage(commandSender, MessageKey.RACE_REMOVE_POTION_EFFECT);
          });
       }

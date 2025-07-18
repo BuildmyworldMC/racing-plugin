@@ -18,15 +18,15 @@ public class CommandSetRaceName extends RacingCommand implements ICommandHandler
    public void handle(CommandSender commandSender, String[] args, int typedArgs) {
       Race race = this.racingManager.getRace(args[0]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else {
          String oldName = race.getName();
          race.setName(args[1]);
          this.racingManager.updateRace(race, () -> {
             Bukkit.getPluginManager().callEvent(new RaceChangeNameEvent(race, oldName));
-            MessageManager.setValue("old_name", (Object)oldName);
-            MessageManager.setValue("new_name", (Object)race.getName());
+            MessageManager.setValue("old_name", oldName);
+            MessageManager.setValue("new_name", race.getName());
             MessageManager.sendMessage(commandSender, MessageKey.CHANGE_RACE_NAME_SUCCESS);
          });
       }

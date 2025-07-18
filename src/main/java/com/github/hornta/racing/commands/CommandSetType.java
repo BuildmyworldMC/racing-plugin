@@ -17,17 +17,17 @@ public class CommandSetType extends RacingCommand implements ICommandHandler {
    public void handle(CommandSender commandSender, String[] args, int typedArgs) {
       Race race = this.racingManager.getRace(args[0]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else if (race.getType() == RaceType.fromString(args[1])) {
-         MessageManager.setValue("type", (Object)race.getType().toString());
+         MessageManager.setValue("type", race.getType().toString());
          MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_TYPE_NOCHANGE);
       } else {
          RaceType oldType = race.getType();
          race.setType(RaceType.fromString(args[1]));
          this.racingManager.updateRace(race, () -> {
-            MessageManager.setValue("old_type", (Object)oldType.toString());
-            MessageManager.setValue("new_type", (Object)race.getType().toString());
+            MessageManager.setValue("old_type", oldType.toString());
+            MessageManager.setValue("new_type", race.getType().toString());
             MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_TYPE_SUCCESS);
          });
       }

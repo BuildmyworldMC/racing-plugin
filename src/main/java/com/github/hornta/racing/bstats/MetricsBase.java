@@ -23,9 +23,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MetricsBase {
    public static final String METRICS_VERSION = "2.2.1";
-   private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, (task) -> {
-      return new Thread(task, "bStats-Metrics");
-   });
+   private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, (task) -> new Thread(task, "bStats-Metrics"));
    private static final String REPORT_URL = "https://bStats.org/api/v2/data/%s";
    private final String platform;
    private final String serverUuid;
@@ -69,7 +67,7 @@ public class MetricsBase {
 
    private void startSubmitting() {
       Runnable submitTask = () -> {
-         if (this.enabled && (Boolean)this.checkServiceEnabledSupplier.get()) {
+         if (this.enabled && this.checkServiceEnabledSupplier.get()) {
             if (this.submitTaskConsumer != null) {
                this.submitTaskConsumer.accept(this::submitData);
             } else {
@@ -91,11 +89,7 @@ public class MetricsBase {
       this.appendPlatformDataConsumer.accept(baseJsonBuilder);
       JsonObjectBuilder serviceJsonBuilder = new JsonObjectBuilder();
       this.appendServiceDataConsumer.accept(serviceJsonBuilder);
-      JsonObjectBuilder.JsonObject[] chartData = (JsonObjectBuilder.JsonObject[])this.customCharts.stream().map((customChart) -> {
-         return customChart.getRequestJsonObject(this.errorLogger, this.logErrors);
-      }).filter(Objects::nonNull).toArray((x$0) -> {
-         return new JsonObjectBuilder.JsonObject[x$0];
-      });
+      JsonObjectBuilder.JsonObject[] chartData = this.customCharts.stream().map((customChart) -> customChart.getRequestJsonObject(this.errorLogger, this.logErrors)).filter(Objects::nonNull).toArray(JsonObjectBuilder.JsonObject[]::new);
       serviceJsonBuilder.appendField("id", this.serviceId);
       serviceJsonBuilder.appendField("customCharts", chartData);
       baseJsonBuilder.appendField("service", serviceJsonBuilder.build());

@@ -1,6 +1,5 @@
 package com.github.hornta.racing.versioned_config;
 
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.function.Function;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -16,7 +15,7 @@ public class Snapshot<T extends Enum<T>> {
 
       try {
          this.configuration.loadFromString(configuration.saveToString());
-      } catch (InvalidConfigurationException var4) {
+      } catch (InvalidConfigurationException ignored) {
       }
 
    }
@@ -52,31 +51,23 @@ public class Snapshot<T extends Enum<T>> {
    }
 
    protected void update(Patch<T> patch) {
-      Iterator<Operation<T>> var2 = patch.getOperations().iterator();
-
-      while (var2.hasNext()) {
-         Operation<T> operation = (Operation)var2.next();
-         switch(operation.getType()) {
-         case ADD:
-            this.addNode(patch.getNode(operation.getId()));
-            break;
-         case REMOVE:
-            this.removeNode(operation.getId());
-         }
-      }
-
+       for (Operation<T> tOperation : patch.getOperations()) {
+           switch (tOperation.getType()) {
+               case ADD:
+                   this.addNode(patch.getNode(tOperation.getId()));
+                   break;
+               case REMOVE:
+                   this.removeNode(tOperation.getId());
+           }
+       }
    }
 
    protected void applyConfiguration(YamlConfiguration configuration) {
-      Iterator<Node<T>> var2 = this.nodes.iterator();
-
-      while (var2.hasNext()) {
-         Node<T> node = var2.next();
-         Object value = configuration.get(node.getPath());
-         node.setCurrentValue(value);
-         this.configuration.set(node.getPath(), value);
-      }
-
+       for (Node<T> node : this.nodes) {
+           Object value = configuration.get(node.getPath());
+           node.setCurrentValue(value);
+           this.configuration.set(node.getPath(), value);
+       }
    }
 
    private void addNode(Node<T> node) {
@@ -92,7 +83,7 @@ public class Snapshot<T extends Enum<T>> {
    }
 
    private void removeNode(T id) {
-      this.configuration.set(this.nodes.get(id).getPath(), (Object)null);
+      this.configuration.set(this.nodes.get(id).getPath(), null);
       this.nodes.remove(id);
    }
 }

@@ -26,8 +26,8 @@ public class ConfigurationBuilder<T extends Enum<T>> {
 
    private void validateMigrations() throws ConfigurationException {
       for(int i = 0; i < this.migrations.size(); ++i) {
-         if (((Migration<?>)this.migrations.get(i)).getVersion() != i + 1) {
-            throw new ConfigurationException("Wrong version for %s. Version must start at 1 increased by 1 for every migration.", new Object[]{((Migration<?>)this.migrations.get(i)).getClass().getName()});
+         if (this.migrations.get(i).getVersion() != i + 1) {
+            throw new ConfigurationException("Wrong version for %s. Version must start at 1 increased by 1 for every migration.", this.migrations.get(i).getClass().getName());
          }
       }
 

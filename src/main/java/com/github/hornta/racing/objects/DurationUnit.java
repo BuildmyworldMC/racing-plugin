@@ -2,20 +2,20 @@ package com.github.hornta.racing.objects;
 
 public class DurationUnit {
    private final long amount;
-   private final String singularis;
-   private final String pluralis;
+   private final String singulars;
+   private final String plurals;
 
-   public DurationUnit(long amount, String singularis, String pluralis) {
+   public DurationUnit(long amount, String singulars, String plurals) {
       this.amount = amount;
-      this.singularis = singularis;
-      this.pluralis = pluralis;
+      this.singulars = singulars;
+      this.plurals = plurals;
    }
 
    public long getAmount() {
       return this.amount;
    }
 
-   public String getNumerus() {
-      return this.amount == 1L ? this.singularis : this.pluralis;
+   public String getNumerous() {
+      return this.amount == 1L ? this.singulars : this.plurals;
    }
 }

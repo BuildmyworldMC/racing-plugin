@@ -40,7 +40,7 @@ public class SongManager implements Listener {
    }
 
    public static void playSong(String songName, Player player) {
-      Song song = (Song)instance.songsByName.get(songName.toLowerCase(Locale.ENGLISH));
+      Song song = instance.songsByName.get(songName.toLowerCase(Locale.ENGLISH));
       if (song != null) {
          stopSong(player);
          RadioSongPlayer radio = new RadioSongPlayer(song);
@@ -52,7 +52,7 @@ public class SongManager implements Listener {
 
    public static void stopSong(Player player) {
       if (instance.playerRadios.containsKey(player)) {
-         RadioSongPlayer radio = (RadioSongPlayer)instance.playerRadios.get(player);
+         RadioSongPlayer radio = instance.playerRadios.get(player);
          radio.setPlaying(false);
          radio.destroy();
          instance.playerRadios.remove(player);

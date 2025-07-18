@@ -18,14 +18,14 @@ public class CommandDeleteStartPoint extends RacingCommand implements ICommandHa
    public void handle(CommandSender commandSender, String[] args, int typedArgs) {
       Race race = this.racingManager.getRace(args[0]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else {
          Player player = (Player)commandSender;
          RaceStartPoint startPoint = race.getStartPoint(Integer.parseInt(args[1]));
          this.racingManager.deleteStartPoint(race, startPoint, () -> {
-            MessageManager.setValue("race_name", (Object)race.getName());
-            MessageManager.setValue("position", (Object)String.valueOf(startPoint.getPosition()));
+            MessageManager.setValue("race_name", race.getName());
+            MessageManager.setValue("position", String.valueOf(startPoint.getPosition()));
             MessageManager.sendMessage(player, MessageKey.RACE_DELETE_STARTPOINT_SUCCESS);
          });
       }

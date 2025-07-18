@@ -24,7 +24,6 @@ public class CommandCreateHDTopList implements ICommandHandler {
          } else {
             MessageManager.sendMessage(commandSender, MessageKey.HD_TOP_LIST_CREATE_ERROR_NO_PERSIST);
          }
-
       });
    }
 }

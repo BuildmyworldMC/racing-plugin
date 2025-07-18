@@ -21,20 +21,22 @@ public class Remount extends PacketAdapter {
    private final Map<Player, Integer> counter = new HashMap<>();
 
    public Remount() {
-      super(RacingPlugin.getInstance(), ListenerPriority.NORMAL, new PacketType[]{Client.POSITION, Client.POSITION_LOOK, Client.LOOK});
+      super(RacingPlugin.getInstance(), ListenerPriority.NORMAL, Client.POSITION, Client.POSITION_LOOK, Client.LOOK);
    }
 
    public void onPacketReceiving(PacketEvent event) {
       RacingManager racingManager = RacingPlugin.getInstance().getRacingManager();
       Player player = event.getPlayer();
       RaceSession session = racingManager.getParticipatingRace(player);
+
       if (session != null && session.isCurrentlyRacing(player)) {
          PacketContainer packet = event.getPacket();
          PacketType type = packet.getType();
+
          if (!player.isInsideVehicle() || type != Client.POSITION && type != Client.POSITION_LOOK) {
             this.counter.remove(player);
          } else {
-            int count = (Integer)this.counter.getOrDefault(player, 0) + 1;
+            int count = this.counter.getOrDefault(player, 0) + 1;
             if (count >= 2) {
                RacePlayerSession playerSession = session.getPlayerSession(player);
                Bukkit.getServer().getScheduler().runTask(RacingPlugin.getInstance(), () -> {
@@ -54,7 +56,6 @@ public class Remount extends PacketAdapter {
                this.counter.put(player, count);
             }
          }
-
       }
    }
 }

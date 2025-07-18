@@ -89,28 +89,28 @@ public class Commando {
    }
 
    public Boolean handleCommand(CommandSender sender, Command command, String[] args) {
-      ArrayList<String> arguments = new ArrayList(Arrays.asList(args));
-      arguments.add(0, command.getName());
+      ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
+      arguments.addFirst(command.getName());
       this.dispatch(sender, arguments);
       return true;
    }
 
    public List<String> handleAutoComplete(CommandSender sender, Command command, String[] args) {
-      List<String> arguments = new ArrayList(Arrays.asList(args));
-      arguments.add(0, command.getName());
-      return (List)this.rootCommandSet.autoComplete(sender, arguments).stream().sorted(String::compareTo).collect(Collectors.toList());
+      List<String> arguments = new ArrayList<>(Arrays.asList(args));
+      arguments.addFirst(command.getName());
+      return this.rootCommandSet.autoComplete(sender, arguments).stream().sorted(String::compareTo).collect(Collectors.toList());
    }
 
    public List<String> getHelpTexts() {
-      return this.getHelpTexts((Player)null);
+      return this.getHelpTexts(null);
    }
 
    public List<String> getHelpTexts(Player player) {
-      return (List)this.allCommands.stream().filter((command) -> {
+      return this.allCommands.stream().filter((command) -> {
          if (player == null) {
             return true;
          } else {
-            Iterator var2 = command.getPermissions().iterator();
+            Iterator<String> var2 = command.getPermissions().iterator();
 
             String permission;
             do {
@@ -118,7 +118,7 @@ public class Commando {
                   return true;
                }
 
-               permission = (String)var2.next();
+               permission = var2.next();
             } while(player.hasPermission(permission));
 
             return false;

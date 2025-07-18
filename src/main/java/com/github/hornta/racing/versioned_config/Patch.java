@@ -26,7 +26,7 @@ public class Patch<T extends Enum<T>> {
    }
 
    protected Node<T> getNode(T id) {
-      return (Node)this.nodes.get(id);
+      return this.nodes.get(id);
    }
 
    protected List<Operation<T>> getOperations() {

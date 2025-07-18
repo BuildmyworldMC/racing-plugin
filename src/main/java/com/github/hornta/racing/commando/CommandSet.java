@@ -1,7 +1,6 @@
 package com.github.hornta.racing.commando;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,14 +12,14 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 public class CommandSet {
-   private Commando commando;
+   private final Commando commando;
    private CarbonCommand root;
-   private Map<String, CommandSet> childCommands = new HashMap<>();
+   private final Map<String, CommandSet> childCommands = new HashMap<>();
 
    CommandSet(Commando commando) {
       this.commando = commando;
@@ -44,7 +43,7 @@ public class CommandSet {
 
    CommandSet getCommandSet(String name) {
       String lowerName = name.toLowerCase(Locale.ENGLISH);
-      return !this.childCommands.containsKey(lowerName) ? null : (CommandSet)this.childCommands.get(lowerName);
+      return this.childCommands.getOrDefault(lowerName, null);
    }
 
    public CarbonCommand getCommand() {
@@ -66,13 +65,13 @@ public class CommandSet {
             this.handleMissingArgument(sender, "");
          }
       } else {
-         String childCommand = this.getChildCommand((String)args.get(0));
+         String childCommand = this.getChildCommand((String)args.getFirst());
          if (childCommand != null) {
-            ((CommandSet)this.childCommands.get(childCommand)).dispatch(sender, args.subList(1, args.size()));
+            (this.childCommands.get(childCommand)).dispatch(sender, args.subList(1, args.size()));
          } else if (hasHandler) {
             new CommandProcessor(this.commando, this.root, sender, args);
          } else {
-            this.handleMissingArgument(sender, (String)args.get(0));
+            this.handleMissingArgument(sender, (String)args.getFirst());
          }
       }
 
@@ -97,11 +96,11 @@ public class CommandSet {
       if (args.isEmpty()) {
          return Collections.emptySet();
       } else {
-         String childCommand = this.getChildCommand((String)args.get(0));
+         String childCommand = this.getChildCommand(args.getFirst());
          if (childCommand == null) {
             if (this.root != null && this.root.mayHaveArguments()) {
                try {
-                  return this.root.autoComplete(sender, (String[])args.toArray(new String[0]));
+                  return this.root.autoComplete(sender, args.toArray(new String[0]));
                } catch (Exception var5) {
                   Bukkit.getLogger().log(Level.SEVERE, var5.getMessage(), var5);
                   return Collections.emptySet();
@@ -114,16 +113,12 @@ public class CommandSet {
          }
 
          Set<String> suggestions = new HashSet<>();;
-         if (childCommand == null || ((String)args.get(args.size() - 1)).equalsIgnoreCase(childCommand)) {
-            suggestions.addAll((Collection)this.childCommands.entrySet().stream().filter((e) -> {
-               return ((CommandSet)e.getValue()).root == null ? true : ((CommandSet)e.getValue()).root.checkPermissions(sender);
-            }).filter((e) -> {
-               return ((String)e.getKey()).toLowerCase(Locale.ENGLISH).startsWith(((String)args.get(0)).toLowerCase(Locale.ENGLISH));
-            }).map(Entry::getKey).collect(Collectors.toList()));
+         if (childCommand == null || (args.getLast()).equalsIgnoreCase(childCommand)) {
+            suggestions.addAll(this.childCommands.entrySet().stream().filter((e) -> (e.getValue()).root == null || (e.getValue()).root.checkPermissions(sender)).filter((e) -> (e.getKey()).toLowerCase(Locale.ENGLISH).startsWith((args.getFirst()).toLowerCase(Locale.ENGLISH))).map(Entry::getKey).toList());
          }
 
          if (childCommand != null) {
-            suggestions.addAll(((CommandSet)this.childCommands.get(childCommand)).autoComplete(sender, args.subList(1, args.size())));
+            suggestions.addAll((this.childCommands.get(childCommand)).autoComplete(sender, args.subList(1, args.size())));
          }
 
          return suggestions;
@@ -135,16 +130,16 @@ public class CommandSet {
    }
 
    private static void collectAllCommands(Map<String, CommandSet> commands, List<CarbonCommand> collector, String startsWith) {
-      Iterator var3 = commands.entrySet().iterator();
+      Iterator<Entry<String, CommandSet>> var3 = commands.entrySet().iterator();
 
-      while(true) {
+      while (true) {
          Entry commandSet;
          do {
             if (!var3.hasNext()) {
                return;
             }
 
-            commandSet = (Entry)var3.next();
+            commandSet = var3.next();
          } while(!startsWith.isEmpty() && !((String)commandSet.getKey()).startsWith(startsWith));
 
          if (((CommandSet)commandSet.getValue()).root != null) {

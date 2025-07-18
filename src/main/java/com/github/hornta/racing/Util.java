@@ -6,7 +6,6 @@ import java.io.File;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import org.bukkit.Location;
@@ -76,31 +75,29 @@ public class Util {
          units.add(new DurationUnit(seconds, "<second>", "<seconds>"));
          StringBuilder stringBuilder = new StringBuilder();
          int count = 0;
-         Iterator<DurationUnit> var14 = units.iterator();
 
-         while (var14.hasNext()) {
-            DurationUnit unit = (DurationUnit)var14.next();
-            long amount = unit.getAmount();
-            if (count != 0 && amount == 0L) {
-               break;
-            }
-
-            if (amount != 0L) {
-               if (unit == units.getLast()) {
-                  stringBuilder.append(df.format((double)((float)amount / 1000.0F)));
-               } else {
-                  stringBuilder.append(amount);
-               }
-
-               stringBuilder.append(" ");
-               stringBuilder.append(unit.getNumerus());
-               stringBuilder.append(", ");
-               ++count;
-               if (count == 2) {
+          for (DurationUnit unit : units) {
+              long amount = unit.getAmount();
+              if (count != 0 && amount == 0L) {
                   break;
-               }
-            }
-         }
+              }
+
+              if (amount != 0L) {
+                  if (unit == units.getLast()) {
+                      stringBuilder.append(df.format(((float) amount / 1000.0F)));
+                  } else {
+                      stringBuilder.append(amount);
+                  }
+
+                  stringBuilder.append(" ");
+                  stringBuilder.append(unit.getNumerous());
+                  stringBuilder.append(", ");
+                  ++count;
+                  if (count == 2) {
+                      break;
+                  }
+              }
+          }
 
          String string = stringBuilder.toString();
          return string.substring(0, string.length() - 2);

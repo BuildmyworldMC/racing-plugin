@@ -58,7 +58,7 @@ public class Node<T extends Enum<T>> {
    }
 
    public boolean isExpectedType(ConfigurationSection configurationSection) {
-      boolean isExpectedType = false;
+      boolean isExpectedType;
       switch (this.type) {
          case LIST:
             isExpectedType = configurationSection.isList(this.path);
@@ -89,6 +89,8 @@ public class Node<T extends Enum<T>> {
             break;
          case DOUBLE:
             isExpectedType = configurationSection.isDouble(this.path) || configurationSection.isInt(this.path);
+         default:
+            isExpectedType = false;
       }
 
       return isExpectedType;

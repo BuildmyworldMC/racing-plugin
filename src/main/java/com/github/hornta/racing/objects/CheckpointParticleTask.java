@@ -37,15 +37,13 @@ public class CheckpointParticleTask extends BukkitRunnable {
       List<Player> players = this.checkpoint.getPlayers();
       boolean isInside = false;
       if (this.isEditing) {
-         Iterator<? extends Player> var3 = Bukkit.getOnlinePlayers().iterator();
 
-         while (var3.hasNext()) {
-            Player player = (Player)var3.next();
-            if (this.checkpoint.isInside(player)) {
-               isInside = true;
-               break;
-            }
-         }
+          for (Player player : Bukkit.getOnlinePlayers()) {
+              if (this.checkpoint.isInside(player)) {
+                  isInside = true;
+                  break;
+              }
+          }
       }
 
       Vector dir = this.checkpoint.getLocation().getDirection();
@@ -70,22 +68,22 @@ public class CheckpointParticleTask extends BukkitRunnable {
          particle.setY(loc.getY());
          particle.setZ(loc.getZ());
          particle.setParticleData(2.0F);
-         Iterator var15;
+         Iterator onlinePlayers;
          Player player;
          if (this.isEditing) {
-            var15 = Bukkit.getOnlinePlayers().iterator();
+            onlinePlayers = Bukkit.getOnlinePlayers().iterator();
 
-            while(var15.hasNext()) {
-               player = (Player)var15.next();
+            while(onlinePlayers.hasNext()) {
+               player = (Player)onlinePlayers.next();
                if (player.hasPermission(Permission.RACING_MODIFY.toString()) && player.getLocation().getWorld() == this.checkpoint.getLocation().getWorld()) {
                   particle.sendPacket(player);
                }
             }
          } else {
-            var15 = players.iterator();
+            onlinePlayers = players.iterator();
 
-            while(var15.hasNext()) {
-               player = (Player)var15.next();
+            while(onlinePlayers.hasNext()) {
+               player = (Player)onlinePlayers.next();
                if (player.getLocation().getWorld() == this.checkpoint.getLocation().getWorld()) {
                   particle.sendPacket(player);
                }

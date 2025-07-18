@@ -16,25 +16,21 @@ public class Util {
       List<String> keys = new ArrayList<>(configuration.getKeys(true));
       Collections.reverse(keys);
       Set<String> leafs = new HashSet<>();;
-      Iterator<String> var3 = keys.iterator();
 
-      while (var3.hasNext()) {
-         String key = (String)var3.next();
-         boolean hasSubstring = false;
-         Iterator<String> var6 = leafs.iterator();
+       for (String key : keys) {
+           boolean hasSubstring = false;
 
-         while (var6.hasNext()) {
-            String checkKey = (String)var6.next();
-            if (checkKey.contains(key)) {
-               hasSubstring = true;
-               break;
-            }
-         }
+           for (String checkKey : leafs) {
+               if (checkKey.contains(key)) {
+                   hasSubstring = true;
+                   break;
+               }
+           }
 
-         if (!hasSubstring) {
-            leafs.add(key);
-         }
-      }
+           if (!hasSubstring) {
+               leafs.add(key);
+           }
+       }
 
       return leafs;
    }

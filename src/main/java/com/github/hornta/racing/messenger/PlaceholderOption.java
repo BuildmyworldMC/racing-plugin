@@ -5,7 +5,6 @@ public enum PlaceholderOption {
 
    public static PlaceholderOption fromString(String string) {
       PlaceholderOption[] var1 = values();
-      int var2 = var1.length;
 
        for (PlaceholderOption value : var1) {
            if (value.name().equalsIgnoreCase(string)) {

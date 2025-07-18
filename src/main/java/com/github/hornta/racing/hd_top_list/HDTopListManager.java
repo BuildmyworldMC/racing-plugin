@@ -72,7 +72,7 @@ public class HDTopListManager implements Listener {
             return null;
          }
 
-         topList = (HDTopList) var1.next();
+         topList = var1.next();
       } while (!topList.getName().equals(name));
 
       return topList;
@@ -83,9 +83,9 @@ public class HDTopListManager implements Listener {
       if (vaultChat != null) {
          OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(racePlayerStatistic.getPlayerId());
          String prefix = ChatColor.translateAlternateColorCodes('&',
-               vaultChat.getPlayerPrefix((String) null, offlinePlayer));
+               vaultChat.getPlayerPrefix(null, offlinePlayer));
          String suffix = ChatColor.translateAlternateColorCodes('&',
-               vaultChat.getPlayerSuffix((String) null, offlinePlayer));
+               vaultChat.getPlayerSuffix(null, offlinePlayer));
          return prefix + racePlayerStatistic.getPlayerName() + suffix;
       } else {
          return racePlayerStatistic.getPlayerName();
@@ -136,37 +136,31 @@ public class HDTopListManager implements Listener {
    }
 
    private void updateDirtyTopLists() {
-      this.updateDirtyTopLists((Runnable) null);
+      this.updateDirtyTopLists(null);
    }
 
    public void updateDirtyTopLists(Runnable runnable) {
       List<HDTopList> dirtyTopLists = this.topLists.stream().filter(HDTopList::isDirty)
             .collect(Collectors.toList());
       this.updateToplists(dirtyTopLists);
-      Iterator<HDTopList> var3 = dirtyTopLists.iterator();
 
-      while (var3.hasNext()) {
-         HDTopList topList = (HDTopList) var3.next();
-         this.storage.write(topList, (result) -> {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
-               if (result) {
-                  topList.setDirty(false);
-                  if (runnable != null) {
-                     runnable.run();
-                  }
-               }
-
-            });
-         });
-      }
-
+       for (HDTopList topList : dirtyTopLists) {
+           this.storage.write(topList, (result) -> {
+               Bukkit.getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
+                   if (result) {
+                       topList.setDirty(false);
+                       if (runnable != null) {
+                           runnable.run();
+                       }
+                   }
+               });
+           });
+       }
    }
 
    @EventHandler
    void onRaceResetTop(RaceResetTopEvent event) {
-      this.updateToplists(this.topLists.stream().filter((topList) -> {
-         return topList.getRace() == event.getRace();
-      }).collect(Collectors.toList()));
+      this.updateToplists(this.topLists.stream().filter((topList) -> topList.getRace() == event.getRace()).collect(Collectors.toList()));
    }
 
    @EventHandler
@@ -184,9 +178,7 @@ public class HDTopListManager implements Listener {
 
    @EventHandler
    void onRaceChangeName(RaceChangeNameEvent event) {
-      this.updateToplists(this.topLists.stream().filter((hdTopList) -> {
-         return event.getRace() == hdTopList.getRace();
-      }).collect(Collectors.toList()));
+      this.updateToplists(this.topLists.stream().filter((hdTopList) -> event.getRace() == hdTopList.getRace()).collect(Collectors.toList()));
    }
 
    @EventHandler
@@ -196,7 +188,7 @@ public class HDTopListManager implements Listener {
 
       HDTopList topList;
       while (var3.hasNext()) {
-         topList = (HDTopList) var3.next();
+         topList = var3.next();
          if (event.getRace() == topList.getRace()) {
             toRemove.add(topList);
          }
@@ -205,33 +197,26 @@ public class HDTopListManager implements Listener {
       var3 = toRemove.iterator();
 
       while (var3.hasNext()) {
-         topList = (HDTopList) var3.next();
+         topList = var3.next();
          this.deleteTopList(topList);
       }
-
    }
 
    @EventHandler
    void onUnloadRace(UnloadRaceEvent event) {
-      Iterator<HDTopList> var2 = this.topLists.iterator();
 
-      while (var2.hasNext()) {
-         HDTopList topList = (HDTopList) var2.next();
-         if (event.getRace() == topList.getRace()) {
-            topList.getHologram().delete();
-         }
-      }
+       for (HDTopList topList : this.topLists) {
+           if (event.getRace() == topList.getRace()) {
+               topList.getHologram().delete();
+           }
+       }
 
-      this.topLists.removeIf((l) -> {
-         return l.getHologram().isEnabled();
-      });
+      this.topLists.removeIf((l) -> l.getHologram().isEnabled());
    }
 
    @EventHandler
    void onRaceResultUpdatedEvent(RaceResultUpdatedEvent event) {
-      this.updateToplists(this.topLists.stream().filter((hdTopList) -> {
-         return event.getRace() == hdTopList.getRace();
-      }).collect(Collectors.toList()));
+      this.updateToplists(this.topLists.stream().filter((hdTopList) -> event.getRace() == hdTopList.getRace()).collect(Collectors.toList()));
    }
 
    private boolean isDecentHologramsReady() {
@@ -285,32 +270,24 @@ public class HDTopListManager implements Listener {
    private void updateToplists(Iterable<HDTopList> topLists) {
       CompletableFuture.runAsync(() -> {
          final Map<HDTopList, List<String>> names = new HashMap<>();
-         Iterator<HDTopList> var3 = topLists.iterator();
 
-         while (var3.hasNext()) {
-            HDTopList topList = var3.next();
-            Set<RacePlayerStatistic> stats = topList.getRace().getResults(topList.getStatType(), topList.getLaps());
-            List<String> topListUsernames = new ArrayList<>();
-            Iterator<RacePlayerStatistic> var7 = stats.iterator();
+          for (HDTopList topList : topLists) {
+              Set<RacePlayerStatistic> stats = topList.getRace().getResults(topList.getStatType(), topList.getLaps());
+              List<String> topListUsernames = new ArrayList<>();
 
-            while (var7.hasNext()) {
-               RacePlayerStatistic stat = var7.next();
-               topListUsernames.add(getFormattedPlayerName(stat));
-            }
+              for (RacePlayerStatistic stat : stats) {
+                  topListUsernames.add(getFormattedPlayerName(stat));
+              }
 
-            names.put(topList, topListUsernames);
-         }
+              names.put(topList, topListUsernames);
+          }
 
          (new BukkitRunnable() {
-            public void run() {
-               Iterator<Entry<HDTopList, List<String>>> var1 = names.entrySet().iterator();
-
-               while (var1.hasNext()) {
-                  Entry<HDTopList, List<String>> entry = var1.next();
-                  HDTopListManager.updateText((HDTopList) entry.getKey(), entry.getValue());
-               }
-
-            }
+             public void run() {
+                for (Entry<HDTopList, List<String>> entry : names.entrySet()) {
+                    HDTopListManager.updateText(entry.getKey(), entry.getValue());
+                }
+             }
          }).runTask(RacingPlugin.getInstance());
       });
    }
@@ -329,20 +306,15 @@ public class HDTopListManager implements Listener {
          if (callback != null) {
             callback.accept(result);
          }
-
       });
    }
 
    private void deleteTopListInternal(String name, Consumer<Boolean> callback) {
-      Iterator<HDTopList> var3 = this.topLists.iterator();
-
-      while (var3.hasNext()) {
-         HDTopList topList = var3.next();
-         if (topList.getName().equals(name)) {
-            this.deleteTopList(topList, callback);
-            break;
-         }
-      }
-
+       for (HDTopList topList : this.topLists) {
+           if (topList.getName().equals(name)) {
+               this.deleteTopList(topList, callback);
+               break;
+           }
+       }
    }
 }

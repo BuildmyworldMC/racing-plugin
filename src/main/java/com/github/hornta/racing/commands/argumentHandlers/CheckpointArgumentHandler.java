@@ -21,11 +21,7 @@ public class CheckpointArgumentHandler implements IArgumentHandler {
    }
 
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)this.racingManager.getRace(prevArgs[0]).getCheckpoints().stream().filter((race) -> {
-         return String.valueOf(race.getPosition()).toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH));
-      }).map((cp) -> {
-         return String.valueOf(cp.getPosition());
-      }).collect(Collectors.toCollection(LinkedHashSet::new));
+      return this.racingManager.getRace(prevArgs[0]).getCheckpoints().stream().filter((race) -> String.valueOf(race.getPosition()).toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).map((cp) -> String.valueOf(cp.getPosition())).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {
@@ -44,8 +40,8 @@ public class CheckpointArgumentHandler implements IArgumentHandler {
          key = MessageKey.CHECKPOINT_ALREADY_EXIST;
       }
 
-      MessageManager.setValue("race_name", (Object)result.getPrevArgs()[0]);
-      MessageManager.setValue("position", (Object)result.getValue());
+      MessageManager.setValue("race_name", result.getPrevArgs()[0]);
+      MessageManager.setValue("position", result.getValue());
       MessageManager.sendMessage(result.getCommandSender(), key);
    }
 }

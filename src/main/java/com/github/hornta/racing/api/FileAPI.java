@@ -94,7 +94,7 @@ public class FileAPI implements RacingAPI {
    private final RaceMigrationManager migrationManager = new RaceMigrationManager();
 
    public FileAPI(Plugin plugin) {
-      this.directory = new File(plugin.getDataFolder(), (String)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.FILE_RACE_DIRECTORY));
+      this.directory = new File(plugin.getDataFolder(), RacingPlugin.getInstance().getConfiguration().get(ConfigKey.FILE_RACE_DIRECTORY));
       this.migrationManager.addMigration(new EntryFeeMigrationRace());
       this.migrationManager.addMigration(new WalkSpeedMigrationRace());
       this.migrationManager.addMigration(new PotionEffectsMigrationRace());
@@ -121,43 +121,39 @@ public class FileAPI implements RacingAPI {
          } else {
              int var4 = files.length;
 
-            for (int var5 = 0; var5 < var4; ++var5) {
-               File file = files[var5];
-               if (file.isFile()) {
-                  YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-
-                  try {
-                     this.migrationManager.migrate(yaml);
+             for (File file : files) {
+                 if (file.isFile()) {
+                     YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 
                      try {
-                        yaml.save(file);
-                     } catch (IOException var9) {
-                        RacingPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save race");
-                     }
+                         this.migrationManager.migrate(yaml);
 
-                     races.add(yaml);
-                  } catch (Exception var10) {
-                     RacingPlugin.logger().log(Level.SEVERE, var10.getMessage());
-                  }
-               }
-            }
+                         try {
+                             yaml.save(file);
+                         } catch (IOException var9) {
+                             RacingPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save race");
+                         }
+
+                         races.add(yaml);
+                     } catch (Exception var10) {
+                         RacingPlugin.logger().log(Level.SEVERE, var10.getMessage());
+                     }
+                 }
+             }
 
             return races;
          }
       }).thenAccept((configurations) -> {
          Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
             List<Race> races = new ArrayList<>();
-            Iterator<YamlConfiguration> var4 = configurations.iterator();
 
-            while (var4.hasNext()) {
-               YamlConfiguration config = (YamlConfiguration)var4.next();
-
-               try {
-                  races.add(this.parseRace(config));
-               } catch (Exception var7) {
-                  RacingPlugin.logger().log(Level.SEVERE, var7.getMessage(), var7);
-               }
-            }
+             for (YamlConfiguration config : configurations) {
+                 try {
+                     races.add(this.parseRace(config));
+                 } catch (Exception var7) {
+                     RacingPlugin.logger().log(Level.SEVERE, var7.getMessage(), var7);
+                 }
+             }
 
             callback.accept(races);
          });
@@ -203,7 +199,7 @@ public class FileAPI implements RacingAPI {
          yaml.set("spawn.z", race.getSpawn().getZ());
          yaml.set("spawn.pitch", race.getSpawn().getPitch());
          yaml.set("spawn.yaw", race.getSpawn().getYaw());
-         yaml.set("spawn.world", race.getSpawn().getWorld().getName());
+         yaml.set("spawn.world", Objects.requireNonNull(race.getSpawn().getWorld()).getName());
          this.writeCheckpoints(race.getCheckpoints(), yaml);
          this.writeStartPoints(race.getStartPoints(), yaml);
          this.writePotionEffects(race.getPotionEffects(), yaml);
@@ -391,63 +387,56 @@ public class FileAPI implements RacingAPI {
          RacingPlugin.logger().log(Level.SEVERE, "Couldn't find checkpoints section");
          return checkpoints;
       } else {
-         Iterator<String> var4 = section.getKeys(false).iterator();
 
-         while (var4.hasNext()) {
-            String key = (String)var4.next();
-
-            UUID id;
-            try {
-               id = UUID.fromString(key);
-            } catch (IllegalArgumentException var12) {
-               RacingPlugin.logger().log(Level.SEVERE, "Couldn't convert key to UUID", var12);
-               continue;
-            }
-
-            String positionPath = key + ".position";
-            if (!section.isInt(positionPath)) {
-               RacingPlugin.logger().log(Level.SEVERE, "`position` must be of type integer");
-            } else {
-               int position = section.getInt(positionPath);
-
-               Location location;
-               try {
-                  location = this.parseLocation(section, key + ".location");
-               } catch (ParseYamlLocationException var11) {
-                  RacingPlugin.logger().log(Level.SEVERE, "Couldn't parse location: " + var11.getMessage(), var11);
+          for (String key : section.getKeys(false)) {
+              UUID id;
+              try {
+                  id = UUID.fromString(key);
+              } catch (IllegalArgumentException var12) {
+                  RacingPlugin.logger().log(Level.SEVERE, "Couldn't convert key to UUID", var12);
                   continue;
-               }
+              }
 
-               String radiusPath = key + ".radius";
-               if (!section.isInt(radiusPath)) {
-                  RacingPlugin.logger().log(Level.SEVERE, "`radius` must be of type integer");
-               } else {
-                  checkpoints.add(new RaceCheckpoint(id, position, location, section.getInt(radiusPath)));
-               }
-            }
-         }
+              String positionPath = key + ".position";
+              if (!section.isInt(positionPath)) {
+                  RacingPlugin.logger().log(Level.SEVERE, "`position` must be of type integer");
+              } else {
+                  int position = section.getInt(positionPath);
+
+                  Location location;
+                  try {
+                      location = this.parseLocation(section, key + ".location");
+                  } catch (ParseYamlLocationException var11) {
+                      RacingPlugin.logger().log(Level.SEVERE, "Couldn't parse location: " + var11.getMessage(), var11);
+                      continue;
+                  }
+
+                  String radiusPath = key + ".radius";
+                  if (!section.isInt(radiusPath)) {
+                      RacingPlugin.logger().log(Level.SEVERE, "`radius` must be of type integer");
+                  } else {
+                      checkpoints.add(new RaceCheckpoint(id, position, location, section.getInt(radiusPath)));
+                  }
+              }
+          }
 
          return checkpoints;
       }
    }
 
    private void writeCheckpoints(List<RaceCheckpoint> checkpoints, YamlConfiguration yaml) {
-      yaml.set("checkpoints", (Object)null);
+      yaml.set("checkpoints", null);
       if (!yaml.contains("checkpoints")) {
          yaml.createSection("checkpoints");
       }
 
-      Iterator<RaceCheckpoint> var3 = checkpoints.iterator();
-
-      while (var3.hasNext()) {
-         RaceCheckpoint checkpoint = (RaceCheckpoint)var3.next();
-         String key = "checkpoints." + checkpoint.getId();
-         yaml.set(key + ".position", checkpoint.getPosition());
-         yaml.set(key + ".location", checkpoint.getPosition());
-         this.writeLocation(checkpoint.getLocation(), yaml, key + ".location");
-         yaml.set(key + ".radius", checkpoint.getRadius());
-      }
-
+       for (RaceCheckpoint checkpoint : checkpoints) {
+           String key = "checkpoints." + checkpoint.getId();
+           yaml.set(key + ".position", checkpoint.getPosition());
+           yaml.set(key + ".location", checkpoint.getPosition());
+           this.writeLocation(checkpoint.getLocation(), yaml, key + ".location");
+           yaml.set(key + ".radius", checkpoint.getRadius());
+       }
    }
 
    private List<RaceStartPoint> parseStartPoints(YamlConfiguration yaml) {
@@ -457,57 +446,50 @@ public class FileAPI implements RacingAPI {
          RacingPlugin.logger().log(Level.SEVERE, "Couldn't find startpoints section");
          return startPoints;
       } else {
-         Iterator<String> var4 = section.getKeys(false).iterator();
 
-         while (var4.hasNext()) {
-            String key = (String)var4.next();
-
-            UUID id;
-            try {
-               id = UUID.fromString(key);
-            } catch (IllegalArgumentException var12) {
-               RacingPlugin.logger().log(Level.SEVERE, "Couldn't convert key to UUID", var12);
-               continue;
-            }
-
-            String positionPath = key + ".position";
-            if (!section.isInt(positionPath)) {
-               RacingPlugin.logger().log(Level.SEVERE, "`position` must be of type integer");
-            } else {
-               int position = section.getInt(positionPath);
-
-               Location location;
-               try {
-                  location = this.parseLocation(section, key + ".location");
-               } catch (ParseYamlLocationException var11) {
-                  RacingPlugin.logger().log(Level.SEVERE, "Couldn't parse location: " + var11.getMessage(), var11);
+          for (String key : section.getKeys(false)) {
+              UUID id;
+              try {
+                  id = UUID.fromString(key);
+              } catch (IllegalArgumentException var12) {
+                  RacingPlugin.logger().log(Level.SEVERE, "Couldn't convert key to UUID", var12);
                   continue;
-               }
+              }
 
-               startPoints.add(new RaceStartPoint(id, position, location));
-            }
-         }
+              String positionPath = key + ".position";
+              if (!section.isInt(positionPath)) {
+                  RacingPlugin.logger().log(Level.SEVERE, "`position` must be of type integer");
+              } else {
+                  int position = section.getInt(positionPath);
+
+                  Location location;
+                  try {
+                      location = this.parseLocation(section, key + ".location");
+                  } catch (ParseYamlLocationException var11) {
+                      RacingPlugin.logger().log(Level.SEVERE, "Couldn't parse location: " + var11.getMessage(), var11);
+                      continue;
+                  }
+
+                  startPoints.add(new RaceStartPoint(id, position, location));
+              }
+          }
 
          return startPoints;
       }
    }
 
    private void writeStartPoints(List<RaceStartPoint> startPoints, YamlConfiguration yaml) {
-      yaml.set("startPoints", (Object)null);
+      yaml.set("startPoints", null);
       if (!yaml.contains("startPoints")) {
          yaml.createSection("startPoints");
       }
 
-      Iterator<RaceStartPoint> var3 = startPoints.iterator();
-
-      while (var3.hasNext()) {
-         RaceStartPoint startPoint = (RaceStartPoint)var3.next();
-         String key = "startPoints." + startPoint.getId();
-         yaml.set(key + ".position", startPoint.getPosition());
-         yaml.set(key + ".location", startPoint.getPosition());
-         this.writeLocation(startPoint.getLocation(), yaml, key + ".location");
-      }
-
+       for (RaceStartPoint startPoint : startPoints) {
+           String key = "startPoints." + startPoint.getId();
+           yaml.set(key + ".position", startPoint.getPosition());
+           yaml.set(key + ".location", startPoint.getPosition());
+           this.writeLocation(startPoint.getLocation(), yaml, key + ".location");
+       }
    }
 
    public static Set<RacePlayerStatistic> parseResults(YamlConfiguration yaml) {
@@ -550,20 +532,18 @@ public class FileAPI implements RacingAPI {
 
    public static void writeResults(Iterable<RacePlayerStatistic> results, ConfigurationSection yaml) {
       Collection<Map<String, Object>> writeList = new ArrayList<>();
-      Iterator<RacePlayerStatistic> var3 = results.iterator();
 
-      while (var3.hasNext()) {
-         RacePlayerStatistic entry = (RacePlayerStatistic)var3.next();
-         Map<String, Object> writeObject = new LinkedHashMap<>();
-         writeObject.put("player_id", entry.getPlayerId().toString());
-         writeObject.put("name", entry.getPlayerName());
-         writeObject.put("runs", entry.getRuns());
-         writeObject.put("single_runs", entry.getSingleRuns());
-         writeObject.put("wins", entry.getWins());
-         writeObject.put("fastestLap", entry.getFastestLap());
-         writeObject.put("records", entry.getRecords());
-         writeList.add(writeObject);
-      }
+       for (RacePlayerStatistic entry : results) {
+           Map<String, Object> writeObject = new LinkedHashMap<>();
+           writeObject.put("player_id", entry.getPlayerId().toString());
+           writeObject.put("name", entry.getPlayerName());
+           writeObject.put("runs", entry.getRuns());
+           writeObject.put("single_runs", entry.getSingleRuns());
+           writeObject.put("wins", entry.getWins());
+           writeObject.put("fastestLap", entry.getFastestLap());
+           writeObject.put("records", entry.getRecords());
+           writeList.add(writeObject);
+       }
 
       yaml.set("results", writeList);
    }
@@ -574,22 +554,20 @@ public class FileAPI implements RacingAPI {
       if (section == null) {
          throw new ParseRaceException("Missing field `potion_effects`");
       } else {
-         Iterator<String> var4 = section.getKeys(false).iterator();
 
-         while (var4.hasNext()) {
-            String key = (String)var4.next();
-            PotionEffectType type = PotionEffectType.getByName(key);
-            if (type == null) {
-               throw new ParseRaceException("Couldn't parse PotionEffectType");
-            }
+          for (String key : section.getKeys(false)) {
+              PotionEffectType type = PotionEffectType.getByName(key);
+              if (type == null) {
+                  throw new ParseRaceException("Couldn't parse PotionEffectType");
+              }
 
-            String amplifierPath = key + ".amplifier";
-            if (!section.isInt(amplifierPath)) {
-               throw new ParseRaceException("Couldn't parse amplifier");
-            }
+              String amplifierPath = key + ".amplifier";
+              if (!section.isInt(amplifierPath)) {
+                  throw new ParseRaceException("Couldn't parse amplifier");
+              }
 
-            potionEffects.add(new RacePotionEffect(type, section.getInt(amplifierPath)));
-         }
+              potionEffects.add(new RacePotionEffect(type, section.getInt(amplifierPath)));
+          }
 
          return potionEffects;
       }
@@ -597,14 +575,11 @@ public class FileAPI implements RacingAPI {
 
    private void writePotionEffects(Set<RacePotionEffect> potionEffects, YamlConfiguration yaml) {
       yaml.createSection("potion_effects");
-      Iterator<RacePotionEffect> var3 = potionEffects.iterator();
 
-      while (var3.hasNext()) {
-         RacePotionEffect potionEffect = (RacePotionEffect)var3.next();
-         String key = "potion_effects." + potionEffect.getType().getName();
-         yaml.set(key + ".amplifier", potionEffect.getAmplifier());
-      }
-
+       for (RacePotionEffect potionEffect : potionEffects) {
+           String key = "potion_effects." + potionEffect.getType().getName();
+           yaml.set(key + ".amplifier", potionEffect.getAmplifier());
+       }
    }
 
    private Set<RaceSign> parseSigns(YamlConfiguration yaml) {
@@ -613,57 +588,55 @@ public class FileAPI implements RacingAPI {
       if (entries == null) {
          throw new ParseRaceException("Couldn't parse signs list");
       } else {
-         Iterator<Map<String, Object>> var4 = entries.iterator();
 
-         while (var4.hasNext()) {
-            Map<String, Object> entry = var4.next();
-            int x = (Integer)entry.get("x");
-            int y = (Integer)entry.get("y");
-            int z = (Integer)entry.get("z");
-            String worldName = (String)entry.get("world");
-            World world = Bukkit.getWorld(worldName);
-            if (world == null) {
-               throw new ParseRaceException("Couldn't parse sign because a world with name " + worldName + " wasn't found");
-            }
+          for (Map<String, Object> entry : entries) {
+              int x = (Integer) entry.get("x");
+              int y = (Integer) entry.get("y");
+              int z = (Integer) entry.get("z");
+              String worldName = (String) entry.get("world");
+              World world = Bukkit.getWorld(worldName);
+              if (world == null) {
+                  throw new ParseRaceException("Couldn't parse sign because a world with name " + worldName + " wasn't found");
+              }
 
-            Block block = world.getBlockAt(x, y, z);
-            if (!(block.getState() instanceof Sign)) {
-               RacingPlugin.logger().log(Level.WARNING, "Couldn't find sign at (" + x + ", " + y + ", " + z + ")");
-            } else {
-               UUID uuid;
-               try {
-                  uuid = UUID.fromString((String)entry.get("author"));
-               } catch (IllegalArgumentException var18) {
-                  throw new ParseRaceException("Couldn't parse sign because author UUID is not valid");
-               }
+              Block block = world.getBlockAt(x, y, z);
+              if (!(block.getState() instanceof Sign)) {
+                  RacingPlugin.logger().log(Level.WARNING, "Couldn't find sign at (" + x + ", " + y + ", " + z + ")");
+              } else {
+                  UUID uuid;
+                  try {
+                      uuid = UUID.fromString((String) entry.get("author"));
+                  } catch (IllegalArgumentException var18) {
+                      throw new ParseRaceException("Couldn't parse sign because author UUID is not valid");
+                  }
 
-               Instant createdAt;
-               try {
-                  createdAt = Instant.ofEpochSecond((long)(Integer)entry.get("created_at"));
-               } catch (DateTimeException var17) {
-                  throw new ParseRaceException("Couldn't parse sign because timestamp is invalid");
-               }
+                  Instant createdAt;
+                  try {
+                      createdAt = Instant.ofEpochSecond((long) (Integer) entry.get("created_at"));
+                  } catch (DateTimeException var17) {
+                      throw new ParseRaceException("Couldn't parse sign because timestamp is invalid");
+                  }
 
-               if (!entry.containsKey("laps")) {
-                  throw new ParseRaceException("Couldn't find signs[].laps");
-               }
+                  if (!entry.containsKey("laps")) {
+                      throw new ParseRaceException("Couldn't find signs[].laps");
+                  }
 
-               if (!(entry.get("laps") instanceof Integer)) {
-                  throw new ParseRaceException("Couldn't convert signs[].laps to an integer");
-               }
+                  if (!(entry.get("laps") instanceof Integer)) {
+                      throw new ParseRaceException("Couldn't convert signs[].laps to an integer");
+                  }
 
-               int laps = (Integer)entry.get("laps");
+                  int laps = (Integer) entry.get("laps");
 
-               RaceSignType type;
-               try {
-                  type = RaceSignType.fromString((String)entry.get("type"));
-               } catch (IllegalArgumentException var19) {
-                  throw new ParseRaceException("Couldn't parse sign because sign type is not valid");
-               }
+                  RaceSignType type;
+                  try {
+                      type = RaceSignType.fromString((String) entry.get("type"));
+                  } catch (IllegalArgumentException var19) {
+                      throw new ParseRaceException("Couldn't parse sign because sign type is not valid");
+                  }
 
-               signs.add(new RaceSign((Sign)block.getState(), uuid, createdAt, laps, type));
-            }
-         }
+                  signs.add(new RaceSign((Sign) block.getState(), uuid, createdAt, laps, type));
+              }
+          }
 
          return signs;
       }
@@ -671,21 +644,19 @@ public class FileAPI implements RacingAPI {
 
    private void writeSigns(Set<RaceSign> signs, YamlConfiguration yaml) {
       List<Map<String, Object>> writeList = new ArrayList<>();
-      Iterator<RaceSign> var4 = signs.iterator();
 
-      while (var4.hasNext()) {
-         RaceSign sign = (RaceSign)var4.next();
-         Map<String, Object> writeSign = new LinkedHashMap<>();
-         writeSign.put("x", sign.getSign().getLocation().getBlockX());
-         writeSign.put("y", sign.getSign().getLocation().getBlockY());
-         writeSign.put("z", sign.getSign().getLocation().getBlockZ());
-         writeSign.put("world", sign.getSign().getLocation().getWorld().getName());
-         writeSign.put("author", sign.getCreator().toString());
-         writeSign.put("created_at", sign.getCreatedAt().getEpochSecond());
-         writeSign.put("laps", sign.getLaps());
-         writeSign.put("type", sign.getSignType().name());
-         writeList.add(writeSign);
-      }
+       for (RaceSign sign : signs) {
+           Map<String, Object> writeSign = new LinkedHashMap<>();
+           writeSign.put("x", sign.getSign().getLocation().getBlockX());
+           writeSign.put("y", sign.getSign().getLocation().getBlockY());
+           writeSign.put("z", sign.getSign().getLocation().getBlockZ());
+           writeSign.put("world", Objects.requireNonNull(sign.getSign().getLocation().getWorld()).getName());
+           writeSign.put("author", sign.getCreator().toString());
+           writeSign.put("created_at", sign.getCreatedAt().getEpochSecond());
+           writeSign.put("laps", sign.getLaps());
+           writeSign.put("type", sign.getSignType().name());
+           writeList.add(writeSign);
+       }
 
       yaml.set("signs", writeList);
    }

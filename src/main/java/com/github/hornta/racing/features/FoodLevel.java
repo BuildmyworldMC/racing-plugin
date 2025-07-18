@@ -12,13 +12,12 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 public class FoodLevel implements Listener {
    @EventHandler
    void onFoodLevelChange(FoodLevelChangeEvent event) {
-      boolean allowFoodLevelChange = (Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.ALLOW_FOOD_LEVEL_CHANGE);
+      boolean allowFoodLevelChange = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.ALLOW_FOOD_LEVEL_CHANGE);
       if (event.getEntity() instanceof Player player) {
           RaceSession session = RacingPlugin.getInstance().getRacingManager().getParticipatingRace(player);
          if (!allowFoodLevelChange && session != null && session.isCurrentlyRacing(player) && (session.getState() == RaceSessionState.COUNTDOWN || session.getState() == RaceSessionState.STARTED)) {
             event.setCancelled(true);
          }
       }
-
    }
 }

@@ -20,18 +20,19 @@ public class CommandSetStartOrder extends RacingCommand implements ICommandHandl
       Race race = this.racingManager.getRace(args[0]);
       StartOrder newOrder = StartOrder.fromString(args[1]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else if (race.getStartOrder() == newOrder) {
-         MessageManager.setValue("order", (Object)newOrder.name());
+          assert newOrder != null;
+          MessageManager.setValue("order", newOrder.name());
          MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_START_ORDER_NOCHANGE);
       } else {
          StartOrder oldOrder = race.getStartOrder();
          race.setStartOrder(newOrder);
          this.racingManager.updateRace(race, () -> {
             Bukkit.getPluginManager().callEvent(new RaceChangeStateEvent(race));
-            MessageManager.setValue("old_order", (Enum)oldOrder);
-            MessageManager.setValue("new_order", (Enum)newOrder);
+            MessageManager.setValue("old_order", oldOrder);
+            MessageManager.setValue("new_order", newOrder);
             MessageManager.sendMessage(commandSender, MessageKey.RACE_SET_START_ORDER_SUCCESS);
          });
       }

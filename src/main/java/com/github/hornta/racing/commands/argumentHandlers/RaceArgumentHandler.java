@@ -37,11 +37,7 @@ public class RaceArgumentHandler implements IArgumentHandler {
    }
 
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return (Set)this.racingManager.getRaces().stream().filter((race) -> {
-         return race.getName().toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH));
-      }).filter((r) -> {
-         return this.filter != null ? this.filter.test(r) : true;
-      }).map(Race::getName).collect(Collectors.toCollection(LinkedHashSet::new));
+      return this.racingManager.getRaces().stream().filter((race) -> race.getName().toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).filter((r) -> this.filter == null || this.filter.test(r)).map(Race::getName).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {
@@ -60,7 +56,7 @@ public class RaceArgumentHandler implements IArgumentHandler {
          message = MessageKey.RACE_ALREADY_EXIST;
       }
 
-      MessageManager.setValue("race_name", (Object)result.getValue());
+      MessageManager.setValue("race_name", result.getValue());
       MessageManager.sendMessage(result.getCommandSender(), message);
    }
 }

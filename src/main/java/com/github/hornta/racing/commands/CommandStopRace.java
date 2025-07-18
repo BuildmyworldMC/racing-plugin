@@ -23,10 +23,7 @@ public class CommandStopRace extends RacingCommand implements ICommandHandler {
       if (sessions.isEmpty()) {
          MessageManager.sendMessage(commandSender, MessageKey.STOP_RACE_NOT_STARTED);
       } else {
-         Iterator var6 = sessions.iterator();
-
-         while(var6.hasNext()) {
-            RaceSession session = (RaceSession)var6.next();
+         for (RaceSession session : sessions) {
             session.stop();
          }
 
@@ -35,7 +32,6 @@ public class CommandStopRace extends RacingCommand implements ICommandHandler {
          } else {
             MessageManager.sendMessage(commandSender, MessageKey.STOP_RACE_SUCCESS);
          }
-
       }
    }
 }

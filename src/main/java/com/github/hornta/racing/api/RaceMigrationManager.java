@@ -26,7 +26,7 @@ public class RaceMigrationManager {
                return;
             }
 
-            iRaceFileMigration = (IRaceFileMigration)var2.next();
+            iRaceFileMigration = var2.next();
             if (iRaceFileMigration.from() == migration.from()) {
                throw new IllegalArgumentException("There is already a migration with the same from()");
             }
@@ -48,20 +48,17 @@ public class RaceMigrationManager {
       if (version.isGreater(currentVersion)) {
          throw new ParseRaceException("Race version greater than plugin race version not supported.");
       } else if (version != currentVersion) {
-         Iterator<IRaceFileMigration> var4 = this.migrations.iterator();
 
-         while (var4.hasNext()) {
-            IRaceFileMigration migration = (IRaceFileMigration)var4.next();
-            RaceVersion fromVersion = RaceVersion.fromString(yaml.getString("version"));
-            if (migration.from() == fromVersion) {
-               migration.migrate(yaml);
-               yaml.set("version", migration.to().toString());
-               Logger var10000 = RacingPlugin.logger();
-               String var10001 = fromVersion.toString();
-               var10000.info("Migrate race from version " + var10001 + " to " + migration.to().toString());
-            }
-         }
-
+          for (IRaceFileMigration migration : this.migrations) {
+              RaceVersion fromVersion = RaceVersion.fromString(yaml.getString("version"));
+              if (migration.from() == fromVersion) {
+                  migration.migrate(yaml);
+                  yaml.set("version", migration.to().toString());
+                  Logger var10000 = RacingPlugin.logger();
+                  String var10001 = fromVersion.toString();
+                  var10000.info("Migrate race from version " + var10001 + " to " + migration.to().toString());
+              }
+          }
       }
    }
 }

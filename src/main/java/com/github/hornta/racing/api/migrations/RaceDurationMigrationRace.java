@@ -19,17 +19,16 @@ public class RaceDurationMigrationRace implements IRaceFileMigration {
 
    public void migrate(YamlConfiguration yamlConfiguration) {
       List<Map<String, Object>> results = (List<Map<String, Object>>) yamlConfiguration.getList("results");
-      Iterator var3 = results.iterator();
+       assert results != null;
 
-      while(var3.hasNext()) {
-         Map<String, Object> player_results = (Map)var3.next();
-         Object duration = player_results.get("duration");
-         player_results.put("fastestLap", duration);
-         Map<Integer, Object> records = new HashMap<>();
-         records.put(1, duration);
-         player_results.put("records", records);
-         player_results.remove("duration");
-      }
+       for (Map<String, Object> result : results) {
+           Object duration = result.get("duration");
+           result.put("fastestLap", duration);
+           Map<Integer, Object> records = new HashMap<>();
+           records.put(1, duration);
+           result.put("records", records);
+           result.remove("duration");
+       }
 
    }
 }

@@ -19,19 +19,19 @@ public class CommandAddCheckpoint extends RacingCommand implements ICommandHandl
       Race race = this.racingManager.getRace(args[0]);
       int position = Integer.parseInt(args[1]);
       if (race.getState() != RaceState.UNDER_CONSTRUCTION) {
-         MessageManager.setValue("race_name", (Object)race.getName());
+         MessageManager.setValue("race_name", race.getName());
          MessageManager.sendMessage(commandSender, MessageKey.EDIT_NO_EDIT_MODE);
       } else {
          Entity entity = (Entity)commandSender;
          if (position > race.getCheckpoints().size() + 1) {
-            MessageManager.setValue("max", (Object)(race.getCheckpoints().size() + 1));
+            MessageManager.setValue("max", (race.getCheckpoints().size() + 1));
             MessageManager.sendMessage(commandSender, MessageKey.RACE_ADD_CHECKPOINT_POSITION_OUT_OF_BOUNDS);
          } else if (race.getCheckpoint(entity.getLocation()) != null) {
             MessageManager.sendMessage(commandSender, MessageKey.RACE_ADD_CHECKPOINT_IS_OCCUPIED);
          } else {
             this.racingManager.addCheckpoint(Util.centerOnBlock(entity.getLocation()), race, position, (checkPoint) -> {
-               MessageManager.setValue("race_name", (Object)race.getName());
-               MessageManager.setValue("position", (Object)checkPoint.getPosition());
+               MessageManager.setValue("race_name", race.getName());
+               MessageManager.setValue("position", checkPoint.getPosition());
                MessageManager.sendMessage(entity, MessageKey.RACE_ADD_CHECKPOINT_SUCCESS);
             });
          }
