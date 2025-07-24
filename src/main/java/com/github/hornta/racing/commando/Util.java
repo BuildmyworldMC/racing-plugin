@@ -22,10 +22,10 @@ public class Util {
          while(!queue.isEmpty()) {
             Class<?> curr = queue.poll();
             Class<?>[] supers = curr.getInterfaces();
-             int var6 = supers.length;
+             int superLength = supers.length;
 
-            for(int var7 = 0; var7 < var6; ++var7) {
-               Class<?> next = ((Class[]) supers)[var7];
+            for(int superIndex = 0; superIndex < superLength; ++superIndex) {
+               Class<?> next = ((Class[]) supers)[superIndex];
                if (next != null && !types.contains(next)) {
                   types.add(next);
                   queue.add(next);

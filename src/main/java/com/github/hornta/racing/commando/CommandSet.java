@@ -101,8 +101,8 @@ public class CommandSet {
             if (this.root != null && this.root.mayHaveArguments()) {
                try {
                   return this.root.autoComplete(sender, args.toArray(new String[0]));
-               } catch (Exception var5) {
-                  Bukkit.getLogger().log(Level.SEVERE, var5.getMessage(), var5);
+               } catch (Exception exception) {
+                  Bukkit.getLogger().log(Level.SEVERE, exception.getMessage(), exception);
                   return Collections.emptySet();
                }
             }
@@ -130,16 +130,16 @@ public class CommandSet {
    }
 
    private static void collectAllCommands(Map<String, CommandSet> commands, List<CarbonCommand> collector, String startsWith) {
-      Iterator<Entry<String, CommandSet>> var3 = commands.entrySet().iterator();
+      Iterator<Entry<String, CommandSet>> entryIterator = commands.entrySet().iterator();
 
       while (true) {
          Entry commandSet;
          do {
-            if (!var3.hasNext()) {
+            if (!entryIterator.hasNext()) {
                return;
             }
 
-            commandSet = var3.next();
+            commandSet = entryIterator.next();
          } while(!startsWith.isEmpty() && !((String)commandSet.getKey()).startsWith(startsWith));
 
          if (((CommandSet)commandSet.getValue()).root != null) {

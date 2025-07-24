@@ -18,11 +18,11 @@ public class RaceCommandExecutor implements Listener {
    void onExecuteCommand(ExecuteCommandEvent event) {
       Race race = event.getRaceSession().getRace();
       List<RaceCommand> commands = race.getCommands().stream().filter((commandx) -> commandx.isEnabled() && commandx.getCommandType() == event.getCommandType()).toList();
-      Iterator<RaceCommand> var4 = commands.iterator();
+      Iterator<RaceCommand> raceCommandIterator = commands.iterator();
 
       while (true) {
-         while(var4.hasNext()) {
-            RaceCommand command = var4.next();
+         while(raceCommandIterator.hasNext()) {
+            RaceCommand command = raceCommandIterator.next();
             if (command.getCommandType() != RaceCommandType.ON_RACE_FINISH && command.getCommandType() != RaceCommandType.ON_PLAYER_FINISH) {
                MessageManager.setValue("race", race.getName());
                this.dispatchCommand(command);

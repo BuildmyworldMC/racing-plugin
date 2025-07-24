@@ -32,8 +32,8 @@ public class CommandProcessor {
          } else {
             int argIndex = 0;
 
-            for (Iterator<ICarbonArgument> var3 = this.command.getArguments().iterator(); var3.hasNext(); ++argIndex) {
-               ICarbonArgument argument = var3.next();
+            for (Iterator<ICarbonArgument> argumentIterator = this.command.getArguments().iterator(); argumentIterator.hasNext(); ++argIndex) {
+               ICarbonArgument argument = argumentIterator.next();
                if (argument.isCatchRemaining() && !this.inputArgs.isEmpty()) {
                   String arg = String.join(" ", this.inputArgs.subList(argIndex, this.inputArgs.size()));
                   if (arg.isEmpty()) {
@@ -49,8 +49,8 @@ public class CommandProcessor {
             List<String> commandArgs = new ArrayList<>();;
             argIndex = 0;
 
-            for (Iterator<ICarbonArgument> var15 = this.command.getArguments().iterator(); var15.hasNext(); ++argIndex) {
-               ICarbonArgument argument = var15.next();
+            for (Iterator<ICarbonArgument> argumentIterator = this.command.getArguments().iterator(); argumentIterator.hasNext(); ++argIndex) {
+               ICarbonArgument argument = argumentIterator.next();
                if (argument.getPermission() != null && !this.sender.hasPermission(argument.getPermission())) {
                   break;
                }
@@ -123,7 +123,7 @@ public class CommandProcessor {
          case DURATION:
             try {
                DateUtil.parseDuration(input, true);
-            } catch (IllegalArgumentException var9) {
+            } catch (IllegalArgumentException illegalArgumentException) {
                status = ValidationStatus.ERR_INCORRECT_TYPE;
             }
             break;
@@ -142,7 +142,7 @@ public class CommandProcessor {
                } else if (doubleValue > argument.getMax()) {
                   status = ValidationStatus.ERR_MAX_LIMIT;
                }
-            } catch (NumberFormatException var8) {
+            } catch (NumberFormatException numberFormatException) {
                status = ValidationStatus.ERR_INCORRECT_TYPE;
             }
             break;
@@ -154,7 +154,7 @@ public class CommandProcessor {
                } else if ((double)integerValue > argument.getMax()) {
                   status = ValidationStatus.ERR_MAX_LIMIT;
                }
-            } catch (NumberFormatException var7) {
+            } catch (NumberFormatException numberFormatException) {
                status = ValidationStatus.ERR_INCORRECT_TYPE;
             }
          }
@@ -167,8 +167,8 @@ public class CommandProcessor {
       String[] deps = new String[argument.getDependencies().size()];
       int i = 0;
 
-      for (Iterator<ICarbonArgument> var4 = argument.getDependencies().iterator(); var4.hasNext(); ++i) {
-         ICarbonArgument dependency = var4.next();
+      for (Iterator<ICarbonArgument> argumentIterator = argument.getDependencies().iterator(); argumentIterator.hasNext(); ++i) {
+         ICarbonArgument dependency = argumentIterator.next();
          if (!this.command.getArguments().contains(dependency)) {
             throw new Error("The specified dependency couldn't be found in command arguments");
          }

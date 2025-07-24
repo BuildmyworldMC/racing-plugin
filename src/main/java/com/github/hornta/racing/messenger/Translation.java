@@ -30,11 +30,11 @@ public class Translation {
       YamlConfiguration yaml = YamlConfiguration.loadConfiguration(this.file);
       Set<String> validationErrors = new HashSet<>();;
       Set<String> yamlKeys = yaml.getKeys(true);
-      Iterator var6 = yamlKeys.iterator();
+      Iterator keys = yamlKeys.iterator();
 
       String string;
-      while (var6.hasNext()) {
-         string = (String)var6.next();
+      while (keys.hasNext()) {
+         string = (String)keys.next();
          if (!yaml.isConfigurationSection(string) && !yaml.isString(string)) {
             validationErrors.add("Expected \"" + string + "\" in \"" + this.file.getName() + "\" to be of type string.");
          }
@@ -42,15 +42,15 @@ public class Translation {
 
       try {
          yaml.save(this.file);
-      } catch (IOException var8) {
-         plugin.getLogger().log(Level.SEVERE, "Failed to save to " + this.file.getName(), var8);
+      } catch (IOException exception) {
+         plugin.getLogger().log(Level.SEVERE, "Failed to save to " + this.file.getName(), exception);
       }
 
       if (validationErrors.isEmpty()) {
-         var6 = identifiers.entrySet().iterator();
+         keys = identifiers.entrySet().iterator();
 
-         while (var6.hasNext()) {
-            Entry<Enum, String> entry = (Entry)var6.next();
+         while (keys.hasNext()) {
+            Entry<Enum, String> entry = (Entry)keys.next();
             if (yaml.contains(entry.getValue())) {
                this.translations.put(entry.getKey(), yaml.getString(entry.getValue()));
             }
@@ -58,10 +58,10 @@ public class Translation {
 
       } else {
          plugin.getLogger().log(Level.SEVERE, "*** " + this.file.getName() + " has bad values ***");
-         var6 = validationErrors.iterator();
+         keys = validationErrors.iterator();
 
-         while (var6.hasNext()) {
-            string = (String)var6.next();
+         while (keys.hasNext()) {
+            string = (String)keys.next();
             plugin.getLogger().log(Level.SEVERE, "*** " + string + " ***");
          }
 

@@ -64,15 +64,15 @@ public class HDTopListManager implements Listener {
    }
 
    public static HDTopList getTopList(String name) {
-      Iterator<HDTopList> var1 = instance.topLists.iterator();
+      Iterator<HDTopList> topListIterator = instance.topLists.iterator();
 
       HDTopList topList;
       do {
-         if (!var1.hasNext()) {
+         if (!topListIterator.hasNext()) {
             return null;
          }
 
-         topList = var1.next();
+         topList = topListIterator.next();
       } while (!topList.getName().equals(name));
 
       return topList;
@@ -184,20 +184,20 @@ public class HDTopListManager implements Listener {
    @EventHandler
    void onDeleteRace(DeleteRaceEvent event) {
       Collection<HDTopList> toRemove = new ArrayList<>();
-      Iterator<HDTopList> var3 = this.topLists.iterator();
+      Iterator<HDTopList> topListIterator = this.topLists.iterator();
 
       HDTopList topList;
-      while (var3.hasNext()) {
-         topList = var3.next();
+      while (topListIterator.hasNext()) {
+         topList = topListIterator.next();
          if (event.getRace() == topList.getRace()) {
             toRemove.add(topList);
          }
       }
 
-      var3 = toRemove.iterator();
+      topListIterator = toRemove.iterator();
 
-      while (var3.hasNext()) {
-         topList = var3.next();
+      while (topListIterator.hasNext()) {
+         topList = topListIterator.next();
          this.deleteTopList(topList);
       }
    }

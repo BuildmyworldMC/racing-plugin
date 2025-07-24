@@ -10,15 +10,13 @@ public enum RaceType {
    MINECART;
 
    public static RaceType fromString(String string) {
-      RaceType[] var1 = values();
-      int var2 = var1.length;
+      RaceType[] raceTypes = values();
 
-      for(int var3 = 0; var3 < var2; ++var3) {
-         RaceType type = var1[var3];
-         if (type.name().compareToIgnoreCase(string) == 0) {
-            return type;
-         }
-      }
+       for (RaceType type : raceTypes) {
+           if (type.name().compareToIgnoreCase(string) == 0) {
+               return type;
+           }
+       }
 
       return null;
    }

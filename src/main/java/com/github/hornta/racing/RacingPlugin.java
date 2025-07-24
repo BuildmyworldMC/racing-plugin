@@ -131,8 +131,8 @@ public class RacingPlugin extends JavaPlugin {
       if ((Boolean)instance.configuration.get(ConfigKey.VERBOSE)) {
          try {
             instance.getLogger().info(String.format(message, args));
-         } catch (IllegalFormatConversionException var3) {
-            instance.getLogger().log(Level.SEVERE, var3.getMessage(), var3);
+         } catch (IllegalFormatConversionException illegalFormatConversionException) {
+            instance.getLogger().log(Level.SEVERE, illegalFormatConversionException.getMessage(), illegalFormatConversionException);
          }
       }
 
@@ -189,16 +189,16 @@ public class RacingPlugin extends JavaPlugin {
 
       try {
          this.setupConfig();
-      } catch (ConfigurationException var3) {
-         this.getLogger().severe("Failed to setup configuration: " + var3.getMessage());
+      } catch (ConfigurationException configurationException) {
+         this.getLogger().severe("Failed to setup configuration: " + configurationException.getMessage());
          this.setEnabled(false);
          return;
       }
 
       try {
          this.setupMessages();
-      } catch (MessengerException var2) {
-         this.getLogger().severe("Failed to setup messages: " + var2.getMessage());
+      } catch (MessengerException messengerException) {
+         this.getLogger().severe("Failed to setup messages: " + messengerException.getMessage());
          this.setEnabled(false);
          return;
       }

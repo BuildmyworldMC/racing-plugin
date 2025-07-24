@@ -24,18 +24,18 @@ public class CarbonCommand {
 
    public int getNumRequiredArgs(CommandSender sender) {
       int num = 0;
-      Iterator<ICarbonArgument> var3 = this.arguments.iterator();
+      Iterator<ICarbonArgument> argumentIterator = this.arguments.iterator();
 
       while(true) {
          String permission;
          DefaultArgument defaultArgument;
          do {
             do {
-               if (!var3.hasNext()) {
+               if (!argumentIterator.hasNext()) {
                   return num;
                }
 
-               ICarbonArgument argument = var3.next();
+               ICarbonArgument argument = argumentIterator.next();
                permission = argument.getPermission();
                defaultArgument = argument.getDefaultValue(sender.getClass());
             } while(defaultArgument == null);
@@ -108,8 +108,8 @@ public class CarbonCommand {
               stringBuilder.append(" ");
           }
 
-         for (Iterator<ICarbonArgument> var6 = this.arguments.iterator(); var6.hasNext(); stringBuilder.append(" ")) {
-            ICarbonArgument argument1 = var6.next();
+         for (Iterator<ICarbonArgument> argumentIterator = this.arguments.iterator(); argumentIterator.hasNext(); stringBuilder.append(" ")) {
+            ICarbonArgument argument1 = argumentIterator.next();
             if (argument1.isOptional()) {
                stringBuilder.append("[");
             } else {
@@ -155,15 +155,15 @@ public class CarbonCommand {
       if (this.permissions.isEmpty()) {
          return true;
       } else {
-         Iterator<String> var3 = this.permissions.iterator();
+         Iterator<String> permissionIterator = this.permissions.iterator();
 
          boolean hasPermission;
          do {
-            if (!var3.hasNext()) {
+            if (!permissionIterator.hasNext()) {
                return false;
             }
 
-            String permission = var3.next();
+            String permission = permissionIterator.next();
             Map<String, String> values = new HashMap<>();
 
             for(int i = 0; i < args.size(); ++i) {

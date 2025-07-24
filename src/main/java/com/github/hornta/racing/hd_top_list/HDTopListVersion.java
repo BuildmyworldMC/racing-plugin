@@ -43,8 +43,8 @@ public enum HDTopListVersion {
    static {
       int counter = 0;
 
-      for(Iterator<HDTopListVersion> var1 = EnumSet.allOf(HDTopListVersion.class).iterator(); var1.hasNext(); ++counter) {
-         HDTopListVersion v = var1.next();
+      for(Iterator<HDTopListVersion> topListVersionIterator = EnumSet.allOf(HDTopListVersion.class).iterator(); topListVersionIterator.hasNext(); ++counter) {
+         HDTopListVersion v = topListVersionIterator.next();
          v.setOrder(counter);
       }
    }

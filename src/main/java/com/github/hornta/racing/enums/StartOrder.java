@@ -11,15 +11,13 @@ public enum StartOrder {
    REVERSE_JOIN_ORDER;
 
    public static StartOrder fromString(String string) {
-      StartOrder[] var1 = values();
-      int var2 = var1.length;
+      StartOrder[] startOrders = values();
 
-      for(int var3 = 0; var3 < var2; ++var3) {
-         StartOrder type = var1[var3];
-         if (type.name().compareToIgnoreCase(string) == 0) {
-            return type;
-         }
-      }
+       for (StartOrder type : startOrders) {
+           if (type.name().compareToIgnoreCase(string) == 0) {
+               return type;
+           }
+       }
 
       return null;
    }

@@ -89,8 +89,8 @@ public class RacePlayerStatistic {
    public String getStatValue(RaceStatType statType, int laps) {
        return switch (statType) {
            case WIN_RATIO -> {
-               float var10000 = (float) this.wins / (float) this.runs;
-               yield (int) (var10000 * 100.0F) + "%";
+               float winRatio = (float) this.wins / (float) this.runs;
+               yield (int) (winRatio * 100.0F) + "%";
            }
            case FASTEST -> Util.getTimeLeft(this.getRecord(laps));
            case FASTEST_LAP -> Util.getTimeLeft(this.fastestLap);

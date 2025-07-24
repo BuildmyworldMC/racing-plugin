@@ -57,13 +57,13 @@ public class FileStorage {
 
                           try {
                               yaml.save(file);
-                          } catch (IOException var9) {
+                          } catch (IOException ioException) {
                               RacingPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save hologram top list");
                           }
 
                           cfgFiles.add(yaml);
-                      } catch (Exception var10) {
-                          RacingPlugin.logger().log(Level.SEVERE, var10.getMessage(), var10);
+                      } catch (Exception exception) {
+                          RacingPlugin.logger().log(Level.SEVERE, exception.getMessage(), exception);
                       }
                   }
               }
@@ -77,8 +77,8 @@ public class FileStorage {
               for (YamlConfiguration config : configurations) {
                   try {
                       topLists.add(this.parse(config));
-                  } catch (Exception var7) {
-                      RacingPlugin.logger().log(Level.SEVERE, var7.getMessage());
+                  } catch (Exception exception) {
+                      RacingPlugin.logger().log(Level.SEVERE, exception.getMessage());
                   }
               }
   
@@ -95,12 +95,12 @@ public class FileStorage {
          try {
             Files.delete(cfgFile.toPath());
             success = true;
-         } catch (NoSuchFileException var3) {
-            RacingPlugin.logger().log(Level.WARNING, "Failed to delete top list file. File `" + cfgFile.getName() + "` wasn't found.", var3);
-         } catch (DirectoryNotEmptyException var4) {
-            RacingPlugin.logger().log(Level.SEVERE, "Failed to delete top list file. Expected a file but tried to delete a folder", var4);
-         } catch (IOException var5) {
-            RacingPlugin.logger().log(Level.SEVERE, var5.getMessage(), var5);
+         } catch (NoSuchFileException noSuchFileException) {
+            RacingPlugin.logger().log(Level.WARNING, "Failed to delete top list file. File `" + cfgFile.getName() + "` wasn't found.", noSuchFileException);
+         } catch (DirectoryNotEmptyException directoryNotEmptyException) {
+            RacingPlugin.logger().log(Level.SEVERE, "Failed to delete top list file. Expected a file but tried to delete a folder", directoryNotEmptyException);
+         } catch (IOException ioException) {
+            RacingPlugin.logger().log(Level.SEVERE, ioException.getMessage(), ioException);
          }
 
          return success;
@@ -125,8 +125,8 @@ public class FileStorage {
 
          try {
             yaml.save(cfgFile);
-         } catch (IOException var5) {
-            RacingPlugin.logger().log(Level.SEVERE, var5.getMessage(), var5);
+         } catch (IOException ioException) {
+            RacingPlugin.logger().log(Level.SEVERE, ioException.getMessage(), ioException);
             return false;
          }
 
@@ -146,7 +146,7 @@ public class FileStorage {
          UUID id;
          try {
             id = UUID.fromString(idString);
-         } catch (IllegalArgumentException var16) {
+         } catch (IllegalArgumentException illegalArgumentException) {
             throw new ParseHDTopListException("Couldn't convert id to UUID");
          }
 
@@ -158,8 +158,8 @@ public class FileStorage {
             Location location;
             try {
                location = this.parseLocation(yaml);
-            } catch (ParseYamlLocationException var15) {
-               throw new ParseHDTopListException("Couldn't parse location: " + var15.getMessage());
+            } catch (ParseYamlLocationException parseYamlLocationException) {
+               throw new ParseHDTopListException("Couldn't parse location: " + parseYamlLocationException.getMessage());
             }
 
             String name = yaml.getString("name");
@@ -174,7 +174,7 @@ public class FileStorage {
                   try {
                      UUID raceId = UUID.fromString(stringRaceId);
                      race = RacingPlugin.getInstance().getRacingManager().getRace(raceId);
-                  } catch (IllegalArgumentException var14) {
+                  } catch (IllegalArgumentException illegalArgumentException) {
                      throw new ParseHDTopListException("Couldn't convert race id to UUID");
                   }
 
@@ -184,14 +184,14 @@ public class FileStorage {
                      RaceStatType type;
                      try {
                         type = RaceStatType.valueOf(yaml.getString("stat_type"));
-                     } catch (IllegalArgumentException var13) {
+                     } catch (IllegalArgumentException illegalArgumentException) {
                         throw new ParseHDTopListException("`stat_type` is invalid");
                      }
 
                      int laps;
                      try {
                         laps = yaml.getInt("laps");
-                     } catch (IllegalArgumentException var12) {
+                     } catch (IllegalArgumentException illegalArgumentException) {
                         throw new ParseHDTopListException("`laps` is invalid");
                      }
 
@@ -232,8 +232,8 @@ public class FileStorage {
                      } else {
                         World world = Bukkit.getWorld(worldName);
                         if (world == null) {
-                           String var10002 = section.getString(worldPath);
-                           throw new ParseYamlLocationException("Couldn't find world with name `" + var10002 + "`");
+                           String name = section.getString(worldPath);
+                           throw new ParseYamlLocationException("Couldn't find world with name `" + name + "`");
                         } else {
                            return new Location(world, section.getDouble(xPath), section.getDouble(yPath), section.getDouble(zPath), (float)section.getDouble(yawPath), (float)section.getDouble(pitchPath));
                         }

@@ -8,13 +8,13 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public interface RacingAPI {
-   void fetchAllRaces(Consumer<List<Race>> var1);
+   void fetchAllRaces(Consumer<List<Race>> consumers);
 
-   void deleteRace(Race var1, Consumer<Boolean> var2);
+   void deleteRace(Race race, Consumer<Boolean> consumer);
 
-   void updateRace(Race var1, Consumer<Boolean> var2);
+   void updateRace(Race race, Consumer<Boolean> consumer);
 
-   void updateCheckpoints(UUID var1, List<RaceCheckpoint> var2, Consumer<Boolean> var3);
+   void updateCheckpoints(UUID uuid, List<RaceCheckpoint> raceCheckpoints, Consumer<Boolean> consumer);
 
-   void updateStartPoints(UUID var1, List<RaceStartPoint> var2, Consumer<Boolean> var3);
+   void updateStartPoints(UUID uuid, List<RaceStartPoint> raceCheckpoints, Consumer<Boolean> consumer);
 }

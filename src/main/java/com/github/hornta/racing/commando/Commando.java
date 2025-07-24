@@ -110,15 +110,15 @@ public class Commando {
          if (player == null) {
             return true;
          } else {
-            Iterator<String> var2 = command.getPermissions().iterator();
+            Iterator<String> permissionIterator = command.getPermissions().iterator();
 
             String permission;
             do {
-               if (!var2.hasNext()) {
+               if (!permissionIterator.hasNext()) {
                   return true;
                }
 
-               permission = var2.next();
+               permission = permissionIterator.next();
             } while(player.hasPermission(permission));
 
             return false;

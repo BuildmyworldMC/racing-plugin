@@ -40,7 +40,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
-import net.md_5.bungee.api.chat.hover.content.Content;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -216,7 +215,7 @@ public class RaceSession implements Listener {
          }
       }
 
-      if (!this.playerSessions.isEmpty() && this.getAmountOfParticipants() >= this.race.getMinimimRequiredParticipantsToStart()) {
+      if (!this.playerSessions.isEmpty() && this.getAmountOfParticipants() >= this.race.getMinimumRequiredParticipantsToStart()) {
          this.setState(RaceSessionState.COUNTDOWN);
          if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.CHECKPOINT_PARTICLES_DURING_RACE)) {
             for(int i = 0; i < this.race.getCheckpoints().size(); ++i) {
@@ -414,18 +413,18 @@ public class RaceSession implements Listener {
          this.countdown = null;
       }
 
-      Iterator var1 = this.startTimerTasks.iterator();
+      Iterator taskIterator = this.startTimerTasks.iterator();
 
-      while (var1.hasNext()) {
-         BukkitTask task = (BukkitTask)var1.next();
+      while (taskIterator.hasNext()) {
+         BukkitTask task = (BukkitTask)taskIterator.next();
          task.cancel();
       }
 
       this.startTimerTasks.clear();
-      var1 = this.playerSessions.values().iterator();
+      taskIterator = this.playerSessions.values().iterator();
 
-      while(var1.hasNext()) {
-         RacePlayerSession session = (RacePlayerSession)var1.next();
+      while(taskIterator.hasNext()) {
+         RacePlayerSession session = (RacePlayerSession)taskIterator.next();
          session.restore();
          if (this.songPlayer != null) {
             this.songPlayer.removePlayer(session.getPlayer());
@@ -437,10 +436,10 @@ public class RaceSession implements Listener {
       }
 
       if (this.state != RaceSessionState.PREPARING) {
-         var1 = this.race.getCheckpoints().iterator();
+         taskIterator = this.race.getCheckpoints().iterator();
 
-         while(var1.hasNext()) {
-            RaceCheckpoint checkpoint = (RaceCheckpoint)var1.next();
+         while(taskIterator.hasNext()) {
+            RaceCheckpoint checkpoint = (RaceCheckpoint)taskIterator.next();
             checkpoint.stopTask();
          }
       }
@@ -835,8 +834,8 @@ public class RaceSession implements Listener {
       if (this.laps == 1) {
          return this.race.getName();
       } else {
-         String var10000 = this.race.getName();
-         return var10000 + " lap " + session.getCurrentLap() + "/" + this.laps;
+         String raceName = this.race.getName();
+         return raceName + " lap " + session.getCurrentLap() + "/" + this.laps;
       }
    }
 

@@ -47,7 +47,7 @@ public class RaceSign {
    }
 
    public static String createKey(Block block) {
-      String var10000 = Objects.requireNonNull(block.getLocation().getWorld()).getName();
-      return var10000 + "_" + block.getLocation().getBlockX() + "_" + block.getLocation().getBlockY() + "_" + block.getLocation().getBlockZ();
+      String key = Objects.requireNonNull(block.getLocation().getWorld()).getName();
+      return key + "_" + block.getLocation().getBlockX() + "_" + block.getLocation().getBlockY() + "_" + block.getLocation().getBlockZ();
    }
 }

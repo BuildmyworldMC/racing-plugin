@@ -7,5 +7,5 @@ public interface IHologramFileMigration {
 
    HDTopListVersion to();
 
-   void migrate(YamlConfiguration var1);
+   void migrate(YamlConfiguration yamlConfiguration);
 }

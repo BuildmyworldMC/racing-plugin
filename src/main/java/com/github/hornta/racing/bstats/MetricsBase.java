@@ -99,9 +99,9 @@ public class MetricsBase {
       scheduler.execute(() -> {
          try {
             this.sendData(data);
-         } catch (Exception var3) {
+         } catch (Exception exception) {
             if (this.logErrors) {
-               this.errorLogger.accept("Could not submit bStats metrics data", var3);
+               this.errorLogger.accept("Could not submit bStats metrics data", exception);
             }
          }
 
@@ -128,14 +128,14 @@ public class MetricsBase {
 
       try {
          outputStream.write(compressedData);
-      } catch (Throwable var11) {
+      } catch (Throwable throwable) {
          try {
             outputStream.close();
-         } catch (Throwable var10) {
-            var11.addSuppressed(var10);
+         } catch (Throwable throwable1) {
+            throwable.addSuppressed(throwable1);
          }
 
-         throw var11;
+         throw throwable;
       }
 
       outputStream.close();
@@ -147,14 +147,14 @@ public class MetricsBase {
          while((line = bufferedReader.readLine()) != null) {
             builder.append(line);
          }
-      } catch (Throwable var12) {
+      } catch (Throwable throwable) {
          try {
             bufferedReader.close();
-         } catch (Throwable var9) {
-            var12.addSuppressed(var9);
+         } catch (Throwable throwable1) {
+            throwable.addSuppressed(throwable1);
          }
 
-         throw var12;
+         throw throwable;
       }
 
       bufferedReader.close();
@@ -184,14 +184,14 @@ public class MetricsBase {
 
          try {
             gzip.write(str.getBytes(StandardCharsets.UTF_8));
-         } catch (Throwable var6) {
+         } catch (Throwable throwable) {
             try {
                gzip.close();
-            } catch (Throwable var5) {
-               var6.addSuppressed(var5);
+            } catch (Throwable throwable1) {
+               throwable.addSuppressed(throwable1);
             }
 
-            throw var6;
+            throw throwable;
          }
 
          gzip.close();

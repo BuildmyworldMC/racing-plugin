@@ -26,7 +26,7 @@ public class Race implements Listener {
    private final Instant createdAt;
    private final Set<RacePotionEffect> potionEffects;
    private final Set<RaceSign> signs;
-   private final int minimimRequiredParticipantsToStart;
+   private final int minimumRequiredParticipantsToStart;
    private final Map<UUID, RacePlayerStatistic> resultByPlayerId = new HashMap<>();
    private final Map<RaceStatType, Set<RacePlayerStatistic>> resultsByStat = new HashMap<>();
    private final List<RaceCommand> commands;
@@ -61,7 +61,7 @@ public class Race implements Listener {
       this.walkSpeed = walkSpeed;
       this.potionEffects = potionEffects;
       this.signs = signs;
-      this.minimimRequiredParticipantsToStart = minimimRequiredParticipantsToStart;
+      this.minimumRequiredParticipantsToStart = minimimRequiredParticipantsToStart;
       this.pigSpeed = pigSpeed;
       this.striderSpeed = striderSpeed;
       this.horseSpeed = horseSpeed;
@@ -71,9 +71,9 @@ public class Race implements Listener {
            this.resultByPlayerId.put(playerStatistic.getPlayerId(), playerStatistic);
        }
 
-      RaceStatType[] var33 = RaceStatType.values();
+      RaceStatType[] raceStatTypes = RaceStatType.values();
 
-       for (RaceStatType statType : var33) {
+       for (RaceStatType statType : raceStatTypes) {
            Set<RacePlayerStatistic> stats = new TreeSet<>((o1, o2) -> {
                int order = switch (statType) {
                    case WINS -> o2.getWins() - o1.getWins();
@@ -120,7 +120,7 @@ public class Race implements Listener {
 
                int laps = playerResult.getLastLap();
                if (newStat.getRecord(laps) > playerResult.getRaceDuration()) {
-                   newStat.setRecord(laps, (long)playerResult.getRaceDuration());
+                   newStat.setRecord(laps, playerResult.getRaceDuration());
                }
            } else {
                Map<Integer, Long> records = new HashMap<>();
@@ -129,9 +129,9 @@ public class Race implements Listener {
            }
 
            this.resultByPlayerId.put(newStat.getPlayerId(), newStat);
-           RaceStatType[] var16 = RaceStatType.values();
+           RaceStatType[] raceStatTypes = RaceStatType.values();
 
-           for (RaceStatType statType : var16) {
+           for (RaceStatType statType : raceStatTypes) {
                Set<RacePlayerStatistic> resultSet = this.resultsByStat.get(statType);
                if (playerStatistic != null) {
                    resultSet.remove(playerStatistic);
@@ -145,9 +145,9 @@ public class Race implements Listener {
 
    public void resetResults() {
       this.resultByPlayerId.clear();
-      RaceStatType[] var1 = RaceStatType.values();
+      RaceStatType[] raceStatTypes = RaceStatType.values();
 
-       for (RaceStatType statType : var1) {
+       for (RaceStatType statType : raceStatTypes) {
            this.resultsByStat.get(statType).clear();
        }
    }
@@ -351,8 +351,8 @@ public class Race implements Listener {
       return this.version;
    }
 
-   public int getMinimimRequiredParticipantsToStart() {
-      return this.minimimRequiredParticipantsToStart;
+   public int getMinimumRequiredParticipantsToStart() {
+      return this.minimumRequiredParticipantsToStart;
    }
 
    public double getPigSpeed() {

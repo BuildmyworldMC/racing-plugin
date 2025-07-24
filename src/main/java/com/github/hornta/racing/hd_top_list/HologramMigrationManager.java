@@ -17,16 +17,16 @@ public class HologramMigrationManager {
       } else if (migration.from().isGreater(migration.to())) {
          throw new IllegalArgumentException("Migration from() must not be greater than to()");
       } else {
-         Iterator<IHologramFileMigration> var2 = this.migrations.iterator();
+         Iterator<IHologramFileMigration> migrationIterator = this.migrations.iterator();
 
          IHologramFileMigration iFileMigration;
          do {
-            if (!var2.hasNext()) {
+            if (!migrationIterator.hasNext()) {
                this.migrations.add(migration);
                return;
             }
 
-            iFileMigration = var2.next();
+            iFileMigration = migrationIterator.next();
             if (iFileMigration.from() == migration.from()) {
                throw new IllegalArgumentException("There is already a migration with the same from()");
             }
@@ -40,7 +40,7 @@ public class HologramMigrationManager {
       HDTopListVersion version;
       try {
          version = HDTopListVersion.fromString(yaml.getString("version"));
-      } catch (IllegalArgumentException var7) {
+      } catch (IllegalArgumentException illegalArgumentException) {
          throw new ParseRaceException("Couldn't find version");
       }
 
@@ -54,9 +54,9 @@ public class HologramMigrationManager {
               if (migration.from() == fromVersion) {
                   migration.migrate(yaml);
                   yaml.set("version", migration.to().toString());
-                  Logger var10000 = RacingPlugin.logger();
-                  String var10001 = fromVersion.toString();
-                  var10000.info("Migrate hologram top list from version " + var10001 + " to " + migration.to().toString());
+                  Logger logger = RacingPlugin.logger();
+                  String fromVersionString = fromVersion.toString();
+                  logger.info("Migrate hologram top list from version " + fromVersionString + " to " + migration.to().toString());
               }
           }
       }

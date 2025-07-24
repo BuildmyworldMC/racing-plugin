@@ -99,10 +99,9 @@ public class MessageManager {
    private static Map<PlaceholderOption, String> getPlaceholderOptions(String options) {
       options = options.trim();
       Map<PlaceholderOption, String> map = new EnumMap<>(PlaceholderOption.class);
-      String[] var2 = options.split(",");
-      int var3 = var2.length;
+      String[] splitOptions = options.split(",");
 
-       for (String s : var2) {
+       for (String s : splitOptions) {
            String option = s;
            option = option.trim();
            PlaceholderOption key;

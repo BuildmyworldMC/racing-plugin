@@ -25,9 +25,9 @@ public abstract class CustomChart {
          }
 
          builder.appendField("data", data);
-      } catch (Throwable var5) {
+      } catch (Throwable throwable) {
          if (logErrors) {
-            errorLogger.accept("Failed to get data for custom chart with id " + this.chartId, var5);
+            errorLogger.accept("Failed to get data for custom chart with id " + this.chartId, throwable);
          }
 
          return null;

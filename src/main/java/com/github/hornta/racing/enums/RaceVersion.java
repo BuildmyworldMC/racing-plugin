@@ -25,15 +25,11 @@ public enum RaceVersion {
    private int order;
 
    public static RaceVersion fromString(String name) {
-      RaceVersion[] var1 = copyOfValues;
-      int var2 = var1.length;
-
-      for(int var3 = 0; var3 < var2; ++var3) {
-         RaceVersion value = var1[var3];
-         if (value.name().equals(name)) {
-            return value;
-         }
-      }
+       for (RaceVersion value : copyOfValues) {
+           if (value.name().equals(name)) {
+               return value;
+           }
+       }
 
       throw new IllegalArgumentException("Couldn't translate " + name + " into a RaceVersion");
    }
@@ -62,8 +58,8 @@ public enum RaceVersion {
    static {
       int counter = 0;
 
-      for(Iterator var1 = EnumSet.allOf(RaceVersion.class).iterator(); var1.hasNext(); ++counter) {
-         RaceVersion v = (RaceVersion)var1.next();
+      for (Iterator<RaceVersion> raceVersionIterator = EnumSet.allOf(RaceVersion.class).iterator(); raceVersionIterator.hasNext(); ++counter) {
+         RaceVersion v = raceVersionIterator.next();
          v.setOrder(counter);
       }
 

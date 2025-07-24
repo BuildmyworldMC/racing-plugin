@@ -8,5 +8,5 @@ public interface IRaceFileMigration {
 
    RaceVersion to();
 
-   void migrate(YamlConfiguration var1);
+   void migrate(YamlConfiguration yamlConfiguration);
 }

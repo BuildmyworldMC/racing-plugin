@@ -318,7 +318,7 @@ public class CarbonArgument implements ICarbonArgument {
                      try {
                          assert this.type.getCompleter() != null;
                          this.handler = (IArgumentHandler)this.type.getCompleter().getConstructor().newInstance();
-                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException var2) {
+                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException exception) {
                         throw new Error("Something went from when instantiating type completer");
                      }
                   }

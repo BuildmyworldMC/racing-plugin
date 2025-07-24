@@ -10,15 +10,13 @@ public enum RaceSignType {
    INFO;
 
    public static RaceSignType fromString(String string) {
-      RaceSignType[] var1 = values();
-      int var2 = var1.length;
+      RaceSignType[] raceSignTypes = values();
 
-      for(int var3 = 0; var3 < var2; ++var3) {
-         RaceSignType type = var1[var3];
-         if (type.name().compareToIgnoreCase(string) == 0) {
-            return type;
-         }
-      }
+       for (RaceSignType type : raceSignTypes) {
+           if (type.name().compareToIgnoreCase(string) == 0) {
+               return type;
+           }
+       }
 
       return null;
    }

@@ -97,21 +97,21 @@ public class Translations {
          this.plugin.getLogger().log(Level.INFO, "Found existing translation file in " + dest.getName() + ".");
          YamlConfiguration destYaml = YamlConfiguration.loadConfiguration(dest);
          YamlConfiguration resourceYaml = YamlConfiguration.loadConfiguration(new InputStreamReader(resource.getValue(), StandardCharsets.UTF_8));
-         Iterator<String> var5 = destYaml.getKeys(true).iterator();
+         Iterator<String> iterator = destYaml.getKeys(true).iterator();
 
          String key;
-         while (var5.hasNext()) {
-            key = var5.next();
+         while (iterator.hasNext()) {
+            key = iterator.next();
             if (!resourceYaml.contains(key)) {
                destYaml.set(key, null);
                this.plugin.getLogger().log(Level.INFO, "Deleted unused key `" + key + "` from `" + dest.getName() + "`.");
             }
          }
 
-         var5 = resourceYaml.getKeys(true).iterator();
+         iterator = resourceYaml.getKeys(true).iterator();
 
-         while (var5.hasNext()) {
-            key = var5.next();
+         while (iterator.hasNext()) {
+            key = iterator.next();
             if (!destYaml.isSet(key)) {
                destYaml.set(key, resourceYaml.get(key));
                this.plugin.getLogger().log(Level.INFO, "Added missing key `" + key + "` to `" + dest.getName() + "`.");
@@ -120,15 +120,15 @@ public class Translations {
 
          try {
             destYaml.save(dest);
-         } catch (IOException var8) {
-            this.plugin.getLogger().log(Level.SEVERE, var8.getMessage(), var8);
+         } catch (IOException exception) {
+            this.plugin.getLogger().log(Level.SEVERE, exception.getMessage(), exception);
             return false;
          }
       } else {
          try {
             this.saveResource(resource.getKey(), (resource.getKey()).replaceAll(this.plugin.getDescription().getName() + "/", ""));
-         } catch (IllegalArgumentException var7) {
-            this.plugin.getLogger().log(Level.SEVERE, var7.getMessage(), var7);
+         } catch (IllegalArgumentException exception) {
+            this.plugin.getLogger().log(Level.SEVERE, exception.getMessage(), exception);
          }
 
          this.plugin.getLogger().log(Level.INFO, "Saving new translation file to `" + dest.getName() + "`");
@@ -166,8 +166,8 @@ public class Translations {
                } else {
                   this.plugin.getLogger().log(Level.WARNING, "Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
                }
-            } catch (IOException var10) {
-               this.plugin.getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, var10);
+            } catch (IOException exception) {
+               this.plugin.getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, exception);
             }
 
          }

@@ -121,15 +121,15 @@ public class RacingManager implements Listener {
    }
 
    public boolean hasOngoingSession(Race race) {
-      Iterator<RaceSession> var2 = this.raceSessions.iterator();
+      Iterator<RaceSession> raceSessions = this.raceSessions.iterator();
 
       RaceSession session;
       do {
-         if (!var2.hasNext()) {
+         if (!raceSessions.hasNext()) {
             return false;
          }
 
-         session = var2.next();
+         session = raceSessions.next();
       } while (session.getRace() != race);
 
       return true;
@@ -139,18 +139,18 @@ public class RacingManager implements Listener {
    void onLoadRace(LoadRaceEvent event) {
       if (event.getRace().getState() == RaceState.UNDER_CONSTRUCTION) {
          this.addChunkTickets();
-         Iterator var2 = event.getRace().getCheckpoints().iterator();
+         Iterator checkpoints = event.getRace().getCheckpoints().iterator();
 
-         while (var2.hasNext()) {
-            RaceCheckpoint checkpoint = (RaceCheckpoint) var2.next();
+         while (checkpoints.hasNext()) {
+            RaceCheckpoint checkpoint = (RaceCheckpoint) checkpoints.next();
             checkpoint.startTask(true);
             checkpoint.setupHologram();
          }
 
-         var2 = event.getRace().getStartPoints().iterator();
+         checkpoints = event.getRace().getStartPoints().iterator();
 
-         while (var2.hasNext()) {
-            RaceStartPoint startPoint = (RaceStartPoint) var2.next();
+         while (checkpoints.hasNext()) {
+            RaceStartPoint startPoint = (RaceStartPoint) checkpoints.next();
             startPoint.setupHologram();
          }
 
@@ -159,18 +159,18 @@ public class RacingManager implements Listener {
 
    @EventHandler
    void onUnloadRace(UnloadRaceEvent event) {
-      Iterator var2 = event.getRace().getCheckpoints().iterator();
+      Iterator checkpoints = event.getRace().getCheckpoints().iterator();
 
-      while (var2.hasNext()) {
-         RaceCheckpoint checkpoint = (RaceCheckpoint) var2.next();
+      while (checkpoints.hasNext()) {
+         RaceCheckpoint checkpoint = (RaceCheckpoint) checkpoints.next();
          checkpoint.stopTask();
          checkpoint.removeHologram();
       }
 
-      var2 = event.getRace().getStartPoints().iterator();
+      checkpoints = event.getRace().getStartPoints().iterator();
 
-      while (var2.hasNext()) {
-         RaceStartPoint startPoint = (RaceStartPoint) var2.next();
+      while (checkpoints.hasNext()) {
+         RaceStartPoint startPoint = (RaceStartPoint) checkpoints.next();
          startPoint.removeHologram();
       }
 
@@ -339,10 +339,10 @@ public class RacingManager implements Listener {
       boolean hasPermission = event.getPlayer().hasPermission(Permission.RACING_MODIFY.toString());
 
        for (Race race : this.races) {
-           Iterator var5 = race.getCheckpoints().iterator();
+           Iterator checkpoints = race.getCheckpoints().iterator();
 
-           while (var5.hasNext()) {
-               RaceCheckpoint checkpoint = (RaceCheckpoint) var5.next();
+           while (checkpoints.hasNext()) {
+               RaceCheckpoint checkpoint = (RaceCheckpoint) checkpoints.next();
                if (checkpoint.getHologram() != null) {
                    if (hasPermission) {
                        checkpoint.getHologram().setShowPlayer(event.getPlayer());
@@ -352,10 +352,10 @@ public class RacingManager implements Listener {
                }
            }
 
-           var5 = race.getStartPoints().iterator();
+           checkpoints = race.getStartPoints().iterator();
 
-           while (var5.hasNext()) {
-               RaceStartPoint startPoint = (RaceStartPoint) var5.next();
+           while (checkpoints.hasNext()) {
+               RaceStartPoint startPoint = (RaceStartPoint) checkpoints.next();
                if (startPoint.getHologram() != null) {
                    if (hasPermission) {
                        startPoint.getHologram().setShowPlayer(event.getPlayer());
@@ -395,18 +395,18 @@ public class RacingManager implements Listener {
                .get(ConfigKey.BLOCKED_COMMANDS);
          String entryLabel = event.getMessage().split(" ")[0].replace("/", "");
          String[] entryArgs = event.getMessage().replace("/" + entryLabel, "").trim().split(" ");
-         Iterator var6 = blockedCommands.iterator();
+         Iterator blockedCommandsIterator = blockedCommands.iterator();
 
          String blockedCommand;
          boolean skip;
          do {
             String blockedLabel;
             do {
-               if (!var6.hasNext()) {
+               if (!blockedCommandsIterator.hasNext()) {
                   return;
                }
 
-               blockedCommand = (String) var6.next();
+               blockedCommand = (String) blockedCommandsIterator.next();
                blockedLabel = blockedCommand.split(" ")[0].replace("/", "");
             } while (!blockedLabel.equalsIgnoreCase(entryLabel));
 
@@ -441,7 +441,6 @@ public class RacingManager implements Listener {
                   TeleportCause.PLUGIN);
          }
       }
-
    }
 
    @EventHandler
@@ -452,7 +451,6 @@ public class RacingManager implements Listener {
       } else if (event.getRaceSession().getState() == RaceSessionState.STARTED) {
          Bukkit.getPluginManager().callEvent(new ExecuteCommandEvent(RaceCommandType.ON_START, event.getRaceSession()));
       }
-
    }
 
    public void setAPI(RacingAPI api) {
@@ -642,14 +640,14 @@ public class RacingManager implements Listener {
 
    @Nullable
    public RaceSession getParticipatingRace(Player player) {
-      Iterator<RaceSession> var2 = this.raceSessions.iterator();
+      Iterator<RaceSession> raceSessions = this.raceSessions.iterator();
 
       RaceSession session;
       do {
-         if (!var2.hasNext()) {
+         if (!raceSessions.hasNext()) {
             return null;
          }
-         session = var2.next();
+         session = raceSessions.next();
       } while (!session.isParticipating(player));
 
       return session;
@@ -766,36 +764,36 @@ public class RacingManager implements Listener {
 
    private void addChunkTickets() {
       if (!PaperLib.isPaper()) {
-         Iterator var1 = Bukkit.getWorlds().iterator();
+         Iterator worldIterator = Bukkit.getWorlds().iterator();
 
-         while (var1.hasNext()) {
-            World world = (World) var1.next();
+         while (worldIterator.hasNext()) {
+            World world = (World) worldIterator.next();
             world.removePluginChunkTickets(RacingPlugin.getInstance());
          }
 
-         var1 = this.races.iterator();
+         worldIterator = this.races.iterator();
 
          while (true) {
             Race race;
             do {
-               if (!var1.hasNext()) {
+               if (!worldIterator.hasNext()) {
                   return;
                }
 
-               race = (Race) var1.next();
+               race = (Race) worldIterator.next();
             } while (race.getState() == RaceState.ENABLED);
 
-            Iterator var3 = race.getStartPoints().iterator();
+            Iterator startPoints = race.getStartPoints().iterator();
 
-            while (var3.hasNext()) {
-               RaceStartPoint startPoint = (RaceStartPoint) var3.next();
+            while (startPoints.hasNext()) {
+               RaceStartPoint startPoint = (RaceStartPoint) startPoints.next();
                startPoint.getLocation().getChunk().addPluginChunkTicket(RacingPlugin.getInstance());
             }
 
-            var3 = race.getCheckpoints().iterator();
+            startPoints = race.getCheckpoints().iterator();
 
-            while (var3.hasNext()) {
-               RaceCheckpoint checkpoint = (RaceCheckpoint) var3.next();
+            while (startPoints.hasNext()) {
+               RaceCheckpoint checkpoint = (RaceCheckpoint) startPoints.next();
                checkpoint.getLocation().getChunk().addPluginChunkTicket(RacingPlugin.getInstance());
             }
 

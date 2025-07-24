@@ -30,6 +30,5 @@ public class ConfigurationBuilder<T extends Enum<T>> {
             throw new ConfigurationException("Wrong version for %s. Version must start at 1 increased by 1 for every migration.", this.migrations.get(i).getClass().getName());
          }
       }
-
    }
 }

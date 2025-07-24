@@ -4,11 +4,11 @@ public enum PlaceholderOption {
    DELIMITER;
 
    public static PlaceholderOption fromString(String string) {
-      PlaceholderOption[] var1 = values();
+      PlaceholderOption[] placeholderOptions = values();
 
-       for (PlaceholderOption value : var1) {
-           if (value.name().equalsIgnoreCase(string)) {
-               return value;
+       for (PlaceholderOption placeholderOption : placeholderOptions) {
+           if (placeholderOption.name().equalsIgnoreCase(string)) {
+               return placeholderOption;
            }
        }
 

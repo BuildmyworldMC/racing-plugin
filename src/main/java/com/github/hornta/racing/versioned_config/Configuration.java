@@ -49,8 +49,8 @@ public class Configuration<T extends Enum<T>> {
          this.configuration = this.snapshot.getConfiguration();
          this.cleanup();
          this.persistToFile();
-      } catch (InvalidConfigurationException | IOException var8) {
-         throw new ConfigurationException(var8);
+      } catch (InvalidConfigurationException | IOException exception) {
+         throw new ConfigurationException(exception);
       }
    }
 
@@ -105,9 +105,9 @@ public class Configuration<T extends Enum<T>> {
 
          if (version != 0) {
             Set<String> leafs = Util.getLeafs(this.configuration);
-            Iterator var15 = nodesUsedInValidation.iterator();
-            while(var15.hasNext()) {
-               Node node = (Node) var15.next();
+            Iterator nodeIterator = nodesUsedInValidation.iterator();
+            while(nodeIterator.hasNext()) {
+               Node node = (Node) nodeIterator.next();
                if (!this.configuration.isSet(node.getPath())) {
                   throw new ConfigurationException("Expected path %s to be found in configuration but none was set", node.getPath());
                }
@@ -115,16 +115,16 @@ public class Configuration<T extends Enum<T>> {
                this.testType(node);
             }
 
-            var15 = leafs.iterator();
+            nodeIterator = leafs.iterator();
 
             while(true) {
                String path;
                do {
-                  if (!var15.hasNext()) {
+                  if (!nodeIterator.hasNext()) {
                      return;
                   }
 
-                  path = (String)var15.next();
+                  path = (String)nodeIterator.next();
                } while(path.equals("version"));
 
                boolean hasPath = false;
@@ -195,15 +195,15 @@ public class Configuration<T extends Enum<T>> {
    }
 
    protected boolean hasPath(String path) {
-      Iterator<Node<T>> var2 = this.snapshot.getNodes().iterator();
+      Iterator<Node<T>> nodeIterator = this.snapshot.getNodes().iterator();
 
       Node<T> value;
       do {
-         if (!var2.hasNext()) {
+         if (!nodeIterator.hasNext()) {
             return false;
          }
 
-         value = var2.next();
+         value = nodeIterator.next();
       } while(!value.getPath().equals(path));
 
       return true;

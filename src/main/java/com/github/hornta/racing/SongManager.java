@@ -80,8 +80,6 @@ public class SongManager implements Listener {
 
       File[] files = directory.listFiles();
       if (files != null) {
-          int var4 = files.length;
-
           for (File file : files) {
               if (file.isDirectory()) {
                   this.loadSongs(file);
@@ -92,7 +90,6 @@ public class SongManager implements Listener {
                   this.songNames.add(name);
               }
           }
-
       }
    }
 

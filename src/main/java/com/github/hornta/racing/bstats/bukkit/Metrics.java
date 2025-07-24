@@ -82,7 +82,7 @@ public class Metrics {
       try {
          Method onlinePlayersMethod = Class.forName("org.bukkit.Server").getMethod("getOnlinePlayers");
          return onlinePlayersMethod.getReturnType().equals(Collection.class) ? ((Collection<?>)onlinePlayersMethod.invoke(Bukkit.getServer())).size() : ((Player[])onlinePlayersMethod.invoke(Bukkit.getServer())).length;
-      } catch (Exception var2) {
+      } catch (Exception exception) {
          return Bukkit.getOnlinePlayers().size();
       }
    }

@@ -6,15 +6,13 @@ public enum RaceState {
    UNDER_CONSTRUCTION;
 
    public static RaceState fromString(String string) {
-      RaceState[] var1 = values();
-      int var2 = var1.length;
+      RaceState[] raceStates = values();
 
-      for(int var3 = 0; var3 < var2; ++var3) {
-         RaceState state = var1[var3];
-         if (state.name().equalsIgnoreCase(string)) {
-            return state;
-         }
-      }
+       for (RaceState state : raceStates) {
+           if (state.name().equalsIgnoreCase(string)) {
+               return state;
+           }
+       }
 
       return null;
    }

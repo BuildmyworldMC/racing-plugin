@@ -112,15 +112,13 @@ public class FileAPI implements RacingAPI {
       this.migrationManager.addMigration(new StriderSpeedMigrationRace());
    }
 
-   public void fetchAllRaces(Consumer<List<Race>> callback) {
+   public void fetchAllRaces(Consumer<List<Race>> consumers) {
       CompletableFuture.supplyAsync(() -> {
          List<YamlConfiguration> races = new ArrayList<>();
          File[] files = this.directory.listFiles();
          if (files == null) {
             return races;
          } else {
-             int var4 = files.length;
-
              for (File file : files) {
                  if (file.isFile()) {
                      YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
@@ -130,13 +128,13 @@ public class FileAPI implements RacingAPI {
 
                          try {
                              yaml.save(file);
-                         } catch (IOException var9) {
+                         } catch (IOException ioException) {
                              RacingPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save race");
                          }
 
                          races.add(yaml);
-                     } catch (Exception var10) {
-                         RacingPlugin.logger().log(Level.SEVERE, var10.getMessage());
+                     } catch (Exception exception) {
+                         RacingPlugin.logger().log(Level.SEVERE, exception.getMessage());
                      }
                  }
              }
@@ -150,17 +148,17 @@ public class FileAPI implements RacingAPI {
              for (YamlConfiguration config : configurations) {
                  try {
                      races.add(this.parseRace(config));
-                 } catch (Exception var7) {
-                     RacingPlugin.logger().log(Level.SEVERE, var7.getMessage(), var7);
+                 } catch (Exception exception) {
+                     RacingPlugin.logger().log(Level.SEVERE, exception.getMessage(), exception);
                  }
              }
 
-            callback.accept(races);
+            consumers.accept(races);
          });
       });
    }
 
-   public void deleteRace(Race race, Consumer<Boolean> callback) {
+   public void deleteRace(Race race, Consumer<Boolean> consumer) {
       File raceFile = new File(this.directory, race.getId() + ".yml");
       CompletableFuture.supplyAsync(() -> {
          boolean success = false;
@@ -168,16 +166,16 @@ public class FileAPI implements RacingAPI {
          try {
             Files.delete(raceFile.toPath());
             success = true;
-         } catch (NoSuchFileException var3) {
-            RacingPlugin.logger().log(Level.WARNING, "Failed to delete race file. File `" + raceFile.getName() + "` wasn't found.", var3);
-         } catch (DirectoryNotEmptyException var4) {
-            RacingPlugin.logger().log(Level.SEVERE, "Failed to delete race file. Expected a file but tried to delete a folder", var4);
-         } catch (IOException var5) {
-            RacingPlugin.logger().log(Level.SEVERE, var5.getMessage());
+         } catch (NoSuchFileException noSuchFileException) {
+            RacingPlugin.logger().log(Level.WARNING, "Failed to delete race file. File `" + raceFile.getName() + "` wasn't found.", noSuchFileException);
+         } catch (DirectoryNotEmptyException directoryNotEmptyException) {
+            RacingPlugin.logger().log(Level.SEVERE, "Failed to delete race file. Expected a file but tried to delete a folder", directoryNotEmptyException);
+         } catch (IOException ioException) {
+            RacingPlugin.logger().log(Level.SEVERE, ioException.getMessage());
          }
 
          return success;
-      }, this.fileService).thenAccept(callback);
+      }, this.fileService).thenAccept(consumer);
    }
 
    public void updateRace(Race race, Consumer<Boolean> callback) {
@@ -205,7 +203,7 @@ public class FileAPI implements RacingAPI {
          this.writePotionEffects(race.getPotionEffects(), yaml);
          this.writeSigns(race.getSigns(), yaml);
          writeResults(race.getResultByPlayerId().values(), yaml);
-         yaml.set("min_required_participants_to_start", race.getMinimimRequiredParticipantsToStart());
+         yaml.set("min_required_participants_to_start", race.getMinimumRequiredParticipantsToStart());
          yaml.set("pig_speed", race.getPigSpeed());
          yaml.set("strider_speed", race.getStriderSpeed());
          yaml.set("horse_speed", race.getHorseSpeed());
@@ -214,8 +212,8 @@ public class FileAPI implements RacingAPI {
 
          try {
             yaml.save(raceFile);
-         } catch (IOException var5) {
-            RacingPlugin.logger().log(Level.SEVERE, var5.getMessage(), var5);
+         } catch (IOException ioException) {
+            RacingPlugin.logger().log(Level.SEVERE, ioException.getMessage(), ioException);
             return false;
          }
 
@@ -223,38 +221,38 @@ public class FileAPI implements RacingAPI {
       }, this.fileService).thenAccept(callback);
    }
 
-   public void updateCheckpoints(UUID raceId, List<RaceCheckpoint> checkpoints, Consumer<Boolean> callback) {
-      File raceFile = new File(this.directory, raceId + ".yml");
+   public void updateCheckpoints(UUID uuid, List<RaceCheckpoint> raceCheckpoints, Consumer<Boolean> consumer) {
+      File raceFile = new File(this.directory, uuid + ".yml");
       CompletableFuture.supplyAsync(() -> {
          YamlConfiguration yaml = YamlConfiguration.loadConfiguration(raceFile);
-         this.writeCheckpoints(checkpoints, yaml);
+         this.writeCheckpoints(raceCheckpoints, yaml);
 
          try {
             yaml.save(raceFile);
-         } catch (IOException var5) {
-            RacingPlugin.logger().log(Level.SEVERE, var5.getMessage(), var5);
+         } catch (IOException ioException) {
+            RacingPlugin.logger().log(Level.SEVERE, ioException.getMessage(), ioException);
             return false;
          }
 
          return true;
-      }, this.fileService).thenAccept(callback);
+      }, this.fileService).thenAccept(consumer);
    }
 
-   public void updateStartPoints(UUID raceId, List<RaceStartPoint> startPoints, Consumer<Boolean> callback) {
-      File raceFile = new File(this.directory, raceId + ".yml");
+   public void updateStartPoints(UUID uuid, List<RaceStartPoint> raceCheckpoints, Consumer<Boolean> consumer) {
+      File raceFile = new File(this.directory, uuid + ".yml");
       CompletableFuture.supplyAsync(() -> {
          YamlConfiguration yaml = YamlConfiguration.loadConfiguration(raceFile);
-         this.writeStartPoints(startPoints, yaml);
+         this.writeStartPoints(raceCheckpoints, yaml);
 
          try {
             yaml.save(raceFile);
-         } catch (IOException var5) {
-            RacingPlugin.logger().log(Level.SEVERE, var5.getMessage(), var5);
+         } catch (IOException ioException) {
+            RacingPlugin.logger().log(Level.SEVERE, ioException.getMessage(), ioException);
             return false;
          }
 
          return true;
-      }, this.fileService).thenAccept(callback);
+      }, this.fileService).thenAccept(consumer);
    }
 
    private Race parseRace(YamlConfiguration yaml) throws ParseRaceException {
@@ -265,22 +263,22 @@ public class FileAPI implements RacingAPI {
          RaceVersion version;
          try {
             version = RaceVersion.fromString(yaml.getString("version"));
-         } catch (IllegalArgumentException var34) {
+         } catch (IllegalArgumentException illegalArgumentException) {
             throw new ParseRaceException("`version` is missing from race");
          }
 
          UUID id;
          try {
             id = UUID.fromString(idString);
-         } catch (IllegalArgumentException var33) {
+         } catch (IllegalArgumentException illegalArgumentException) {
             throw new ParseRaceException("Couldn't convert id to UUID");
          }
 
          Location spawn;
          try {
             spawn = this.parseLocation(yaml, "spawn");
-         } catch (ParseYamlLocationException var32) {
-            throw new ParseRaceException("Couldn't parse spawn: " + var32.getMessage());
+         } catch (ParseYamlLocationException parseYamlLocationException) {
+            throw new ParseRaceException("Couldn't parse spawn: " + parseYamlLocationException.getMessage());
          }
 
          String name = yaml.getString("name");
@@ -290,28 +288,28 @@ public class FileAPI implements RacingAPI {
             Instant createdAt;
             try {
                createdAt = Instant.ofEpochSecond(yaml.getLong("created_at"));
-            } catch (DateTimeException var31) {
+            } catch (DateTimeException dateTimeException) {
                throw new ParseRaceException("`created_at` is invalid");
             }
 
             RaceType type;
             try {
                type = RaceType.valueOf(yaml.getString("type"));
-            } catch (IllegalArgumentException var30) {
+            } catch (IllegalArgumentException illegalArgumentException) {
                throw new ParseRaceException("`type` is invalid");
             }
 
             StartOrder startOrder;
             try {
                startOrder = StartOrder.valueOf(yaml.getString("start_order"));
-            } catch (IllegalArgumentException var29) {
+            } catch (IllegalArgumentException illegalArgumentException) {
                throw new ParseRaceException("`start_order` is invalid");
             }
 
             RaceState state;
             try {
                state = RaceState.valueOf(yaml.getString("state"));
-            } catch (IllegalArgumentException var28) {
+            } catch (IllegalArgumentException illegalArgumentException) {
                throw new ParseRaceException("`state` is invalid");
             }
 
@@ -392,8 +390,8 @@ public class FileAPI implements RacingAPI {
               UUID id;
               try {
                   id = UUID.fromString(key);
-              } catch (IllegalArgumentException var12) {
-                  RacingPlugin.logger().log(Level.SEVERE, "Couldn't convert key to UUID", var12);
+              } catch (IllegalArgumentException illegalArgumentException) {
+                  RacingPlugin.logger().log(Level.SEVERE, "Couldn't convert key to UUID", illegalArgumentException);
                   continue;
               }
 
@@ -406,8 +404,8 @@ public class FileAPI implements RacingAPI {
                   Location location;
                   try {
                       location = this.parseLocation(section, key + ".location");
-                  } catch (ParseYamlLocationException var11) {
-                      RacingPlugin.logger().log(Level.SEVERE, "Couldn't parse location: " + var11.getMessage(), var11);
+                  } catch (ParseYamlLocationException parseYamlLocationException) {
+                      RacingPlugin.logger().log(Level.SEVERE, "Couldn't parse location: " + parseYamlLocationException.getMessage(), parseYamlLocationException);
                       continue;
                   }
 
@@ -451,8 +449,8 @@ public class FileAPI implements RacingAPI {
               UUID id;
               try {
                   id = UUID.fromString(key);
-              } catch (IllegalArgumentException var12) {
-                  RacingPlugin.logger().log(Level.SEVERE, "Couldn't convert key to UUID", var12);
+              } catch (IllegalArgumentException illegalArgumentException) {
+                  RacingPlugin.logger().log(Level.SEVERE, "Couldn't convert key to UUID", illegalArgumentException);
                   continue;
               }
 
@@ -465,8 +463,8 @@ public class FileAPI implements RacingAPI {
                   Location location;
                   try {
                       location = this.parseLocation(section, key + ".location");
-                  } catch (ParseYamlLocationException var11) {
-                      RacingPlugin.logger().log(Level.SEVERE, "Couldn't parse location: " + var11.getMessage(), var11);
+                  } catch (ParseYamlLocationException parseYamlLocationException) {
+                      RacingPlugin.logger().log(Level.SEVERE, "Couldn't parse location: " + parseYamlLocationException.getMessage(), parseYamlLocationException);
                       continue;
                   }
 
@@ -498,16 +496,16 @@ public class FileAPI implements RacingAPI {
       if (entries == null) {
          throw new ParseRaceException("Couldn't parse `results` list");
       } else {
-         Iterator<Map<String, Object>> var3 = entries.iterator();
+         Iterator<Map<String, Object>> entryIterator = entries.iterator();
 
          while (true) {
-            if (var3.hasNext()) {
-               Map<String, Object> entry = var3.next();
+            if (entryIterator.hasNext()) {
+               Map<String, Object> entry = entryIterator.next();
 
                UUID playerId;
                try {
                   playerId = UUID.fromString((String)entry.get("player_id"));
-               } catch (IllegalArgumentException var13) {
+               } catch (IllegalArgumentException illegalArgumentException) {
                   throw new ParseRaceException("Couldn't parse key `player_id` as UUID in results");
                }
 
@@ -606,14 +604,14 @@ public class FileAPI implements RacingAPI {
                   UUID uuid;
                   try {
                       uuid = UUID.fromString((String) entry.get("author"));
-                  } catch (IllegalArgumentException var18) {
+                  } catch (IllegalArgumentException illegalArgumentException) {
                       throw new ParseRaceException("Couldn't parse sign because author UUID is not valid");
                   }
 
                   Instant createdAt;
                   try {
                       createdAt = Instant.ofEpochSecond((long) (Integer) entry.get("created_at"));
-                  } catch (DateTimeException var17) {
+                  } catch (DateTimeException dateTimeException) {
                       throw new ParseRaceException("Couldn't parse sign because timestamp is invalid");
                   }
 
@@ -630,7 +628,7 @@ public class FileAPI implements RacingAPI {
                   RaceSignType type;
                   try {
                       type = RaceSignType.fromString((String) entry.get("type"));
-                  } catch (IllegalArgumentException var19) {
+                  } catch (IllegalArgumentException illegalArgumentException) {
                       throw new ParseRaceException("Couldn't parse sign because sign type is not valid");
                   }
 
@@ -689,8 +687,8 @@ public class FileAPI implements RacingAPI {
                      } else {
                         World world = Bukkit.getWorld(worldName);
                         if (world == null) {
-                           String var10002 = section.getString(worldPath);
-                           throw new ParseYamlLocationException("Couldn't find world with name `" + var10002 + "`");
+                           String name = section.getString(worldPath);
+                           throw new ParseYamlLocationException("Couldn't find world with name `" + name + "`");
                         } else {
                            return new Location(world, section.getDouble(xPath), section.getDouble(yPath), section.getDouble(zPath), (float)section.getDouble(yawPath), (float)section.getDouble(pitchPath));
                         }
@@ -721,8 +719,8 @@ public class FileAPI implements RacingAPI {
          String command;
          int recipient;
          boolean isEnabled;
-         for (Iterator<Map<String, Object>> var4 = entries.iterator(); var4.hasNext(); commands.add(new RaceCommand(commandType, isEnabled, command, recipient))) {
-            Map<String, Object> entry = var4.next();
+         for (Iterator<Map<String, Object>> entryIterator = entries.iterator(); entryIterator.hasNext(); commands.add(new RaceCommand(commandType, isEnabled, command, recipient))) {
+            Map<String, Object> entry = entryIterator.next();
             if (!entry.containsKey("when")) {
                throw new ParseRaceException("Couldn't find field `commands[].when`");
             }
@@ -732,7 +730,7 @@ public class FileAPI implements RacingAPI {
 
             try {
                commandType = RaceCommandType.valueOf(stringWhen);
-            } catch (IllegalArgumentException var11) {
+            } catch (IllegalArgumentException illegalArgumentException) {
                throw new ParseRaceException("Couldn't parse `commands[].when`. Value: " + stringWhen);
             }
 
@@ -766,7 +764,7 @@ public class FileAPI implements RacingAPI {
                } else {
                   try {
                      recipient = (Integer)entry.get("recipient");
-                  } catch (Exception var12) {
+                  } catch (Exception exception) {
                      throw new ParseRaceException("Couldn't parse `commands[].recipient`. Value can't be converted to an integer");
                   }
 
@@ -785,8 +783,8 @@ public class FileAPI implements RacingAPI {
       List<Map<String, Object>> writeList = new ArrayList<>();
 
       LinkedHashMap writeObject;
-      for(Iterator<RaceCommand> var4 = commands.iterator(); var4.hasNext(); writeList.add(writeObject)) {
-         RaceCommand command = (RaceCommand)var4.next();
+      for(Iterator<RaceCommand> raceCommandIterator = commands.iterator(); raceCommandIterator.hasNext(); writeList.add(writeObject)) {
+         RaceCommand command = raceCommandIterator.next();
          writeObject = new LinkedHashMap<>();
          writeObject.put("when", command.getCommandType().toString().toLowerCase(Locale.ENGLISH));
          writeObject.put("enabled", command.isEnabled());
