@@ -81,7 +81,8 @@ public class RacePlayerStatistic {
    }
 
    public void setRecord(int laps, long time) {
-      if (!this.records.containsKey(laps) || this.records.get(laps) > time) {
+      // Cast (Number)...longValue() is necessary
+      if (!this.records.containsKey(laps) || ((Number)this.records.get(laps)).longValue() > time) {
          this.records.put(laps, time);
       }
    }
