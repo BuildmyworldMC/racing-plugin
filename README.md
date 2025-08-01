@@ -1,6 +1,6 @@
 ![Racing Banner](./racing-banner.jpg)
 
-# Racing - Spigot Plugin 4.3.1
+# Racing - Spigot Plugin 4.4.0-SNAPSHOT
 
 Create and play race with your friends.
 
