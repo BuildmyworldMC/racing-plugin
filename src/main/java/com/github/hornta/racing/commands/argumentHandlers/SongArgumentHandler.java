@@ -13,7 +13,8 @@ import org.bukkit.command.CommandSender;
 
 public class SongArgumentHandler implements IArgumentHandler {
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return SongManager.getSongNames().stream().filter((name) -> name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
+      return SongManager.getSongNames().stream().filter((name) ->
+         name.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {

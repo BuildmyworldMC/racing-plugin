@@ -21,7 +21,9 @@ public class StartPointArgumentHandler implements IArgumentHandler {
    }
 
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return this.racingManager.getRace(prevArgs[0]).getStartPoints().stream().filter((point) -> String.valueOf(point.getPosition()).toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).map((p) -> String.valueOf(p.getPosition())).collect(Collectors.toCollection(LinkedHashSet::new));
+      return this.racingManager.getRace(prevArgs[0]).getStartPoints().stream().filter((point) ->
+         String.valueOf(point.getPosition()).toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).map((p) ->
+            String.valueOf(p.getPosition())).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {

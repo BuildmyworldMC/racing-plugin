@@ -14,7 +14,9 @@ import org.bukkit.command.CommandSender;
 
 public class RaceTypeArgumentHandler implements IArgumentHandler {
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return Arrays.stream(RaceType.values()).map(Enum::name).map((s) -> s.toLowerCase(Locale.ENGLISH)).filter((type) -> type.startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
+      return Arrays.stream(RaceType.values()).map(Enum::name).map((s) ->
+         s.toLowerCase(Locale.ENGLISH)).filter((type) ->
+            type.startsWith(argument.toLowerCase(Locale.ENGLISH))).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {

@@ -21,7 +21,9 @@ public class CheckpointArgumentHandler implements IArgumentHandler {
    }
 
    public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-      return this.racingManager.getRace(prevArgs[0]).getCheckpoints().stream().filter((race) -> String.valueOf(race.getPosition()).toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).map((cp) -> String.valueOf(cp.getPosition())).collect(Collectors.toCollection(LinkedHashSet::new));
+      return this.racingManager.getRace(prevArgs[0]).getCheckpoints().stream().filter((race) ->
+         String.valueOf(race.getPosition()).toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH))).map((cp) ->
+            String.valueOf(cp.getPosition())).collect(Collectors.toCollection(LinkedHashSet::new));
    }
 
    public boolean test(Set<String> items, String argument) {
