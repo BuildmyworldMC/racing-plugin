@@ -557,10 +557,18 @@ public class RacingPlugin extends JavaPlugin {
       this.commando.addCommand("racing create").withHandler(new CommandCreateRace(this.racingManager)).withArgument((new CarbonArgument.Builder("race")).setHandler(new RaceArgumentHandler(this.racingManager, false)).showTabCompletion(false).create()).requiresPermission(Permission.COMMAND_CREATE.toString()).requiresPermission(Permission.RACING_MODIFY.toString()).preventConsoleCommandSender();
       this.commando.addCommand("racing delete").withHandler(new CommandDeleteRace(this.racingManager)).withArgument(raceArgument).requiresPermission(Permission.COMMAND_DELETE.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing list").withHandler(new CommandRaces(this.racingManager)).requiresPermission(Permission.COMMAND_LIST.toString()).requiresPermission(Permission.RACING_PLAYER.toString());
-      this.commando.addCommand("racing addcheckpoint").withHandler(new CommandAddCheckpoint(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("position")).setType(CarbonArgumentType.INTEGER).setMin(1.0D).setDefaultValue(CommandSender.class, (cs, args) -> {
-         Race race = this.racingManager.getRace(args[0]);
-         return race.getCheckpoints().size() + 1;
-      }).dependsOn(raceArgument).create()).requiresPermission(Permission.COMMAND_ADD_CHECKPOINT.toString()).requiresPermission(Permission.RACING_MODIFY.toString()).preventConsoleCommandSender();
+      this.commando.addCommand("racing addcheckpoint").withHandler(new CommandAddCheckpoint(this.racingManager))
+         .withArgument(raceArgument)
+         .withArgument((new CarbonArgument.Builder("position")).setType(CarbonArgumentType.INTEGER).setMin(1.0D).setDefaultValue(CommandSender.class, (cs, args) -> {
+             try {
+                 Race race = this.racingManager.getRace(args[0]);
+                 return race.getCheckpoints().size() + 1;
+             } catch (Exception e) {
+                 return 1;
+             }
+         }).create())
+         .withArgument((new CarbonArgument.Builder("radius")).setType(CarbonArgumentType.INTEGER).setMin(3.0D).setMax(9.0D).setDefaultValue(CommandSender.class, (cs, args) -> 3).create())
+         .requiresPermission(Permission.COMMAND_ADD_CHECKPOINT.toString()).requiresPermission(Permission.RACING_MODIFY.toString()).preventConsoleCommandSender();
       ICarbonArgument checkpointArgument = (new CarbonArgument.Builder("position")).setHandler(new CheckpointArgumentHandler(this.racingManager, true)).dependsOn(raceArgument).create();
       this.commando.addCommand("racing deletecheckpoint").withHandler(new CommandDeleteCheckpoint(this.racingManager)).withArgument(raceArgument).withArgument(checkpointArgument).requiresPermission(Permission.COMMAND_DELETE_CHECKPOINT.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing movecheckpoint").withHandler(new CommandMoveCheckpoint(this.racingManager)).withArgument(raceArgument).withArgument(checkpointArgument).requiresPermission(Permission.COMMAND_MOVE_CHECKPOINT.toString()).requiresPermission(Permission.RACING_MODIFY.toString()).preventConsoleCommandSender();

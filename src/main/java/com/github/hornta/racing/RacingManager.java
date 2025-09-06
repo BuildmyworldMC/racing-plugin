@@ -492,8 +492,8 @@ public class RacingManager implements Listener {
       });
    }
 
-   public void addCheckpoint(Location location, Race race, int position, Consumer<RaceCheckpoint> consumer) {
-      RaceCheckpoint checkpoint = new RaceCheckpoint(UUID.randomUUID(), position, location, 3);
+   public void addCheckpoint(Location location, Race race, int position, int radius, Consumer<RaceCheckpoint> consumer) {
+      RaceCheckpoint checkpoint = new RaceCheckpoint(UUID.randomUUID(), position, location, radius);
       List<RaceCheckpoint> checkpoints = race.getCheckpoints();
       checkpoints.add(checkpoint.getPosition() - 1, checkpoint);
 
