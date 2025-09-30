@@ -14,14 +14,17 @@ Available languages (English, French, Simplified_Chinese, Slovak, Swedish)
 # Dependencies
 
 ## Requirements
+
 - Protocolib ^5.x (Required for plugin work)
 
 ### (Optional)
+
 - DecentHolograms ^2.x (For hologram display) (Recommanded)
 - NoteBlockAPI ^1.x (For play custom song from note block)
 - McEconomy + Vault (For economy support)
 
 ## Acknowledgment
+
 - Creator: Hornata
 - Maintainer: ORN_Fox (From 4.3.0)
 - Contributors:
