@@ -135,7 +135,6 @@ public class ScoreboardManager implements Listener {
             Objects.requireNonNull(board.getTeam(this.WORLD_RECORD_HOLDER)).setPrefix(this.convertText(name));
          }
       }
-
    }
 
    public void updateWorldRecordFastestLap(Player player, long timeMillis) {
@@ -147,7 +146,6 @@ public class ScoreboardManager implements Listener {
       if (!name.isEmpty() && this.configMap.get(this.WORLD_RECORD_FASTEST_LAP_HOLDER)) {
          Objects.requireNonNull(board.getTeam(this.WORLD_RECORD_FASTEST_LAP_HOLDER)).setPrefix(this.convertText(name));
       }
-
    }
 
    public void updatePersonalBest(Player player, long timeMillis) {
@@ -177,7 +175,6 @@ public class ScoreboardManager implements Listener {
       } else {
          this.updateString(player, this.translationMap.get("noTimeStats"), scoreboardTeam);
       }
-
    }
 
    private void updateString(Player player, String value, String scoreboardTeam) {
@@ -189,7 +186,6 @@ public class ScoreboardManager implements Listener {
              team.setPrefix(this.convertText(value));
          }
       }
-
    }
 
    private String formatTime(long millis) {
@@ -210,7 +206,6 @@ public class ScoreboardManager implements Listener {
             this.addTeamToEntry(playerBoard, this.translationMap.get("noNameStats"), this.WORLD_RECORD_HOLDER);
          }
       }
-
    }
 
    private void addWorldRecordsFastestLap(ScoreboardManager.PlayerScoreboard playerBoard) {
@@ -225,7 +220,6 @@ public class ScoreboardManager implements Listener {
             this.addTeamToEntry(playerBoard, this.translationMap.get("noNameStats"), this.WORLD_RECORD_FASTEST_LAP_HOLDER);
          }
       }
-
    }
 
    private void addPersonalRecords(ScoreboardManager.PlayerScoreboard playerBoard) {
@@ -240,7 +234,6 @@ public class ScoreboardManager implements Listener {
             this.addTeamToEntry(playerBoard, this.translationMap.get("noNameStats"), this.PERSONAL_RECORD_LAP_TIME);
          }
       }
-
    }
 
    private void addRaceTime(ScoreboardManager.PlayerScoreboard playerBoard) {
@@ -255,7 +248,6 @@ public class ScoreboardManager implements Listener {
             this.addTeamToEntry(playerBoard, this.translationMap.get("noNameStats"), this.RACE_CURRENT_LAP_TIME);
          }
       }
-
    }
 
    private void addRaceFastestLapTime(ScoreboardManager.PlayerScoreboard playerBoard) {
@@ -266,7 +258,6 @@ public class ScoreboardManager implements Listener {
             this.addTeamToEntry(playerBoard, this.translationMap.get("noTimeStats"), this.RACE_FASTEST_LAP_TIME);
          }
       }
-
    }
 
    private void addTeamToEntry(ScoreboardManager.PlayerScoreboard playerBoard, String initialValue, String scoreboardKey) {

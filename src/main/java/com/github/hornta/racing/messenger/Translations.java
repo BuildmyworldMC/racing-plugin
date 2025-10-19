@@ -42,7 +42,6 @@ public class Translations {
       Map<String, InputStream> streams = new HashMap<>();
       Reflections reflections = new Reflections(null, new Scanner[]{new ResourcesScanner()});
       Set<String> resourceList = reflections.getResources(ymlResources);
-
        for (String resource : resourceList) {
            String filename = resource.lastIndexOf(47) == -1 ? resource : resource.substring(resource.lastIndexOf(47) + 1);
            String path = ((String[]) reflections.getStore().get(ResourcesScanner.class, filename).toArray(new String[0]))[0];
@@ -67,7 +66,6 @@ public class Translations {
    private void readLanguageFiles(File translationsDirectory) {
       File[] files = translationsDirectory.listFiles();
       if (files != null) {
-
           for (File file : files) {
               if (!file.isFile()) {
                   this.readLanguageFiles(file);

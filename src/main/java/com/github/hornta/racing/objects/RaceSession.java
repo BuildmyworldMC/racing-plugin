@@ -143,11 +143,10 @@ public class RaceSession implements Listener {
          String participateText = MessageManager.getMessage(key);
          Bukkit.getServer().spigot().broadcast((new ComponentBuilder(this.makeJoinChatCommand())).append(participateText).create());
       }
-
    }
 
    private void runAnnouncements() {
-      List announceIntervals = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RACE_ANNOUNCE_INTERVALS);
+      List<Object> announceIntervals = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RACE_ANNOUNCE_INTERVALS);
       int prepareTime = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RACE_PREPARE_TIME);
 
        for (Object announceInterval : announceIntervals) {
@@ -162,7 +161,6 @@ public class RaceSession implements Listener {
                }, (long) (prepareTime - interval) * 20L));
            }
        }
-
    }
 
    private void displayInitiatorControls() {
@@ -179,7 +177,6 @@ public class RaceSession implements Listener {
          tc.addExtra((new ComponentBuilder(MessageManager.getMessage(MessageKey.STOP_RACE))).event(stopHover).event(stopClickEvent).create()[0]);
          this.initiator.spigot().sendMessage(tc);
       }
-
    }
 
    public void start() {
@@ -566,7 +563,6 @@ public class RaceSession implements Listener {
                Bukkit.getPluginManager().callEvent(new CheckpointReachedEvent(this, playerSession, nextCheckpoint));
             }
          }
-
       }
    }
 
@@ -593,7 +589,6 @@ public class RaceSession implements Listener {
                   playerSession.freezeHorse();
                }
             }
-
          }
       }
    }
@@ -627,7 +622,6 @@ public class RaceSession implements Listener {
             event.setTo(new Location(event.getFrom().getWorld(), event.getFrom().getX(), event.getFrom().getY(), event.getFrom().getZ(), event.getTo().getYaw(), event.getTo().getPitch()));
          }
       }
-
    }
 
    @EventHandler
@@ -635,7 +629,6 @@ public class RaceSession implements Listener {
       if (event.getTarget() instanceof Player && this.isCurrentlyRacing((Player)event.getTarget()) && this.state == RaceSessionState.COUNTDOWN) {
          event.setCancelled(true);
       }
-
    }
 
    @EventHandler
@@ -646,7 +639,6 @@ public class RaceSession implements Listener {
          this.playerSessions.remove(player);
          this.checkFinished();
       }
-
    }
 
    @EventHandler
@@ -693,7 +685,6 @@ public class RaceSession implements Listener {
                   }
                }
             }
-
          }
       }
    }
@@ -721,12 +712,10 @@ public class RaceSession implements Listener {
                         session.enterVehicle(session.getVehicle());
                      });
                   }
-
                } else {
                   if (this.race.getType() == RaceType.PIG && event.getVehicle().getType() != EntityType.PIG || this.race.getType() == RaceType.HORSE && event.getVehicle().getType() != EntityType.HORSE || this.race.getType() == RaceType.MINECART && event.getVehicle().getType() != EntityType.MINECART || this.race.getType() == RaceType.STRIDER && event.getVehicle().getType() != EntityType.STRIDER) {
                      event.setCancelled(true);
                   }
-
                }
             }
          }
@@ -743,7 +732,6 @@ public class RaceSession implements Listener {
                if (!(this.playerSessions.get(player)).isAllowedToExitVehicle()) {
                   event.setCancelled(true);
                }
-
             }
          }
       }
@@ -873,7 +861,6 @@ public class RaceSession implements Listener {
                    RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_PIG_INTERACT)).toUpperCase(Locale.ENGLISH));
            case STRIDER ->
                    RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_STRIDER_INTERACT)).toUpperCase(Locale.ENGLISH));
-           default -> throw new IllegalArgumentException();
        };
    }
 
@@ -893,7 +880,6 @@ public class RaceSession implements Listener {
                    RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_PIG_DEATH)).toUpperCase(Locale.ENGLISH));
            case STRIDER ->
                    RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_STRIDER_DEATH)).toUpperCase(Locale.ENGLISH));
-           default -> throw new IllegalArgumentException();
        };
    }
 
