@@ -134,6 +134,7 @@ public class RacingPlugin extends JavaPlugin {
    public void onEnable() {
       instance = this;
       new Metrics(this, 5356);
+      getLogger().info("Loading Racing plugin...");
       this.noteBlockAPILoaded = Bukkit.getPluginManager().isPluginEnabled("NoteBlockAPI");
       this.decentHologramsLoaded = Bukkit.getPluginManager().isPluginEnabled("DecentHolograms");
       if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
