@@ -85,7 +85,8 @@ public class Translations {
                if (!result) {
                    return;
                }
-           } catch (IllegalArgumentException ignored) {
+           } catch (IllegalArgumentException exception) {
+               this.plugin.getLogger().log(Level.SEVERE, "Couldn't save translation file: " + exception.getMessage(), exception);
            }
        }
    }
