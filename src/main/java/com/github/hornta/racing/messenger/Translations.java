@@ -43,7 +43,7 @@ public class Translations {
       Reflections reflections = new Reflections(null, new Scanner[]{new ResourcesScanner()});
       Set<String> resourceList = reflections.getResources(ymlResources);
        for (String resource : resourceList) {
-           String filename = resource.lastIndexOf(47) == -1 ? resource : resource.substring(resource.lastIndexOf(47) + 1);
+           String filename = resource.lastIndexOf("/") == -1 ? resource : resource.substring(resource.lastIndexOf("/") + 1);
            String path = ((String[]) reflections.getStore().get(ResourcesScanner.class, filename).toArray(new String[0]))[0];
            if (this.translationResource.matcher(path).matches()) {
                streams.put(path, this.getClass().getClassLoader().getResourceAsStream(path));
