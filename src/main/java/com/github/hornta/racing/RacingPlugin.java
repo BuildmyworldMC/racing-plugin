@@ -284,6 +284,7 @@ public class RacingPlugin extends JavaPlugin {
       m.add(MessageKey.RACE_ADD_CHECKPOINT_SUCCESS, "commands.race_add_checkpoint.success");
       m.add(MessageKey.RACE_ADD_CHECKPOINT_IS_OCCUPIED, "commands.race_add_checkpoint.error_is_occupied");
       m.add(MessageKey.RACE_ADD_CHECKPOINT_POSITION_OUT_OF_BOUNDS, "commands.race_add_checkpoint.error_position_out_of_bounds");
+      m.add(MessageKey.RACE_ADD_CHECKPOINT_INVALID_RADIUS, "commands.race_add_checkpoint.error_invalid_size");
       m.add(MessageKey.RACE_DELETE_CHECKPOINT_SUCCESS, "commands.race_delete_checkpoint.success");
       m.add(MessageKey.RACE_ADD_STARTPOINT_SUCCESS, "commands.race_add_startpoint.success");
       m.add(MessageKey.RACE_ADD_STARTPOINT_IS_OCCUPIED, "commands.race_add_startpoint.error_is_occupied");
