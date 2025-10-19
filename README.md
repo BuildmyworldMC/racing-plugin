@@ -9,7 +9,7 @@ Supported race type (Boat, Elytra, Horse, Minecart, Pig, Strider, Walk)
 Created in Minecraft Version : 1.16.0
 Tested in Minecraft Version : 1.16.0 to 1.21.4
 
-Available languages (English, French, Simplified_Chinese, Slovak, Swedish)
+Available languages (English, French, Slovak, Swedish)
 
 # Dependencies
 
