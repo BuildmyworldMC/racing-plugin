@@ -10,6 +10,7 @@ commands:
     success: "§eNy checkpoint `<position>` har skapats för race `<race_name>`."
     error_is_occupied: "§cDet finns redan en checkpoint på den här platsen."
     error_position_out_of_bounds: "§cPosition för den här checkpointen kan maximalt vara <max>."
+    error_invalid_size: "§cKontrollpunktens storlek är ogiltig (måste vara mellan 3 och 9)"
   race_delete_checkpoint:
     success: "§eCheckpoint `<position>` för race `<race_name>` borttagen."
   race_move_checkpoint:
@@ -126,16 +127,16 @@ commands:
     entry_fee_line: "§eAnmälningsavgift: §f<entry_fee>\n"
   race_top:
     types:
-      fastest: 'Snabbaste'
-      fastest_lap: 'Snabbaste varv'
-      most_runs: 'Mest deltagande'
-      most_wins: 'Flest vinster'
-      win_ratio: 'Störst vinstförhållande'
+      fastest: "Snabbaste"
+      fastest_lap: "Snabbaste varv"
+      most_runs: "Mest deltagande"
+      most_wins: "Flest vinster"
+      win_ratio: "Störst vinstförhållande"
     header: "§e§9<type> §ei race §a<race_name>"
     item: "§e#<position> §f<player_name> §8- §e<value>"
     item_none: "§e#<position> §f-"
   race_reset_top:
-    success: '§eResultat för race §a<race_name> §e har återställts.'
+    success: "§eResultat för race §a<race_name> §e har återställts."
   hd_top_list_create:
     success: |-
       §eHolografisk topplista skapad.
@@ -292,7 +293,7 @@ timeunit.hour: "timme"
 timeunit.hours: "timmar"
 timeunit.day: "dag"
 timeunit.days: "dagar"
-timeunit.now: "now"
+timeunit.now: "nu"
 
 scoreboard.heading_format: "§b§l== <heading> (<laps> laps)=="
 scoreboard.title_format: "§b<title>"
@@ -300,9 +301,9 @@ scoreboard.text_format: "§f<text>"
 scoreboard.world_record: "Serverrekord:"
 scoreboard.world_record_fastest_lap: "SR snabbaste varv:"
 scoreboard.personal_record: "Personligt bästa:"
-scoreboard.time: "Time:"
+scoreboard.time: "Tid:"
 scoreboard.fastest_lap: "Snabbaste varv:"
-scoreboard.lap_tag: " Lap"
+scoreboard.lap_tag: " Varv"
 scoreboard.no_time_stats: "--:--.---"
 scoreboard.no_name_stats: "---------"
 
@@ -318,3 +319,4 @@ hd_top_list.none: |-
   §6<position>. §fn/a
 hd_top_list.footer: |-
   §e§m-------------
+

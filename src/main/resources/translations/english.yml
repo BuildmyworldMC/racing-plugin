@@ -10,6 +10,7 @@ commands:
     success: "§eNew checkpoint `<position>` has been created for race `<race_name>`."
     error_is_occupied: "§cThere is already a checkpoint in this location."
     error_position_out_of_bounds: "§cMax position you can enter for this checkpoint is <max>."
+    error_invalid_size: "§cThe checkpoint size is invalid (must be between 3 and 9)"
   race_delete_checkpoint:
     success: "§eCheckpoint `<position>` for race `<race_name>` has been deleted."
   race_move_checkpoint:
@@ -126,16 +127,16 @@ commands:
     entry_fee_line: "§eEntry fee: §f<entry_fee>\n"
   race_top:
     types:
-      fastest: 'Fastest run for <laps> <lap_word>'
-      fastest_lap: 'Fastest Lap'
-      most_runs: 'Most runs'
-      most_wins: 'Most wins'
-      win_ratio: 'Win ratio'
+      fastest: "Fastest run for <laps> <lap_word>"
+      fastest_lap: "Fastest Lap"
+      most_runs: "Most runs"
+      most_wins: "Most wins"
+      win_ratio: "Win ratio"
     header: "§9<type> §ein race §a<race_name>"
     item: "§e#<position> §f<player_name> §8- §e<value>"
     item_none: "§e#<position> §f-"
   race_reset_top:
-    success: '§eLeaderboard for race §a<race_name> §e has been reset.'
+    success: "§eLeaderboard for race §a<race_name> §e has been reset."
   hd_top_list_create:
     success: |-
       §eHologram top list was created.
@@ -318,3 +319,4 @@ hd_top_list.none: |-
   §6<position>. §fn/a
 hd_top_list.footer: |-
   §e§m-------------
+

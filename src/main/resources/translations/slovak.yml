@@ -10,6 +10,7 @@ commands:
     success: "§eNový záchytný bod `<position>` bol vytvorený pre pretek `<race_name>`."
     error_is_occupied: "§cNa tomto mieste už záchytný bod existuje."
     error_position_out_of_bounds: "§cMax position you can enter for this checkpoint is <max>."
+    error_invalid_size: "§cVeľkosť kontrolného bodu je neplatná (musí byť medzi 3 a 9)"
   race_delete_checkpoint:
     success: "§eZáchytný bod `<position>` pre pretek `<race_name>` bol odstránený."
   race_move_checkpoint:
@@ -126,16 +127,16 @@ commands:
     entry_fee_line: "§ePoplatok za účasť: §f<entry_fee>\n"
   race_top:
     types:
-      fastest: 'Najrýchlejšie preteky'
-      fastest_lap: 'Fastest Lap'
-      most_runs: 'Najviac pretekov'
-      most_wins: 'Najviac víťazstiev'
-      win_ratio: 'Priemer výhier'
+      fastest: "Najrýchlejšie preteky"
+      fastest_lap: "Fastest Lap"
+      most_runs: "Najviac pretekov"
+      most_wins: "Najviac víťazstiev"
+      win_ratio: "Priemer výhier"
     header: "§9<type> §ev preteku §a<race_name>"
     item: "§e#<position> §f<player_name> §8- §e<value>"
     item_none: "§e#<position> §f-"
   race_reset_top:
-    success: '§eRebríček pre pretek §a<race_name> §ebol resetovaný.'
+    success: "§eRebríček pre pretek §a<race_name> §ebol resetovaný."
   hd_top_list_create:
     success: |-
       §eHologram top list was created.
@@ -214,9 +215,9 @@ race_start_gamemode_disqualified_target: "§eBol si diskvalifikovaný, kedže si
 race_death_disqualified: "§e<player_name> zomrel počas preteku a teraz je diskvalifikovaný."
 race_death_disqualified_target: "§eZomrel si, tým pádom si diskvalifikovaný. Veľa štastia nabudúce."
 edit_no_edit_mode: "§cNemôžeš upraviť pretek `<race_name>` pretože nie je vo výstavbe. Napíš §7/rc setstate <race_name> under_construction§c pre umiestnenie do výstavby."
-race_result_header: "§eResult of race §a<race_name>"
-race_participant_result: "§6#<position>. §e<player_name> vyhral pretek §a<race_name>§e s časom <time>."
-race_participant_result_no_complete: "§7- §e<player_name> didn't finish."
+race_result_header: "§eVýsledky preteku §a<race_name>"
+race_participant_result: "§6#<position>. §e<player_name> dokončil s časom <time>."
+race_participant_result_no_complete: "§7- §e<player_name> nedokončil."
 race_participate_click_text: "/rc join <race_name>"
 race_participate_hover_text: "Klikni sem pre účasť."
 race_participate_text: |
@@ -259,12 +260,12 @@ race_sign_lines: |
   §l§8<current_participants>/<max_participants>
   <status>
 race_sign_fastest_lines: |
-  [Race]
+  [Pretek]
   §a<race_name>
-  §bFastest
-  <laps> Laps
+  §bNajrýchlejší
+  <laps> Okruhov
 race_sign_stats_lines: |
-  [Race]
+  [Pretek]
   §a<race_name>
   §b<stat_name>
 race_sign_status_not_started: "§8§l• Nezačatý •"
@@ -294,20 +295,20 @@ timeunit.day: "deň"
 timeunit.days: "dni"
 timeunit.now: "teraz"
 
-scoreboard.heading_format: "§b§l== <heading> (<laps> laps)=="
+scoreboard.heading_format: "§b§l== <heading> (<laps> okruhov)=="
 scoreboard.title_format: "§b<title>"
 scoreboard.text_format: "§f<text>"
-scoreboard.world_record: "Server record:"
-scoreboard.world_record_fastest_lap: "SR fastest lap:"
-scoreboard.personal_record: "Personal best:"
-scoreboard.time: "Time:"
-scoreboard.fastest_lap: "Fastest lap:"
-scoreboard.lap_tag: " Lap"
+scoreboard.world_record: "Rekord servera:"
+scoreboard.world_record_fastest_lap: "SR najrýchlejšie kolo:"
+scoreboard.personal_record: "Osobný rekord:"
+scoreboard.time: "Čas:"
+scoreboard.fastest_lap: "Najrýchlejšie kolo:"
+scoreboard.lap_tag: " Okruh"
 scoreboard.no_time_stats: "--:--.---"
 scoreboard.no_name_stats: "---------"
 
-lap.plural: "Laps"
-lap.singular: "Lap"
+lap.plural: "Okruhy"
+lap.singular: "Okruh"
 
 hd_top_list.header: |-
   §a§l§n<race_name>
@@ -318,3 +319,4 @@ hd_top_list.none: |-
   §6<position>. §fn/a
 hd_top_list.footer: |-
   §e§m-------------
+

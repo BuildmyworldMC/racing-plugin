@@ -31,7 +31,7 @@ public class Translations {
    public Translations(JavaPlugin plugin, MessageManager messageManager) {
       this.plugin = plugin;
       this.messageManager = messageManager;
-      this.translationResource = Pattern.compile("^translations/" + plugin.getDescription().getName() + "/.+\\.yml$");
+      this.translationResource = Pattern.compile("^translations/.+\\.yml$");
       this.languageFiles = new HashMap<>();
       this.translationsDirectory = new File(plugin.getDataFolder() + File.separator + "translations");
       this.saveDefaults();
@@ -80,7 +80,7 @@ public class Translations {
        this.translationsDirectory.mkdirs();
        for (Entry<String, InputStream> entry : this.getResourceTranslationStreams().entrySet()) {
            try {
-               File destination = new File(this.plugin.getDataFolder(), (entry.getKey()).replaceAll(this.plugin.getDescription().getName() + "/", ""));
+               File destination = new File(this.plugin.getDataFolder(), entry.getKey());
                boolean result = this.saveTranslationResource(entry, destination);
                if (!result) {
                    return;

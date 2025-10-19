@@ -10,6 +10,7 @@ commands:
     success: "§eUn nouveau point de contrôle `<position>` a été créé pour la course `<race_name>`."
     error_is_occupied: "§cIl y a déjà un point de contrôle à cet emplacement."
     error_position_out_of_bounds: "§cLa position maximale que vous pouvez entrer pour ce point de contrôle est <max>."
+    error_invalid_size: "§cLa taille du point de contrôle est invalide (doit compris entre 3 et 9)"
   race_delete_checkpoint:
     success: "§eLe point de contrôle `<position>` pour la course `<race_name>` a été supprimé."
   race_move_checkpoint:
@@ -126,16 +127,16 @@ commands:
     entry_fee_line: "§eFrais d'inscription : §f<entry_fee>\n"
   race_top:
     types:
-      fastest: 'Course la plus rapide pour <laps> <lap_word>'
-      fastest_lap: 'Tour le plus rapide'
-      most_runs: 'Plus de courses'
-      most_wins: 'Plus de victoires'
-      win_ratio: 'Ratio de victoires'
+      fastest: "Course la plus rapide pour <laps> <lap_word>"
+      fastest_lap: "Tour le plus rapide"
+      most_runs: "Plus de courses"
+      most_wins: "Plus de victoires"
+      win_ratio: "Ratio de victoires"
     header: "§9<type> §e dans la course §a<race_name>"
     item: "§e#<position> §f<player_name> §8- §e<value>"
     item_none: "§e#<position> §f-"
   race_reset_top:
-    success: '§eLe classement pour la course §a<race_name> §e a été réinitialisé.'
+    success: "§eLe classement pour la course §a<race_name> §e a été réinitialisé."
   hd_top_list_create:
     success: |-
       §eL'hologramme du classement a été créé.
@@ -318,3 +319,4 @@ hd_top_list.none: |-
   §6<position>. §fn/a
 hd_top_list.footer: |-
   §e§m-------------
+
