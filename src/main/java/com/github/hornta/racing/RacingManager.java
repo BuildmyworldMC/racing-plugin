@@ -120,6 +120,15 @@ public class RacingManager implements Listener {
       return sessions;
    }
 
+    public RaceSession getRaceSession(Race race) {
+        for (RaceSession session : this.raceSessions) {
+            if (session.getRace() == race) {
+                return session;
+            }
+        }
+        return null;
+    }
+
    public boolean hasOngoingSession(Race race) {
       Iterator<RaceSession> raceSessions = this.raceSessions.iterator();
 
