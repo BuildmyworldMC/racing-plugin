@@ -19,7 +19,7 @@ Available languages (English, French, Slovak, Swedish)
 
 ### (Optional)
 
-- DecentHolograms ^2.x (For hologram display) (Recommanded)
+- DecentHolograms ^2.x (For hologram display) (Recommended)
 - NoteBlockAPI ^1.x (For play custom song from note block)
 - McEconomy + Vault (For economy support)
 
@@ -28,5 +28,5 @@ Available languages (English, French, Slovak, Swedish)
 - Creator: Hornata
 - Maintainer: ORN_Fox (From 4.3.0)
 - Contributors:
-  - ulysse-mercadal (Particles debuging and migration to DecentHolograms) 
+  - ulysse-mercadal (Particles debuging and migration to DecentHolograms)
   - Syl2010 (Helping pom creation for compilation)
