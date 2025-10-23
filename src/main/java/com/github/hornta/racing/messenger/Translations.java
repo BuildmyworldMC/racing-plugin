@@ -177,7 +177,7 @@ public class Translations {
 
    private static String getFilenameWithoutExtension(File file) {
       String filename = file.getName();
-      int lastDotIndex = filename.lastIndexOf(46);
+      int lastDotIndex = filename.lastIndexOf(".");
       return lastDotIndex == -1 ? filename : filename.substring(0, lastDotIndex);
    }
 }
