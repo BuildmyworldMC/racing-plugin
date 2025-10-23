@@ -320,3 +320,7 @@ hd_top_list.none: |-
 hd_top_list.footer: |-
   §e§m-------------
 
+player_not_found: "The player `<player_name>` was not found."
+player_disqualified: "You have been disqualified from the race `<race_name>`. Reason: <reason>"
+player_disqualified_broadcast: "Your <player_name> has been disqualified from the race. Reason: <reason>"
+player_disqualified_by_admin: "Disqualified by an administrator"

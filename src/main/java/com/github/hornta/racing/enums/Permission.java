@@ -53,7 +53,8 @@ public enum Permission {
    COMMAND_SET_STAT_HD_TOP_LIST("racing.command.setstathdtoplist"),
    COMMAND_SET_LAPS_HD_TOP_LIST("racing.command.setlapshdtoplist"),
    COMMAND_LIST_HD_TOP_LIST("racing.command.listhdtoplist"),
-   COMMAND_TELEPORT_HD_TOP_LIST("racing.command.teleporthdtoplist");
+   COMMAND_TELEPORT_HD_TOP_LIST("racing.command.teleporthdtoplist"),
+   COMMAND_DISQUALIFY("racing.command.disqualify");
 
    private final String node;
 

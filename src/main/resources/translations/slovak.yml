@@ -320,3 +320,7 @@ hd_top_list.none: |-
 hd_top_list.footer: |-
   §e§m-------------
 
+player_not_found: "Hráč `<player_name>` sa nenašiel."
+player_disqualified: "Boli ste diskvalifikovaný z pretekov `<race_name>`. Dôvod: <reason>"
+player_disqualified_broadcast: "Váš hráč <player_name> bol diskvalifikovaný z pretekov. Dôvod: <reason>"
+player_disqualified_by_admin: "Diskvalifikovaný správcom"

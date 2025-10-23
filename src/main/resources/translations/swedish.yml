@@ -320,3 +320,7 @@ hd_top_list.none: |-
 hd_top_list.footer: |-
   §e§m-------------
 
+player_not_found: "Spelaren `<player_name>` hittades inte."
+player_disqualified: "Du har blivit diskvalificerad från loppet `<race_name>`. Anledning: <reason>"
+player_disqualified_broadcast: "Din <player_name> har blivit diskvalificerad från loppet. Anledning: <reason>"
+player_disqualified_by_admin: "Diskvalificerad av en administratör"

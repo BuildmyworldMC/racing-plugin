@@ -454,6 +454,10 @@ public class RacingPlugin extends JavaPlugin {
       m.add(MessageKey.HD_TOP_LIST_ITEM, "hd_top_list.item");
       m.add(MessageKey.HD_TOP_LIST_NONE, "hd_top_list.none");
       m.add(MessageKey.HD_TOP_LIST_FOOTER, "hd_top_list.footer");
+      m.add(MessageKey.PLAYER_NOT_FOUND, "player_not_found");
+      m.add(MessageKey.PLAYER_DISQUALIFIED, "player_disqualified");
+      m.add(MessageKey.PLAYER_DISQUALIFIED_BROADCAST, "player_disqualified_broadcast");
+      m.add(MessageKey.PLAYER_DISQUALIFIED_BY_ADMIN, "player_disqualified_by_admin");
       MessageManager messageManager = m.build();
       this.translations = new Translations(this, messageManager);
       String language = (String)this.configuration.get(ConfigKey.LANGUAGE);
@@ -581,6 +585,12 @@ public class RacingPlugin extends JavaPlugin {
       })).create()).requiresPermission(Permission.COMMAND_STOP.toString()).requiresPermission(Permission.RACING_MODERATOR.toString());
       this.commando.addCommand("racing skipwait").withHandler(new CommandSkipWait(this.racingManager)).withArgument(raceArgument).requiresPermission(Permission.COMMAND_SKIPWAIT.toString()).requiresPermission(Permission.RACING_MODERATOR.toString());
       this.commando.addCommand("racing leave").withHandler(new CommandLeave(this.racingManager)).requiresPermission(Permission.COMMAND_LEAVE.toString()).requiresPermission(Permission.RACING_PLAYER.toString()).preventConsoleCommandSender();
+       this.commando.addCommand("racing disqualify")
+               .withHandler(new CommandDisqualify(this.racingManager))
+               .withArgument(raceArgument)
+               .withArgument((new CarbonArgument.Builder("player")).setType(CarbonArgumentType.STRING).create())
+               .withArgument((new CarbonArgument.Builder("reason")).setType(CarbonArgumentType.STRING).setDefaultValue(CommandSender.class, (cs, args) -> "Disqualified by an administrator").create())
+               .requiresPermission(Permission.RACING_MODERATOR.toString());
       this.commando.addCommand("racing reload").withHandler(new CommandReload()).requiresPermission(Permission.COMMAND_RELOAD.toString()).requiresPermission(Permission.RACING_ADMIN.toString());
       this.commando.addCommand("racing help").withHandler(new CommandHelp()).requiresPermission(Permission.COMMAND_HELP.toString()).requiresPermission(Permission.RACING_PLAYER.toString());
       this.commando.addCommand("racing info").withArgument(raceArgument).withHandler(new CommandInfo(this.racingManager)).requiresPermission(Permission.COMMAND_INFO.toString()).requiresPermission(Permission.RACING_MODERATOR.toString());
