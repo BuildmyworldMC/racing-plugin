@@ -94,6 +94,7 @@ public class FileAPI implements RacingAPI {
    private final RaceMigrationManager migrationManager = new RaceMigrationManager();
 
    public FileAPI(Plugin plugin) {
+       // Race migrations list : show DEV_README.md
       this.directory = new File(plugin.getDataFolder(), RacingPlugin.getInstance().getConfiguration().get(ConfigKey.FILE_RACE_DIRECTORY));
       this.migrationManager.addMigration(new EntryFeeMigrationRace());
       this.migrationManager.addMigration(new WalkSpeedMigrationRace());
