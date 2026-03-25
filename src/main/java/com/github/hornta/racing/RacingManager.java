@@ -104,7 +104,7 @@ public class RacingManager implements Listener {
    }
 
    public List<RaceSession> getRaceSessions(Race race) {
-      return this.getRaceSessions(race, (RaceSessionState) null);
+      return this.getRaceSessions(race, null);
    }
 
    public List<RaceSession> getRaceSessions(Race race, RaceSessionState state) {
@@ -636,11 +636,11 @@ public class RacingManager implements Listener {
    }
 
    public Race getRace(String name) {
-      return (Race) this.racesByName.get(name);
+      return this.racesByName.get(name);
    }
 
    public Race getRace(UUID id) {
-      return (Race) this.racesById.get(id);
+      return this.racesById.get(id);
    }
 
    public List<Race> getRaces() {
