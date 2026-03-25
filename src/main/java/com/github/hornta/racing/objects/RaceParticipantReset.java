@@ -93,16 +93,16 @@ public class RaceParticipantReset {
       playerSession.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, countdown * 20, 128));
       RacingPlugin.debug("Potion effect %s added to %s", playerSession.getPlayer().getPotionEffect(PotionEffectType.JUMP_BOOST), playerSession.getPlayer().getName());
       switch(playerSession.getRaceSession().getRace().getType()) {
-      case HORSE:
-      case BOAT:
-      case PIG:
-      case STRIDER:
-      case MINECART:
-         playerSession.getPlayer().setAllowFlight(true);
-         break;
-      case ELYTRA:
-      case PLAYER:
-         playerSession.getPlayer().setAllowFlight(false);
+         case HORSE:
+         case BOAT:
+         case PIG:
+         case STRIDER:
+         case MINECART:
+            playerSession.getPlayer().setAllowFlight(true);
+            break;
+         case ELYTRA:
+         case PLAYER:
+            playerSession.getPlayer().setAllowFlight(false);
       }
 
    }
