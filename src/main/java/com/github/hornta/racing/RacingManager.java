@@ -812,7 +812,7 @@ public class RacingManager implements Listener {
    }
 
    public Set<GameMode> getNonJoinableGameModes() {
-      List value = RacingPlugin.getInstance().getConfiguration()
+      List<Object> value = RacingPlugin.getInstance().getConfiguration()
             .get(ConfigKey.PREVENT_JOIN_FROM_GAME_MODE);
       Set<GameMode> gameModes = new HashSet<>();
 
@@ -829,7 +829,7 @@ public class RacingManager implements Listener {
    }
 
    public Set<World> getNonJoinableWorlds() {
-      List value = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_WORLD);
+      List<Object> value = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_WORLD);
       Set<World> worlds = new HashSet<>();
 
        for (Object o : value) {
