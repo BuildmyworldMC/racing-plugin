@@ -19,3 +19,4 @@
 | SignTypeMigrationRace| V13 |  -> | V14 |
 | SingleRuns| V14 |  -> | V15 |
 | StriderSpeedMigrationRace| V15 |  -> | V16 |
+| HappyGhastSpeedMigrationRace| V16 |  -> | V17 |
