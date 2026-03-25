@@ -311,7 +311,7 @@ public class RacingManager implements Listener {
          Bukkit.broadcastMessage(joinedResultMessage);
       } else {
          List<Player> playersToMessage = event.getResult().getPlayerResults().values().stream()
-               .map((playerResultx) -> Bukkit.getPlayer(playerResultx.getPlayerId())).filter(Objects::nonNull).toList();
+               .map((playerResults) -> Bukkit.getPlayer(playerResults.getPlayerId())).filter(Objects::nonNull).toList();
 
          for (Player player : playersToMessage) {
             player.sendMessage(joinedResultMessage);
