@@ -494,37 +494,37 @@ public class RacingPlugin extends JavaPlugin {
       });
       this.commando.handleValidation((result) -> {
          switch(result.getStatus()) {
-         case ERR_INCORRECT_TYPE:
-            MessageManager.setValue("help_text", (Object)result.getCommand().getHelpText());
-            MessageManager.setValue("argument", (Object)result.getArgument().getName());
-            MessageManager.setValue("received", (Object)result.getValue());
-            if (result.getArgument().getType() == CarbonArgumentType.INTEGER) {
-               MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_NON_INTEGER);
-            } else if (result.getArgument().getType() == CarbonArgumentType.NUMBER) {
-               MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_NON_INTEGER);
-            }
-            break;
-         case ERR_MIN_LIMIT:
-         case ERR_MAX_LIMIT:
-            MessageManager.setValue("help_text", (Object)result.getCommand().getHelpText());
-            MessageManager.setValue("argument", (Object)result.getArgument().getName());
-            MessageManager.setValue("received", (Object)result.getValue());
-            if (result.getStatus() == ValidationStatus.ERR_MIN_LIMIT) {
-               MessageManager.setValue("expected", (Object)result.getArgument().getMin());
-               MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_MIN_EXCEED);
-            } else {
-               MessageManager.setValue("expected", (Object)result.getArgument().getMax());
-               MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_MAX_EXCEED);
-            }
-            break;
-         case ERR_OTHER:
-            if (result.getArgument().getType() == CarbonArgumentType.POTION_EFFECT) {
-               MessageManager.setValue("potion_effect", (Object)result.getValue());
-               MessageManager.sendMessage(result.getCommandSender(), MessageKey.POTION_EFFECT_NOT_FOUND);
-            }
-         case ERR_MAX_LENGTH:
-         case ERR_MIN_LENGTH:
-         case ERR_PATTERN:
+            case ERR_INCORRECT_TYPE:
+               MessageManager.setValue("help_text", (Object)result.getCommand().getHelpText());
+               MessageManager.setValue("argument", (Object)result.getArgument().getName());
+               MessageManager.setValue("received", (Object)result.getValue());
+               if (result.getArgument().getType() == CarbonArgumentType.INTEGER) {
+                  MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_NON_INTEGER);
+               } else if (result.getArgument().getType() == CarbonArgumentType.NUMBER) {
+                  MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_NON_INTEGER);
+               }
+               break;
+            case ERR_MIN_LIMIT:
+            case ERR_MAX_LIMIT:
+               MessageManager.setValue("help_text", (Object)result.getCommand().getHelpText());
+               MessageManager.setValue("argument", (Object)result.getArgument().getName());
+               MessageManager.setValue("received", (Object)result.getValue());
+               if (result.getStatus() == ValidationStatus.ERR_MIN_LIMIT) {
+                  MessageManager.setValue("expected", (Object)result.getArgument().getMin());
+                  MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_MIN_EXCEED);
+               } else {
+                  MessageManager.setValue("expected", (Object)result.getArgument().getMax());
+                  MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_MAX_EXCEED);
+               }
+               break;
+            case ERR_OTHER:
+               if (result.getArgument().getType() == CarbonArgumentType.POTION_EFFECT) {
+                  MessageManager.setValue("potion_effect", (Object)result.getValue());
+                  MessageManager.sendMessage(result.getCommandSender(), MessageKey.POTION_EFFECT_NOT_FOUND);
+               }
+            case ERR_MAX_LENGTH:
+            case ERR_MIN_LENGTH:
+            case ERR_PATTERN:
          }
       });
       ICarbonArgument raceArgument = (new CarbonArgument.Builder("race")).setHandler(new RaceArgumentHandler(this.racingManager, true)).create();
@@ -629,15 +629,15 @@ public class RacingPlugin extends JavaPlugin {
       String storageTypeString = (String)instance.configuration.get(ConfigKey.STORAGE);
       StorageType storageType = StorageType.valueOf(storageTypeString.toUpperCase(Locale.ENGLISH));
       switch(storageType) {
-      case FILE:
-         this.racingManager.setAPI(new FileAPI(this));
-      case CUSTOM:
-      default:
-         this.racingManager.load();
-         if (this.decentHologramsLoaded) {
-            this.hdTopListManager = new HDTopListManager();
-            this.getServer().getPluginManager().registerEvents(this.hdTopListManager, this);
-         }
+         case FILE:
+            this.racingManager.setAPI(new FileAPI(this));
+         case CUSTOM:
+         default:
+            this.racingManager.load();
+            if (this.decentHologramsLoaded) {
+               this.hdTopListManager = new HDTopListManager();
+               this.getServer().getPluginManager().registerEvents(this.hdTopListManager, this);
+            }
       }
    }
 }

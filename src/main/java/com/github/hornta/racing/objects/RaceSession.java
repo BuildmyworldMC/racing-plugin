@@ -647,29 +647,29 @@ public class RaceSession implements Listener {
                player.setHealth(20.0D);
                RacePlayerSession playerSession = this.playerSessions.get(player);
                switch(respawnType) {
-               case FROM_LAST_CHECKPOINT:
-               case FROM_START:
-                  playerSession.respawn(respawnType, null, null);
-                  break;
-               case NONE:
-                  if (this.state != RaceSessionState.STARTED) {
-                     playerSession.respawn(RespawnType.FROM_START, null, null);
-                  } else {
-                     playerSession.restore();
-                     this.playerSessions.remove(player);
-                     player.setFallDistance(0.0F);
-                     PaperLib.teleportAsync(player, this.race.getSpawn(), TeleportCause.PLUGIN);
-                     MessageManager.sendMessage(player, MessageKey.DEATH_DISQUALIFIED_TARGET);
+                  case FROM_LAST_CHECKPOINT:
+                  case FROM_START:
+                     playerSession.respawn(respawnType, null, null);
+                     break;
+                  case NONE:
+                     if (this.state != RaceSessionState.STARTED) {
+                        playerSession.respawn(RespawnType.FROM_START, null, null);
+                     } else {
+                        playerSession.restore();
+                        this.playerSessions.remove(player);
+                        player.setFallDistance(0.0F);
+                        PaperLib.teleportAsync(player, this.race.getSpawn(), TeleportCause.PLUGIN);
+                        MessageManager.sendMessage(player, MessageKey.DEATH_DISQUALIFIED_TARGET);
 
-                      for (RacePlayerSession session : this.playerSessions.values()) {
-                          MessageManager.setValue("player_name", player.getName());
-                          MessageManager.sendMessage(session.getPlayer(), MessageKey.DEATH_DISQUALIFIED);
-                      }
+                         for (RacePlayerSession session : this.playerSessions.values()) {
+                             MessageManager.setValue("player_name", player.getName());
+                             MessageManager.sendMessage(session.getPlayer(), MessageKey.DEATH_DISQUALIFIED);
+                         }
 
-                     if (this.playerSessions.isEmpty()) {
-                        this.checkFinished();
+                        if (this.playerSessions.isEmpty()) {
+                           this.checkFinished();
+                        }
                      }
-                  }
                }
             }
          }
@@ -789,20 +789,20 @@ public class RaceSession implements Listener {
    void onPlayerItemDamageEvent(PlayerItemDamageEvent event) {
       if (this.isCurrentlyRacing(event.getPlayer())) {
          switch(this.race.getType()) {
-         case ELYTRA:
-            if (event.getItem().getType() == Material.ELYTRA) {
-               event.setCancelled(true);
-            }
-            break;
-         case PIG:
-            if (event.getItem().getType() == Material.CARROT_ON_A_STICK) {
-               event.setCancelled(true);
-            }
-            break;
-         case STRIDER:
-            if (event.getItem().getType() == Material.WARPED_FUNGUS_ON_A_STICK) {
-               event.setCancelled(true);
-            }
+            case ELYTRA:
+               if (event.getItem().getType() == Material.ELYTRA) {
+                  event.setCancelled(true);
+               }
+               break;
+            case PIG:
+               if (event.getItem().getType() == Material.CARROT_ON_A_STICK) {
+                  event.setCancelled(true);
+               }
+               break;
+            case STRIDER:
+               if (event.getItem().getType() == Material.WARPED_FUNGUS_ON_A_STICK) {
+                  event.setCancelled(true);
+               }
          }
 
       }
