@@ -25,9 +25,12 @@ import org.bukkit.entity.Steerable;
 import org.bukkit.entity.Strider;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.Objects;
 
@@ -50,14 +53,15 @@ public class RacePlayerSession {
    private boolean allowedToExitVehicle;
    private RaceParticipantReset restore;
 
+   private BukkitTask elytraTask;
    RacePlayerSession(RaceSession raceSession, Player player, double chargedEntryFee) {
       this.raceSession = raceSession;
       this.player = player;
       this.chargedEntryFee = chargedEntryFee;
+
       if (raceSession.getRace().getResultByPlayerId().containsKey(player.getUniqueId())) {
          this.personalBestLapTime = raceSession.getRace().getResultByPlayerId().get(player.getUniqueId()).getFastestLap();
       }
-
    }
 
    public long getLapStartTime() {
@@ -76,7 +80,6 @@ public class RacePlayerSession {
       if (millis < this.personalBestLapTime) {
          this.personalBestLapTime = millis;
       }
-
    }
 
    public long getFastestLap() {
@@ -127,6 +130,7 @@ public class RacePlayerSession {
       this.player.setWalkSpeed(this.raceSession.getRace().getWalkSpeed());
       this.player.setFoodLevel(20);
       this.player.removePotionEffect(PotionEffectType.JUMP_BOOST);
+
       if (this.vehicle instanceof Pig) {
          this.player.getInventory().setItemInMainHand(new ItemStack(Material.CARROT_ON_A_STICK, 1));
       } else if (this.vehicle instanceof Strider) {
@@ -136,7 +140,7 @@ public class RacePlayerSession {
       }
 
       if (this.raceSession.getRace().getType() == RaceType.ELYTRA) {
-         this.player.getInventory().setChestplate(new ItemStack(Material.ELYTRA, 1));
+         this.setupElytra();
       }
 
    }
@@ -278,6 +282,19 @@ public class RacePlayerSession {
       RacingPlugin.debug("Spawned vehicle at " + this.vehicle.getLocation());
    }
 
+   private void setupElytra() {
+      this.player.getInventory().setChestplate(new ItemStack(Material.ELYTRA, 1));
+
+      Player player = this.player;
+      RacePlayerSession session = this;
+      this.elytraTask = Bukkit.getScheduler().runTaskTimer(RacingPlugin.getInstance(), () -> {
+         if (session.isFinished() || session.getPlayer().isDead()) {
+            return;
+         }
+         player.getInventory().setItemInMainHand(new ItemStack(Material.FIREWORK_ROCKET, 64));
+      }, 0L, 600L); // Exécute toutes les 600 ticks (30 seconds, stopper quand raceSession est null)
+   }
+
    private void setupPig() {
       ((LivingEntity)this.vehicle).setAI(false);
       RacingPlugin.debug("Disable pig AI");
@@ -294,6 +311,19 @@ public class RacePlayerSession {
       RacingPlugin.debug("Giving strider a saddle");
       Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getStriderSpeed());
       RacingPlugin.debug("Setting movementspeed on strider to " + this.raceSession.getRace().getStriderSpeed());
+   }
+
+   public void cleanup() {
+      if (this.elytraTask != null && !this.elytraTask.isCancelled()) {
+         this.elytraTask.cancel();
+         this.elytraTask = null;
+      }
+
+      if (this.raceSession.getRace().getType() == RaceType.ELYTRA) {
+         this.player.getInventory().setChestplate(null);
+         this.player.getInventory().setItemInMainHand(null);
+      }
+      this.vehicle = null;
    }
 
    private void setupHorse(HorseData horseData) {
@@ -362,14 +392,17 @@ public class RacePlayerSession {
       RacingPlugin.debug("Result of attempting to enter %s into %s: %b", this.player.getName(), vehicle.getType(), this.player.isInsideVehicle());
    }
 
-   void exitVehicle() {
+   public void exitVehicle() {
       this.allowedToExitVehicle = true;
       this.vehicle.removePassenger(this.player);
       this.allowedToExitVehicle = false;
    }
 
-   void restore() {
+   public void restore() {
       if (this.restore != null) {
+         RacingPlugin.debug("Cleaning up tasks before restoring %s...", this.player.getName());
+         this.cleanup();
+
          RacingPlugin.debug("Restoring %s...", this.player.getName());
          this.startLocation = null;
          this.currentCheckpoint = null;
