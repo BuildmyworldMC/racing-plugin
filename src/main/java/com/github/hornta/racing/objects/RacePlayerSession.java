@@ -5,10 +5,7 @@ import com.github.hornta.racing.Util;
 import com.github.hornta.racing.enums.RaceType;
 import com.github.hornta.racing.enums.RespawnType;
 import io.papermc.lib.PaperLib;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BossBar;
@@ -34,6 +31,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class RacePlayerSession {
    public static final double MAX_HEALTH = 20.0D;
@@ -340,8 +338,31 @@ public class RacePlayerSession {
       RacingPlugin.debug("Add passenger to happy ghast");
       Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHappyGhastSpeed());
       RacingPlugin.debug("Setting movementspeed on happy ghast to " + this.raceSession.getRace().getHappyGhastSpeed());
-      Objects.requireNonNull(((LivingEntity) this.vehicle).getEquipment()).setItem(EquipmentSlot.BODY, new ItemStack(Material.LIME_HARNESS));
-      RacingPlugin.debug("Equip harness to happy ghast");
+
+      // Choix aléatoire d'une couleur de teinture
+      DyeColor[] colors = DyeColor.values();
+      DyeColor randomColor = colors[new Random().nextInt(colors.length)];
+      Material harnessMaterial = switch (randomColor) {
+         case WHITE -> Material.WHITE_HARNESS;
+         case ORANGE -> Material.ORANGE_HARNESS;
+         case MAGENTA -> Material.MAGENTA_HARNESS;
+         case LIGHT_BLUE -> Material.LIGHT_BLUE_HARNESS;
+         case YELLOW -> Material.YELLOW_HARNESS;
+         case LIME -> Material.LIME_HARNESS;
+         case PINK -> Material.PINK_HARNESS;
+         case GRAY -> Material.GRAY_HARNESS;
+         case LIGHT_GRAY -> Material.LIGHT_GRAY_HARNESS;
+         case CYAN -> Material.CYAN_HARNESS;
+         case PURPLE -> Material.PURPLE_HARNESS;
+         case BLUE -> Material.BLUE_HARNESS;
+         case BROWN -> Material.BROWN_HARNESS;
+         case GREEN -> Material.GREEN_HARNESS;
+         case RED -> Material.RED_HARNESS;
+         case BLACK -> Material.BLACK_HARNESS;
+      };
+
+      Objects.requireNonNull(((LivingEntity) this.vehicle).getEquipment()).setItem(EquipmentSlot.BODY, new ItemStack(harnessMaterial));
+      RacingPlugin.debug("Equip random color harness to happy ghast: " + randomColor);
    }
 
    public void freezeHappyGhast() {
