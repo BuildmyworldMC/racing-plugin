@@ -191,6 +191,7 @@ public class RacePlayerSession {
          case BOAT:
             this.spawnVehicle(EntityType.OAK_BOAT, location);
             RacingPlugin.debug("Setting boat type to " + EntityType.OAK_BOAT);
+            break;
          case HAPPY_GHAST:
             this.spawnVehicle(EntityType.HAPPY_GHAST, location);
             this.setupHappyGhast();
