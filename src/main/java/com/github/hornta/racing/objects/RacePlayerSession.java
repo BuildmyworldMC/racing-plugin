@@ -173,13 +173,16 @@ public class RacePlayerSession {
             this.spawnVehicle(EntityType.PIG, location);
             this.setupPig();
             break;
+
          case STRIDER:
             this.spawnVehicle(EntityType.STRIDER, location);
             this.setupStrider();
             break;
+
          case MINECART:
             this.spawnVehicle(EntityType.MINECART, location);
             break;
+
          case HORSE:
             HorseData horseData = null;
             if (this.vehicle != null) {
@@ -188,10 +191,12 @@ public class RacePlayerSession {
             this.spawnVehicle(EntityType.HORSE, location);
             this.setupHorse(horseData);
             break;
+
          case BOAT:
             this.spawnVehicle(EntityType.OAK_BOAT, location);
             RacingPlugin.debug("Setting boat type to " + EntityType.OAK_BOAT);
             break;
+
          case HAPPY_GHAST:
             this.spawnVehicle(EntityType.HAPPY_GHAST, location);
             this.setupHappyGhast();
@@ -217,13 +222,13 @@ public class RacePlayerSession {
                   if (fireTicksResetCallback != null) {
                      fireTicksResetCallback.run();
                   }
-
                }, 2L);
+
                this.enterVehicle(this.vehicle);
+
                if (runnable != null) {
                   runnable.run();
                }
-
             });
          });
       }, 1L);
@@ -255,31 +260,32 @@ public class RacePlayerSession {
          this.player.setFallDistance(0.0F);
          RacingPlugin.debug("Fall distance on %s was set to %f", this.player.getName(), this.player.getFallDistance());
          switch(this.raceSession.getRace().getType()) {
-         case PIG:
-         case STRIDER:
-         case MINECART:
-         case HORSE:
-         case BOAT:
-         case HAPPY_GHAST:
-            this.respawnInVehicle(loc, runnable, fireTicksResetCallback);
-            break;
-         case ELYTRA:
-         case PLAYER:
-            PaperLib.teleportAsync(this.player, loc, TeleportCause.PLUGIN).thenAccept((result) -> {
-               Bukkit.getScheduler().runTaskLater(RacingPlugin.getInstance(), () -> {
-                  Bukkit.getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
-                     this.player.setFireTicks(0);
-                     if (fireTicksResetCallback != null) {
-                        fireTicksResetCallback.run();
+            case PIG:
+            case STRIDER:
+            case MINECART:
+            case HORSE:
+            case BOAT:
+            case HAPPY_GHAST:
+               this.respawnInVehicle(loc, runnable, fireTicksResetCallback);
+               break;
+
+            case ELYTRA:
+            case PLAYER:
+               PaperLib.teleportAsync(this.player, loc, TeleportCause.PLUGIN).thenAccept((result) -> {
+                  Bukkit.getScheduler().runTaskLater(RacingPlugin.getInstance(), () -> {
+                     Bukkit.getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
+                        this.player.setFireTicks(0);
+                        if (fireTicksResetCallback != null) {
+                           fireTicksResetCallback.run();
+                        }
+
+                     }, 2L);
+                     if (result && runnable != null) {
+                        runnable.run();
                      }
 
-                  }, 2L);
-                  if (result && runnable != null) {
-                     runnable.run();
-                  }
-
-               }, 1L);
-            });
+                  }, 1L);
+               });
          }
 
       }
