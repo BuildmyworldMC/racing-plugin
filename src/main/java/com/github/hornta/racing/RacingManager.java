@@ -29,6 +29,8 @@ import com.github.hornta.racing.events.UnloadRaceEvent;
 import com.github.hornta.racing.features.AllowTeleport;
 import com.github.hornta.racing.features.DamageParticipants;
 import com.github.hornta.racing.features.FoodLevel;
+import com.github.hornta.racing.features.HappyGhastSteerListener;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.github.hornta.racing.features.TeleportOnLeave;
 import com.github.hornta.racing.messenger.MessageManager;
 import com.github.hornta.racing.objects.PlayerSessionResult;
@@ -82,6 +84,8 @@ public class RacingManager implements Listener {
       pluginManager.registerEvents(new AllowTeleport(), RacingPlugin.getInstance());
       pluginManager.registerEvents(new FoodLevel(), RacingPlugin.getInstance());
       pluginManager.registerEvents(new DamageParticipants(), RacingPlugin.getInstance());
+      // Register ProtocolLib packet listener for steer inputs
+      ProtocolLibrary.getProtocolManager().addPacketListener(new HappyGhastSteerListener());
    }
 
    public void shutdown() {

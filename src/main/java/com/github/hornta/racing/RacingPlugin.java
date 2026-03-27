@@ -54,6 +54,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -270,6 +271,12 @@ public class RacingPlugin extends JavaPlugin {
          Patch<ConfigKey> patch = new Patch<>();
          patch.set(ConfigKey.TELEPORT_AFTER_RACE_ENABLED, "teleport_after_race.enabled", true, Type.BOOLEAN);
          patch.set(ConfigKey.TELEPORT_AFTER_RACE_WHEN, "teleport_after_race.when", TeleportAfterRaceWhen.PARTICIPANT_FINISHES, Type.STRING);
+         return patch;
+      }));
+      cb.addMigration(new Migration<>(7, () -> {
+         Patch<ConfigKey> patch = new Patch<>();
+         patch.set(ConfigKey.RESPAWN_HAPPY_GHAST_DEATH, "respawn.happy_ghast.death", RespawnType.FROM_LAST_CHECKPOINT, Type.STRING);
+         patch.set(ConfigKey.RESPAWN_HAPPY_GHAST_INTERACT, "respawn.happy_ghast.interact", RespawnType.NONE, Type.STRING);
          return patch;
       }));
       this.configuration = cb.create();
@@ -556,6 +563,7 @@ public class RacingPlugin extends JavaPlugin {
       this.commando.addCommand("racing setstriderspeed").withHandler(new CommandSetStriderSpeed(this.racingManager)).withArgument(raceArgument).withArgument(speedArgument).requiresPermission(Permission.COMMAND_SET_STRIDER_SPEED.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing sethorsespeed").withHandler(new CommandSetHorseSpeed(this.racingManager)).withArgument(raceArgument).withArgument(speedArgument).requiresPermission(Permission.COMMAND_SET_HORSE_SPEED.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing sethorsejumpstrength").withHandler(new CommandSetHorseJumpStrength(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("jump_strength")).setType(CarbonArgumentType.NUMBER).setMin(0.0D).create()).requiresPermission(Permission.COMMAND_SET_HORSE_JUMP_STRENGTH.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
+      this.commando.addCommand("racing sethappyghastspeed").withHandler(new CommandSetHappyGhastSpeed(this.racingManager)).withArgument(raceArgument).withArgument(speedArgument).requiresPermission(Permission.COMMAND_SET_HAPPY_GHAST_SPEED.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing addpotioneffect").withHandler(new CommandAddPotionEffect(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("effect")).setType(CarbonArgumentType.POTION_EFFECT).create()).withArgument((new CarbonArgument.Builder("amplifier")).setType(CarbonArgumentType.INTEGER).setMin(0.0D).setMax(255.0D).create()).requiresPermission(Permission.COMMAND_ADD_POTION_EFFECT.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing removepotioneffect").withHandler(new CommandRemovePotionEffect(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("effect")).setHandler(new RacePotionEffectArgumentHandler(this.racingManager)).dependsOn(raceArgument).create()).requiresPermission(Permission.COMMAND_REMOVE_POTION_EFFECT.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing clearpotioneffects").withHandler(new CommandClearPotionEffects(this.racingManager)).withArgument(raceArgument).requiresPermission(Permission.COMMAND_CLEAR_POTION_EFFECTS.toString()).requiresPermission(Permission.RACING_MODIFY.toString());

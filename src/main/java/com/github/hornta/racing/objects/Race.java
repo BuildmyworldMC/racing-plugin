@@ -44,8 +44,9 @@ public class Race implements Listener {
    private double striderSpeed;
    private double horseSpeed;
    private double horseJumpStrength;
+   private double happyGhastSpeed;
 
-   public Race(UUID id, RaceVersion version, String name, Location spawn, RaceState state, Instant createdAt, List<RaceCheckpoint> checkpoints, List<RaceStartPoint> startPoints, RaceType type, StartOrder startOrder, String song, double entryFee, float walkSpeed, Set<RacePotionEffect> potionEffects, Set<RaceSign> signs, Set<RacePlayerStatistic> results, int minimimRequiredParticipantsToStart, double pigSpeed, double striderSpeed, double horseSpeed, double horseJumpStrength, List<RaceCommand> commands) {
+   public Race(UUID id, RaceVersion version, String name, Location spawn, RaceState state, Instant createdAt, List<RaceCheckpoint> checkpoints, List<RaceStartPoint> startPoints, RaceType type, StartOrder startOrder, String song, double entryFee, float walkSpeed, Set<RacePotionEffect> potionEffects, Set<RaceSign> signs, Set<RacePlayerStatistic> results, int minimimRequiredParticipantsToStart, double pigSpeed, double striderSpeed, double horseSpeed, double horseJumpStrength, double happyGhastSpeed, List<RaceCommand> commands) {
       this.id = id;
       this.version = version;
       this.name = name;
@@ -66,6 +67,7 @@ public class Race implements Listener {
       this.striderSpeed = striderSpeed;
       this.horseSpeed = horseSpeed;
       this.horseJumpStrength = horseJumpStrength;
+      this.happyGhastSpeed = happyGhastSpeed;
 
        for (RacePlayerStatistic playerStatistic : results) {
            this.resultByPlayerId.put(playerStatistic.getPlayerId(), playerStatistic);
@@ -386,6 +388,10 @@ public class Race implements Listener {
    public void setHorseSpeed(double horseSpeed) {
       this.horseSpeed = horseSpeed;
    }
+
+   public double getHappyGhastSpeed() { return this.happyGhastSpeed; }
+
+   public void setHappyGhastSpeed(double happyGhastSpeed) { this.happyGhastSpeed = happyGhastSpeed; }
 
    public List<RaceCommand> getCommands() {
       return this.commands;

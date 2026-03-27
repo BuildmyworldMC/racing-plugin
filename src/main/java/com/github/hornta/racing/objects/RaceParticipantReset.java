@@ -40,6 +40,7 @@ public class RaceParticipantReset {
       this.exhaustion = playerSession.getPlayer().getExhaustion();
       this.level = playerSession.getPlayer().getLevel();
       this.saturation = playerSession.getPlayer().getSaturation();
+
       ItemStack cursorItem = playerSession.getPlayer().getItemOnCursor();
       if (cursorItem.getAmount() > 0) {
          HashMap<Integer, ItemStack> rest = playerSession.getPlayer().getInventory().addItem(cursorItem);
@@ -92,12 +93,14 @@ public class RaceParticipantReset {
       RacingPlugin.debug("Attempting to add jump potion effect on %s", playerSession.getPlayer().getName());
       playerSession.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, countdown * 20, 128));
       RacingPlugin.debug("Potion effect %s added to %s", playerSession.getPlayer().getPotionEffect(PotionEffectType.JUMP_BOOST), playerSession.getPlayer().getName());
+      
       switch(playerSession.getRaceSession().getRace().getType()) {
          case HORSE:
          case BOAT:
          case PIG:
          case STRIDER:
          case MINECART:
+         case HAPPY_GHAST:
             playerSession.getPlayer().setAllowFlight(true);
             break;
          case ELYTRA:

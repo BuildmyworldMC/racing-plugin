@@ -2,21 +2,7 @@ package com.github.hornta.racing.api;
 
 import com.github.hornta.racing.ConfigKey;
 import com.github.hornta.racing.RacingPlugin;
-import com.github.hornta.racing.api.migrations.CommandsMigrationRace;
-import com.github.hornta.racing.api.migrations.EntryFeeMigrationRace;
-import com.github.hornta.racing.api.migrations.HorseAttributesMigrationRace;
-import com.github.hornta.racing.api.migrations.MinimumRequiredParticipantsToStartMigrationRace;
-import com.github.hornta.racing.api.migrations.PigSpeedMigrationRace;
-import com.github.hornta.racing.api.migrations.PotionEffectsMigrationRace;
-import com.github.hornta.racing.api.migrations.RaceDurationMigrationRace;
-import com.github.hornta.racing.api.migrations.ResultsMigrationRace;
-import com.github.hornta.racing.api.migrations.SignLapsMigrationRace;
-import com.github.hornta.racing.api.migrations.SignTypeMigrationRace;
-import com.github.hornta.racing.api.migrations.SignsMigrationRace;
-import com.github.hornta.racing.api.migrations.SingleRuns;
-import com.github.hornta.racing.api.migrations.StartOrderMigrationRace;
-import com.github.hornta.racing.api.migrations.StriderSpeedMigrationRace;
-import com.github.hornta.racing.api.migrations.WalkSpeedMigrationRace;
+import com.github.hornta.racing.api.migrations.*;
 import com.github.hornta.racing.enums.RaceCommandType;
 import com.github.hornta.racing.enums.RaceSignType;
 import com.github.hornta.racing.enums.RaceState;
@@ -111,6 +97,7 @@ public class FileAPI implements RacingAPI {
       this.migrationManager.addMigration(new SignTypeMigrationRace());
       this.migrationManager.addMigration(new SingleRuns());
       this.migrationManager.addMigration(new StriderSpeedMigrationRace());
+      this.migrationManager.addMigration(new HappyGhastSpeedMigrationRace());
    }
 
    public void fetchAllRaces(Consumer<List<Race>> consumers) {
@@ -209,6 +196,7 @@ public class FileAPI implements RacingAPI {
          yaml.set("strider_speed", race.getStriderSpeed());
          yaml.set("horse_speed", race.getHorseSpeed());
          yaml.set("horse_jump_strength", race.getHorseJumpStrength());
+         yaml.set("happy_ghast_speed", race.getHappyGhastSpeed());
          this.writeCommands(race.getCommands(), yaml);
 
          try {
@@ -369,7 +357,14 @@ public class FileAPI implements RacingAPI {
                         horseJumpStrength = (double)yaml.getInt("horse_jump_strength");
                      }
 
-                     return new Race(id, version, name, spawn, state, createdAt, checkpoints, startPoints, type, startOrder, song, entryFee, walkSpeed, potionEffects, this.parseSigns(yaml), results, minimumRequiredParticipantsToStart, pigSpeed, striderSpeed, horseSpeed, horseJumpStrength, this.parseCommands(yaml));
+                      double happyGhastSpeed;
+                      if (yaml.isDouble("happy_ghast_speed")) {
+                          happyGhastSpeed = yaml.getDouble("happy_ghast_speed");
+                      } else {
+                          happyGhastSpeed = (double)yaml.getInt("happy_ghast_speed");
+                      }
+
+                     return new Race(id, version, name, spawn, state, createdAt, checkpoints, startPoints, type, startOrder, song, entryFee, walkSpeed, potionEffects, this.parseSigns(yaml), results, minimumRequiredParticipantsToStart, pigSpeed, striderSpeed, horseSpeed, horseJumpStrength, happyGhastSpeed, this.parseCommands(yaml));
                   }
                } else {
                   throw new ParseRaceException("Missing field `walk_speed`");
