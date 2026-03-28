@@ -3,7 +3,7 @@
 # Race migration history
 
 | Migration Name | Version From | | Version To |
-|----------------|--------------|-|------------|
+|----------------|:------------:|-|:----------:|
 | EntryFeeMigrationRace| V1 |  -> | V2 |
 | WalkSpeedMigrationRace| V2 |  -> | V3 |
 | PotionEffectsMigrationRace| V3 |  -> | V4 |
