@@ -14,6 +14,6 @@ public class HappyGhastSpeedMigrationRace implements IRaceFileMigration {
    }
 
    public void migrate(YamlConfiguration yamlConfiguration) {
-      yamlConfiguration.set("happy_ghast_speed", 0.350D);
+      yamlConfiguration.set("happy_ghast_speed", 16D);
    }
 }
