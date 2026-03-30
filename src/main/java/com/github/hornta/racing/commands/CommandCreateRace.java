@@ -45,7 +45,7 @@ public class CommandCreateRace extends RacingCommand implements ICommandHandler 
               0.175D,
               3,
               0.225D,
-              16D,
+              16,
               Collections.emptyList());
       this.racingManager.createRace(race, () -> {
          MessageManager.setValue("race_name", race.getName());
