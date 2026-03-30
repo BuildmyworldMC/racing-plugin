@@ -1,6 +1,6 @@
 # https://bukkit.gamepedia.com/Plugin_YAML
 name: Racing
-version: 4.6.0-SNAPSHOT
+version: 4.6.0
 description: With Racing you can compete against other players in custom made racing tracks.
 author: hornta
 website: https://github.com/TrollskogenMC/racing
