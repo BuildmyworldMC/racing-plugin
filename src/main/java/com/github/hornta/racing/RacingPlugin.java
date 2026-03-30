@@ -54,6 +54,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -272,6 +273,12 @@ public class RacingPlugin extends JavaPlugin {
          patch.set(ConfigKey.TELEPORT_AFTER_RACE_WHEN, "teleport_after_race.when", TeleportAfterRaceWhen.PARTICIPANT_FINISHES, Type.STRING);
          return patch;
       }));
+      cb.addMigration(new Migration<>(7, () -> {
+         Patch<ConfigKey> patch = new Patch<>();
+         patch.set(ConfigKey.RESPAWN_HAPPY_GHAST_DEATH, "respawn.happy_ghast.death", RespawnType.FROM_LAST_CHECKPOINT, Type.STRING);
+         patch.set(ConfigKey.RESPAWN_HAPPY_GHAST_INTERACT, "respawn.happy_ghast.interact", RespawnType.NONE, Type.STRING);
+         return patch;
+      }));
       this.configuration = cb.create();
    }
 
@@ -487,37 +494,37 @@ public class RacingPlugin extends JavaPlugin {
       });
       this.commando.handleValidation((result) -> {
          switch(result.getStatus()) {
-         case ERR_INCORRECT_TYPE:
-            MessageManager.setValue("help_text", (Object)result.getCommand().getHelpText());
-            MessageManager.setValue("argument", (Object)result.getArgument().getName());
-            MessageManager.setValue("received", (Object)result.getValue());
-            if (result.getArgument().getType() == CarbonArgumentType.INTEGER) {
-               MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_NON_INTEGER);
-            } else if (result.getArgument().getType() == CarbonArgumentType.NUMBER) {
-               MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_NON_INTEGER);
-            }
-            break;
-         case ERR_MIN_LIMIT:
-         case ERR_MAX_LIMIT:
-            MessageManager.setValue("help_text", (Object)result.getCommand().getHelpText());
-            MessageManager.setValue("argument", (Object)result.getArgument().getName());
-            MessageManager.setValue("received", (Object)result.getValue());
-            if (result.getStatus() == ValidationStatus.ERR_MIN_LIMIT) {
-               MessageManager.setValue("expected", (Object)result.getArgument().getMin());
-               MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_MIN_EXCEED);
-            } else {
-               MessageManager.setValue("expected", (Object)result.getArgument().getMax());
-               MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_MAX_EXCEED);
-            }
-            break;
-         case ERR_OTHER:
-            if (result.getArgument().getType() == CarbonArgumentType.POTION_EFFECT) {
-               MessageManager.setValue("potion_effect", (Object)result.getValue());
-               MessageManager.sendMessage(result.getCommandSender(), MessageKey.POTION_EFFECT_NOT_FOUND);
-            }
-         case ERR_MAX_LENGTH:
-         case ERR_MIN_LENGTH:
-         case ERR_PATTERN:
+            case ERR_INCORRECT_TYPE:
+               MessageManager.setValue("help_text", (Object)result.getCommand().getHelpText());
+               MessageManager.setValue("argument", (Object)result.getArgument().getName());
+               MessageManager.setValue("received", (Object)result.getValue());
+               if (result.getArgument().getType() == CarbonArgumentType.INTEGER) {
+                  MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_NON_INTEGER);
+               } else if (result.getArgument().getType() == CarbonArgumentType.NUMBER) {
+                  MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_NON_INTEGER);
+               }
+               break;
+            case ERR_MIN_LIMIT:
+            case ERR_MAX_LIMIT:
+               MessageManager.setValue("help_text", (Object)result.getCommand().getHelpText());
+               MessageManager.setValue("argument", (Object)result.getArgument().getName());
+               MessageManager.setValue("received", (Object)result.getValue());
+               if (result.getStatus() == ValidationStatus.ERR_MIN_LIMIT) {
+                  MessageManager.setValue("expected", (Object)result.getArgument().getMin());
+                  MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_MIN_EXCEED);
+               } else {
+                  MessageManager.setValue("expected", (Object)result.getArgument().getMax());
+                  MessageManager.sendMessage(result.getCommandSender(), MessageKey.VALIDATE_MAX_EXCEED);
+               }
+               break;
+            case ERR_OTHER:
+               if (result.getArgument().getType() == CarbonArgumentType.POTION_EFFECT) {
+                  MessageManager.setValue("potion_effect", (Object)result.getValue());
+                  MessageManager.sendMessage(result.getCommandSender(), MessageKey.POTION_EFFECT_NOT_FOUND);
+               }
+            case ERR_MAX_LENGTH:
+            case ERR_MIN_LENGTH:
+            case ERR_PATTERN:
          }
       });
       ICarbonArgument raceArgument = (new CarbonArgument.Builder("race")).setHandler(new RaceArgumentHandler(this.racingManager, true)).create();
@@ -556,6 +563,7 @@ public class RacingPlugin extends JavaPlugin {
       this.commando.addCommand("racing setstriderspeed").withHandler(new CommandSetStriderSpeed(this.racingManager)).withArgument(raceArgument).withArgument(speedArgument).requiresPermission(Permission.COMMAND_SET_STRIDER_SPEED.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing sethorsespeed").withHandler(new CommandSetHorseSpeed(this.racingManager)).withArgument(raceArgument).withArgument(speedArgument).requiresPermission(Permission.COMMAND_SET_HORSE_SPEED.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing sethorsejumpstrength").withHandler(new CommandSetHorseJumpStrength(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("jump_strength")).setType(CarbonArgumentType.NUMBER).setMin(0.0D).create()).requiresPermission(Permission.COMMAND_SET_HORSE_JUMP_STRENGTH.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
+      this.commando.addCommand("racing sethappyghastspeed").withHandler(new CommandSetHappyGhastSpeed(this.racingManager)).withArgument(raceArgument).withArgument(speedArgument).requiresPermission(Permission.COMMAND_SET_HAPPY_GHAST_SPEED.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing addpotioneffect").withHandler(new CommandAddPotionEffect(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("effect")).setType(CarbonArgumentType.POTION_EFFECT).create()).withArgument((new CarbonArgument.Builder("amplifier")).setType(CarbonArgumentType.INTEGER).setMin(0.0D).setMax(255.0D).create()).requiresPermission(Permission.COMMAND_ADD_POTION_EFFECT.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing removepotioneffect").withHandler(new CommandRemovePotionEffect(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("effect")).setHandler(new RacePotionEffectArgumentHandler(this.racingManager)).dependsOn(raceArgument).create()).requiresPermission(Permission.COMMAND_REMOVE_POTION_EFFECT.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing clearpotioneffects").withHandler(new CommandClearPotionEffects(this.racingManager)).withArgument(raceArgument).requiresPermission(Permission.COMMAND_CLEAR_POTION_EFFECTS.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
@@ -621,15 +629,15 @@ public class RacingPlugin extends JavaPlugin {
       String storageTypeString = (String)instance.configuration.get(ConfigKey.STORAGE);
       StorageType storageType = StorageType.valueOf(storageTypeString.toUpperCase(Locale.ENGLISH));
       switch(storageType) {
-      case FILE:
-         this.racingManager.setAPI(new FileAPI(this));
-      case CUSTOM:
-      default:
-         this.racingManager.load();
-         if (this.decentHologramsLoaded) {
-            this.hdTopListManager = new HDTopListManager();
-            this.getServer().getPluginManager().registerEvents(this.hdTopListManager, this);
-         }
+         case FILE:
+            this.racingManager.setAPI(new FileAPI(this));
+         case CUSTOM:
+         default:
+            this.racingManager.load();
+            if (this.decentHologramsLoaded) {
+               this.hdTopListManager = new HDTopListManager();
+               this.getServer().getPluginManager().registerEvents(this.hdTopListManager, this);
+            }
       }
    }
 }

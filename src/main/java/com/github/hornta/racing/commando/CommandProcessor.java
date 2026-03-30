@@ -120,44 +120,44 @@ public class CommandProcessor {
          }
       } else {
          switch(argument.getType()) {
-         case DURATION:
-            try {
-               DateUtil.parseDuration(input, true);
-            } catch (IllegalArgumentException illegalArgumentException) {
-               status = ValidationStatus.ERR_INCORRECT_TYPE;
-            }
-            break;
-         case STRING:
-            if (input.length() < argument.getMinLength()) {
-               status = ValidationStatus.ERR_MIN_LENGTH;
-            } else if (input.length() > argument.getMaxLength()) {
-               status = ValidationStatus.ERR_MAX_LENGTH;
-            }
-            break;
-         case NUMBER:
-            try {
-               double doubleValue = Double.parseDouble(input);
-               if (doubleValue < argument.getMin()) {
-                  status = ValidationStatus.ERR_MIN_LIMIT;
-               } else if (doubleValue > argument.getMax()) {
-                  status = ValidationStatus.ERR_MAX_LIMIT;
+            case DURATION:
+               try {
+                  DateUtil.parseDuration(input, true);
+               } catch (IllegalArgumentException illegalArgumentException) {
+                  status = ValidationStatus.ERR_INCORRECT_TYPE;
                }
-            } catch (NumberFormatException numberFormatException) {
-               status = ValidationStatus.ERR_INCORRECT_TYPE;
-            }
-            break;
-         case INTEGER:
-            try {
-               int integerValue = Integer.parseInt(input);
-               if ((double)integerValue < argument.getMin()) {
-                  status = ValidationStatus.ERR_MIN_LIMIT;
-               } else if ((double)integerValue > argument.getMax()) {
-                  status = ValidationStatus.ERR_MAX_LIMIT;
+               break;
+            case STRING:
+               if (input.length() < argument.getMinLength()) {
+                  status = ValidationStatus.ERR_MIN_LENGTH;
+               } else if (input.length() > argument.getMaxLength()) {
+                  status = ValidationStatus.ERR_MAX_LENGTH;
                }
-            } catch (NumberFormatException numberFormatException) {
-               status = ValidationStatus.ERR_INCORRECT_TYPE;
+               break;
+            case NUMBER:
+               try {
+                  double doubleValue = Double.parseDouble(input);
+                  if (doubleValue < argument.getMin()) {
+                     status = ValidationStatus.ERR_MIN_LIMIT;
+                  } else if (doubleValue > argument.getMax()) {
+                     status = ValidationStatus.ERR_MAX_LIMIT;
+                  }
+               } catch (NumberFormatException numberFormatException) {
+                  status = ValidationStatus.ERR_INCORRECT_TYPE;
+               }
+               break;
+            case INTEGER:
+               try {
+                  int integerValue = Integer.parseInt(input);
+                  if ((double)integerValue < argument.getMin()) {
+                     status = ValidationStatus.ERR_MIN_LIMIT;
+                  } else if ((double)integerValue > argument.getMax()) {
+                     status = ValidationStatus.ERR_MAX_LIMIT;
+                  }
+               } catch (NumberFormatException numberFormatException) {
+                  status = ValidationStatus.ERR_INCORRECT_TYPE;
+               }
             }
-         }
       }
 
       return status;

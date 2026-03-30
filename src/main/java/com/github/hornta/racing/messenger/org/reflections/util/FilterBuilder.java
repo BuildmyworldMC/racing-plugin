@@ -99,14 +99,14 @@ public class FilterBuilder implements Predicate<String> {
             String pattern = trimmed.substring(1);
             Object filter;
             switch(prefix) {
-            case '+':
-               filter = new FilterBuilder.Include(pattern);
-               break;
-            case '-':
-               filter = new FilterBuilder.Exclude(pattern);
-               break;
-            default:
-               throw new ReflectionsException("includeExclude should start with either + or -");
+               case '+':
+                  filter = new FilterBuilder.Include(pattern);
+                  break;
+               case '-':
+                  filter = new FilterBuilder.Exclude(pattern);
+                  break;
+               default:
+                  throw new ReflectionsException("includeExclude should start with either + or -");
             }
 
             filters.add((Predicate<String>) filter);
@@ -136,14 +136,14 @@ public class FilterBuilder implements Predicate<String> {
             pattern = prefix(pattern);
             Object filter;
             switch(prefix) {
-            case '+':
-               filter = new FilterBuilder.Include(pattern);
-               break;
-            case '-':
-               filter = new FilterBuilder.Exclude(pattern);
-               break;
-            default:
-               throw new ReflectionsException("includeExclude should start with either + or -");
+               case '+':
+                  filter = new FilterBuilder.Include(pattern);
+                  break;
+               case '-':
+                  filter = new FilterBuilder.Exclude(pattern);
+                  break;
+               default:
+                  throw new ReflectionsException("includeExclude should start with either + or -");
             }
 
             filters.add((Predicate<String>) filter);

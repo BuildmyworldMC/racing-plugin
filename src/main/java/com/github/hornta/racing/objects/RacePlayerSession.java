@@ -5,10 +5,7 @@ import com.github.hornta.racing.Util;
 import com.github.hornta.racing.enums.RaceType;
 import com.github.hornta.racing.enums.RespawnType;
 import io.papermc.lib.PaperLib;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BossBar;
@@ -17,6 +14,7 @@ import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HappyGhast;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
@@ -25,11 +23,15 @@ import org.bukkit.entity.Steerable;
 import org.bukkit.entity.Strider;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class RacePlayerSession {
    public static final double MAX_HEALTH = 20.0D;
@@ -50,14 +52,16 @@ public class RacePlayerSession {
    private boolean allowedToExitVehicle;
    private RaceParticipantReset restore;
 
+   private BukkitTask elytraTask;
+
    RacePlayerSession(RaceSession raceSession, Player player, double chargedEntryFee) {
       this.raceSession = raceSession;
       this.player = player;
       this.chargedEntryFee = chargedEntryFee;
+
       if (raceSession.getRace().getResultByPlayerId().containsKey(player.getUniqueId())) {
          this.personalBestLapTime = raceSession.getRace().getResultByPlayerId().get(player.getUniqueId()).getFastestLap();
       }
-
    }
 
    public long getLapStartTime() {
@@ -76,7 +80,6 @@ public class RacePlayerSession {
       if (millis < this.personalBestLapTime) {
          this.personalBestLapTime = millis;
       }
-
    }
 
    public long getFastestLap() {
@@ -108,11 +111,16 @@ public class RacePlayerSession {
          this.player.setHealth(20.0D);
          RacingPlugin.debug("Setting health to %f on %s", 20.0D, this.player.getName());
       });
+
+      if (this.raceSession.getRace().getType() == RaceType.HAPPY_GHAST) {
+         this.freezeHappyGhast();
+         RacingPlugin.debug("Freezed happy ghast movement");
+      }
+
       if (this.raceSession.getRace().getType() == RaceType.HORSE) {
          this.freezeHorse();
          RacingPlugin.debug("Freezed horse movement");
       }
-
    }
 
    Entity getVehicle() {
@@ -127,18 +135,20 @@ public class RacePlayerSession {
       this.player.setWalkSpeed(this.raceSession.getRace().getWalkSpeed());
       this.player.setFoodLevel(20);
       this.player.removePotionEffect(PotionEffectType.JUMP_BOOST);
+
       if (this.vehicle instanceof Pig) {
          this.player.getInventory().setItemInMainHand(new ItemStack(Material.CARROT_ON_A_STICK, 1));
       } else if (this.vehicle instanceof Strider) {
          this.player.getInventory().setItemInMainHand(new ItemStack(Material.WARPED_FUNGUS_ON_A_STICK, 1));
+      } else if (this.vehicle instanceof HappyGhast) {
+         this.unfreezeHappyGhast();
       } else if (this.vehicle instanceof Horse) {
          this.unfreezeHorse();
       }
 
       if (this.raceSession.getRace().getType() == RaceType.ELYTRA) {
-         this.player.getInventory().setChestplate(new ItemStack(Material.ELYTRA, 1));
+         this.setupElytra();
       }
-
    }
 
    public void respawnInVehicle() {
@@ -159,31 +169,38 @@ public class RacePlayerSession {
       }
 
       switch(this.raceSession.getRace().getType()) {
-      case PIG:
-         this.spawnVehicle(EntityType.PIG, location);
-         this.setupPig();
-         break;
-      case STRIDER:
-         this.spawnVehicle(EntityType.STRIDER, location);
-         this.setupStrider();
-         break;
-      case MINECART:
-         this.spawnVehicle(EntityType.MINECART, location);
-         break;
-      case HORSE:
-         HorseData horseData = null;
-         if (this.vehicle != null) {
-            horseData = new HorseData((Horse)this.vehicle);
-         }
+         case PIG:
+            this.spawnVehicle(EntityType.PIG, location);
+            this.setupPig();
+            break;
 
-         this.spawnVehicle(EntityType.HORSE, location);
-         this.setupHorse(horseData);
-         break;
-      case BOAT:
-         this.spawnVehicle(EntityType.OAK_BOAT, location);
-         RacingPlugin.debug("Setting boat type to " + EntityType.OAK_BOAT);
-      case ELYTRA:
-      case PLAYER:
+         case STRIDER:
+            this.spawnVehicle(EntityType.STRIDER, location);
+            this.setupStrider();
+            break;
+
+         case MINECART:
+            this.spawnVehicle(EntityType.MINECART, location);
+            break;
+
+         case HORSE:
+            HorseData horseData = null;
+            if (this.vehicle != null) {
+               horseData = new HorseData((Horse)this.vehicle);
+            }
+            this.spawnVehicle(EntityType.HORSE, location);
+            this.setupHorse(horseData);
+            break;
+
+         case BOAT:
+            this.spawnVehicle(EntityType.OAK_BOAT, location);
+            RacingPlugin.debug("Setting boat type to " + EntityType.OAK_BOAT);
+            break;
+
+         case HAPPY_GHAST:
+            this.spawnVehicle(EntityType.HAPPY_GHAST, location);
+            this.setupHappyGhast();
+            break;
       }
 
       if (this.vehicle != null) {
@@ -205,13 +222,13 @@ public class RacePlayerSession {
                   if (fireTicksResetCallback != null) {
                      fireTicksResetCallback.run();
                   }
-
                }, 2L);
+
                this.enterVehicle(this.vehicle);
+
                if (runnable != null) {
                   runnable.run();
                }
-
             });
          });
       }, 1L);
@@ -243,30 +260,32 @@ public class RacePlayerSession {
          this.player.setFallDistance(0.0F);
          RacingPlugin.debug("Fall distance on %s was set to %f", this.player.getName(), this.player.getFallDistance());
          switch(this.raceSession.getRace().getType()) {
-         case PIG:
-         case STRIDER:
-         case MINECART:
-         case HORSE:
-         case BOAT:
-            this.respawnInVehicle(loc, runnable, fireTicksResetCallback);
-            break;
-         case ELYTRA:
-         case PLAYER:
-            PaperLib.teleportAsync(this.player, loc, TeleportCause.PLUGIN).thenAccept((result) -> {
-               Bukkit.getScheduler().runTaskLater(RacingPlugin.getInstance(), () -> {
-                  Bukkit.getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
-                     this.player.setFireTicks(0);
-                     if (fireTicksResetCallback != null) {
-                        fireTicksResetCallback.run();
+            case PIG:
+            case STRIDER:
+            case MINECART:
+            case HORSE:
+            case BOAT:
+            case HAPPY_GHAST:
+               this.respawnInVehicle(loc, runnable, fireTicksResetCallback);
+               break;
+
+            case ELYTRA:
+            case PLAYER:
+               PaperLib.teleportAsync(this.player, loc, TeleportCause.PLUGIN).thenAccept((result) -> {
+                  Bukkit.getScheduler().runTaskLater(RacingPlugin.getInstance(), () -> {
+                     Bukkit.getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
+                        this.player.setFireTicks(0);
+                        if (fireTicksResetCallback != null) {
+                           fireTicksResetCallback.run();
+                        }
+
+                     }, 2L);
+                     if (result && runnable != null) {
+                        runnable.run();
                      }
 
-                  }, 2L);
-                  if (result && runnable != null) {
-                     runnable.run();
-                  }
-
-               }, 1L);
-            });
+                  }, 1L);
+               });
          }
 
       }
@@ -276,6 +295,19 @@ public class RacePlayerSession {
       RacingPlugin.debug("Attempting to spawn vehicle of type %s at %s", type, location);
       this.vehicle = Objects.requireNonNull(this.startLocation.getWorld()).spawnEntity(location, type);
       RacingPlugin.debug("Spawned vehicle at " + this.vehicle.getLocation());
+   }
+
+   private void setupElytra() {
+      this.player.getInventory().setChestplate(new ItemStack(Material.ELYTRA, 1));
+
+      Player player = this.player;
+      RacePlayerSession session = this;
+      this.elytraTask = Bukkit.getScheduler().runTaskTimer(RacingPlugin.getInstance(), () -> {
+         if (session.isFinished() || session.getPlayer().isDead()) {
+            return;
+         }
+         player.getInventory().setItemInMainHand(new ItemStack(Material.FIREWORK_ROCKET, 64));
+      }, 0L, 600L); // Exécute toutes les 600 ticks (30 seconds, stopper quand raceSession est null)
    }
 
    private void setupPig() {
@@ -294,6 +326,97 @@ public class RacePlayerSession {
       RacingPlugin.debug("Giving strider a saddle");
       Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getStriderSpeed());
       RacingPlugin.debug("Setting movementspeed on strider to " + this.raceSession.getRace().getStriderSpeed());
+   }
+
+   public void freezeHorse() {
+      ((AbstractHorse)this.vehicle).setJumpStrength(0.0D);
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(0.0D);
+   }
+
+   private void unfreezeHorse() {
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHorseSpeed());
+      ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getHorseJumpStrength());
+   }
+
+   private void setupHappyGhast() {
+      ((LivingEntity)this.vehicle).setAI(false);
+      RacingPlugin.debug("Disable happy ghast AI");
+      this.vehicle.addPassenger(this.player);
+      RacingPlugin.debug("Add passenger to happy ghast");
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHappyGhastSpeed());
+      RacingPlugin.debug("Setting movementspeed on happy ghast to " + this.raceSession.getRace().getHappyGhastSpeed());
+
+      // Choix aléatoire d'une couleur de teinture
+      DyeColor[] colors = DyeColor.values();
+      DyeColor randomColor = colors[new Random().nextInt(colors.length)];
+      Material harnessMaterial = switch (randomColor) {
+         case WHITE -> Material.WHITE_HARNESS;
+         case ORANGE -> Material.ORANGE_HARNESS;
+         case MAGENTA -> Material.MAGENTA_HARNESS;
+         case LIGHT_BLUE -> Material.LIGHT_BLUE_HARNESS;
+         case YELLOW -> Material.YELLOW_HARNESS;
+         case LIME -> Material.LIME_HARNESS;
+         case PINK -> Material.PINK_HARNESS;
+         case GRAY -> Material.GRAY_HARNESS;
+         case LIGHT_GRAY -> Material.LIGHT_GRAY_HARNESS;
+         case CYAN -> Material.CYAN_HARNESS;
+         case PURPLE -> Material.PURPLE_HARNESS;
+         case BLUE -> Material.BLUE_HARNESS;
+         case BROWN -> Material.BROWN_HARNESS;
+         case GREEN -> Material.GREEN_HARNESS;
+         case RED -> Material.RED_HARNESS;
+         case BLACK -> Material.BLACK_HARNESS;
+      };
+
+      Objects.requireNonNull(((LivingEntity) this.vehicle).getEquipment()).setItem(EquipmentSlot.BODY, new ItemStack(harnessMaterial));
+      RacingPlugin.debug("Equip random color harness to happy ghast: " + randomColor);
+   }
+
+   public void freezeHappyGhast() {
+      this.vehicle.setVelocity(new Vector(0, 0, 0));
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED))
+              .setBaseValue(0.0D);
+   }
+
+   private void unfreezeHappyGhast() {
+      Objects.requireNonNull(((Attributable) this.vehicle)
+         .getAttribute(Attribute.MOVEMENT_SPEED))
+         .setBaseValue(this.raceSession.getRace().getHappyGhastSpeed());
+   }
+
+   public void cleanup() {
+      if (this.elytraTask != null && !this.elytraTask.isCancelled()) {
+         this.elytraTask.cancel();
+         this.elytraTask = null;
+      }
+
+      if (this.raceSession.getRace().getType() == RaceType.ELYTRA) {
+         this.player.getInventory().setChestplate(null);
+         this.player.getInventory().setItemInMainHand(null);
+      }
+
+      if (this.vehicle != null) {
+         try {
+            Entity v = this.vehicle;
+            if (v.isValid()) {
+               // Eject player if still a passenger
+               if (v.getPassengers().contains(this.player)) {
+                  try {
+                     v.removePassenger(this.player);
+                  } catch (Exception ignored) {
+                  }
+               }
+
+               // Remove the entity from the world
+               try {
+                  v.remove();
+               } catch (Exception ignored) {
+               }
+            }
+         } finally {
+            this.vehicle = null;
+         }
+      }
    }
 
    private void setupHorse(HorseData horseData) {
@@ -321,17 +444,6 @@ public class RacePlayerSession {
          ((Ageable)this.vehicle).setAge(horseData.getAge());
          RacingPlugin.debug("Horse age set to " + ((Ageable)this.vehicle).getAge());
       }
-
-   }
-
-   public void freezeHorse() {
-      ((AbstractHorse)this.vehicle).setJumpStrength(0.0D);
-      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(0.0D);
-   }
-
-   private void unfreezeHorse() {
-      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHorseSpeed());
-      ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getHorseJumpStrength());
    }
 
    void setStartPoint(RaceStartPoint startPoint) {
@@ -362,14 +474,17 @@ public class RacePlayerSession {
       RacingPlugin.debug("Result of attempting to enter %s into %s: %b", this.player.getName(), vehicle.getType(), this.player.isInsideVehicle());
    }
 
-   void exitVehicle() {
+   public void exitVehicle() {
       this.allowedToExitVehicle = true;
       this.vehicle.removePassenger(this.player);
       this.allowedToExitVehicle = false;
    }
 
-   void restore() {
+   public void restore() {
       if (this.restore != null) {
+         RacingPlugin.debug("Cleaning up tasks before restoring %s...", this.player.getName());
+         this.cleanup();
+
          RacingPlugin.debug("Restoring %s...", this.player.getName());
          this.startLocation = null;
          this.currentCheckpoint = null;

@@ -29,6 +29,8 @@ import com.github.hornta.racing.events.UnloadRaceEvent;
 import com.github.hornta.racing.features.AllowTeleport;
 import com.github.hornta.racing.features.DamageParticipants;
 import com.github.hornta.racing.features.FoodLevel;
+import com.github.hornta.racing.features.HappyGhastSteerListener;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.github.hornta.racing.features.TeleportOnLeave;
 import com.github.hornta.racing.messenger.MessageManager;
 import com.github.hornta.racing.objects.PlayerSessionResult;
@@ -82,6 +84,8 @@ public class RacingManager implements Listener {
       pluginManager.registerEvents(new AllowTeleport(), RacingPlugin.getInstance());
       pluginManager.registerEvents(new FoodLevel(), RacingPlugin.getInstance());
       pluginManager.registerEvents(new DamageParticipants(), RacingPlugin.getInstance());
+      // Register ProtocolLib packet listener for steer inputs
+      ProtocolLibrary.getProtocolManager().addPacketListener(new HappyGhastSteerListener());
    }
 
    public void shutdown() {
@@ -104,7 +108,7 @@ public class RacingManager implements Listener {
    }
 
    public List<RaceSession> getRaceSessions(Race race) {
-      return this.getRaceSessions(race, (RaceSessionState) null);
+      return this.getRaceSessions(race, null);
    }
 
    public List<RaceSession> getRaceSessions(Race race, RaceSessionState state) {
@@ -311,7 +315,7 @@ public class RacingManager implements Listener {
          Bukkit.broadcastMessage(joinedResultMessage);
       } else {
          List<Player> playersToMessage = event.getResult().getPlayerResults().values().stream()
-               .map((playerResultx) -> Bukkit.getPlayer(playerResultx.getPlayerId())).filter(Objects::nonNull).toList();
+               .map((playerResults) -> Bukkit.getPlayer(playerResults.getPlayerId())).filter(Objects::nonNull).toList();
 
          for (Player player : playersToMessage) {
             player.sendMessage(joinedResultMessage);
@@ -636,11 +640,11 @@ public class RacingManager implements Listener {
    }
 
    public Race getRace(String name) {
-      return (Race) this.racesByName.get(name);
+      return this.racesByName.get(name);
    }
 
    public Race getRace(UUID id) {
-      return (Race) this.racesById.get(id);
+      return this.racesById.get(id);
    }
 
    public List<Race> getRaces() {
@@ -812,7 +816,7 @@ public class RacingManager implements Listener {
    }
 
    public Set<GameMode> getNonJoinableGameModes() {
-      List value = RacingPlugin.getInstance().getConfiguration()
+      List<Object> value = RacingPlugin.getInstance().getConfiguration()
             .get(ConfigKey.PREVENT_JOIN_FROM_GAME_MODE);
       Set<GameMode> gameModes = new HashSet<>();
 
@@ -829,7 +833,7 @@ public class RacingManager implements Listener {
    }
 
    public Set<World> getNonJoinableWorlds() {
-      List value = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_WORLD);
+      List<Object> value = RacingPlugin.getInstance().getConfiguration().get(ConfigKey.PREVENT_JOIN_FROM_WORLD);
       Set<World> worlds = new HashSet<>();
 
        for (Object o : value) {

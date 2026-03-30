@@ -19,7 +19,8 @@ public enum RaceVersion {
    V13,
    V14,
    V15,
-   V16;
+   V16,
+   V17;
 
    private static final RaceVersion[] copyOfValues = values();
    private int order;
@@ -51,8 +52,27 @@ public enum RaceVersion {
    }
 
    // $FF: synthetic method
+   // Race migrations list : show DEV_README.md
    private static RaceVersion[] $values() {
-      return new RaceVersion[]{V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15, V16};
+      return new RaceVersion[]{
+           V1,
+           V2,
+           V3,
+           V4,
+           V5,
+           V6,
+           V7,
+           V8,
+           V9,
+           V10,
+           V11,
+           V12,
+           V13,
+           V14,
+           V15,
+           V16,
+           V17,
+      };
    }
 
    static {
