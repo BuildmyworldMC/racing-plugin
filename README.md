@@ -7,7 +7,7 @@ Create and play race with your friends.
 Supported race type (Boat, Elytra, Happy Ghast Horse, Minecart, Pig, Strider, Walk)
 
 Created in Minecraft Version : 1.16.0
-Tested in Minecraft Version : 1.16.0 to 1.21.8
+Tested in Minecraft Version : 1.16.0 to 1.21.11
 
 Available languages (English, French, Slovak, Swedish)
 
