@@ -12,6 +12,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -114,6 +115,11 @@ public class RacePlayerSession {
          this.freezeCamel();
          RacingPlugin.debug("Freezed camel movement");
       }
+
+      if (this.raceSession.getRace().getType() == RaceType.NAUTILUS) {
+         this.freezeNautilus();
+         RacingPlugin.debug("Freezed nautilus movement");
+      }
    }
 
    Entity getVehicle() {
@@ -137,6 +143,8 @@ public class RacePlayerSession {
          this.unfreezeHappyGhast();
       } else if (this.vehicle instanceof Camel) {
          this.unfreezeCamel();
+      } else if (this.vehicle instanceof Nautilus) {
+         this.unfreezeNautilus();
       } else if (this.vehicle instanceof Horse) {
          this.unfreezeHorse();
       }
@@ -190,6 +198,11 @@ public class RacePlayerSession {
          case CAMEL:
             this.spawnVehicle(EntityType.CAMEL, location);
             this.setupCamel();
+            break;
+
+         case NAUTILUS:
+            this.spawnVehicle(EntityType.NAUTILUS, location);
+            this.setupNautilus();
             break;
 
          case BOAT:
@@ -267,6 +280,7 @@ public class RacePlayerSession {
             case BOAT:
             case HAPPY_GHAST:
             case CAMEL:
+            case NAUTILUS:
                this.respawnInVehicle(loc, runnable, fireTicksResetCallback);
                break;
 
@@ -408,6 +422,52 @@ public class RacePlayerSession {
    private void unfreezeCamel() {
       Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getCamelSpeed());
       ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getCamelDashStrength());
+   }
+
+   private void setupNautilus() {
+      ((LivingEntity)this.vehicle).setAI(false);
+      RacingPlugin.debug("Disable nautilus AI");
+      ((Tameable)this.vehicle).setTamed(true);
+      RacingPlugin.debug("Set nautilus to be tamed");
+      ((Tameable)this.vehicle).setOwner(this.player);
+      RacingPlugin.debug("Set nautilus owner to " + this.player.getName());
+      equipNautilusSaddle();
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getNautilusSpeed());
+      RacingPlugin.debug("Setting nautilus movement speed to " + this.raceSession.getRace().getNautilusSpeed());
+   }
+
+   private void equipNautilusSaddle() {
+      AbstractNautilus nautilus = (AbstractNautilus) this.vehicle;
+      Inventory inventory = nautilus.getInventory();
+      ItemStack saddle = new ItemStack(Material.SADDLE, 1);
+
+      try {
+         Class<?> saddleInventoryType = Class.forName("org.bukkit.inventory.ArmoredSaddledMountInventory");
+
+         if (saddleInventoryType.isInstance(inventory)) {
+            saddleInventoryType.getMethod("setSaddle", ItemStack.class).invoke(inventory, saddle);
+            RacingPlugin.debug("Giving nautilus a saddle (Paper support)");
+            return;
+         }
+      } catch (ClassNotFoundException ignored) {
+         // No-op
+      } catch (ReflectiveOperationException exception) {
+         RacingPlugin.debug("Could not set Nautilus saddle through the specialized inventory API");
+      }
+
+      inventory.setItem(0, saddle);
+      RacingPlugin.debug("Giving nautilus a saddle (Default Spigot support)");
+   }
+
+   public void freezeNautilus() {
+      this.vehicle.setVelocity(new Vector(0, 0, 0));
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(0.0D);
+   }
+
+   private void unfreezeNautilus() {
+      Objects.requireNonNull(((Attributable) this.vehicle)
+         .getAttribute(Attribute.MOVEMENT_SPEED))
+         .setBaseValue(this.raceSession.getRace().getNautilusSpeed());
    }
 
    public void cleanup() {

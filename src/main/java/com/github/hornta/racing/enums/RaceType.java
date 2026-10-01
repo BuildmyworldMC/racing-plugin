@@ -9,7 +9,8 @@ public enum RaceType {
    STRIDER,
    MINECART,
    HAPPY_GHAST,
-   CAMEL;
+   CAMEL,
+   NAUTILUS;
 
    public static RaceType fromString(String string) {
       RaceType[] raceTypes = values();

@@ -693,6 +693,7 @@ public class RaceSession implements Listener {
                case STRIDER:
                case HAPPY_GHAST:
                case CAMEL:
+               case NAUTILUS:
                default:
                   if (!session.isAllowedToEnterVehicle()) {
                      event.setCancelled(true);
@@ -709,6 +710,7 @@ public class RaceSession implements Listener {
                              this.race.getType() == RaceType.STRIDER && event.getVehicle().getType() != EntityType.STRIDER ||
                              this.race.getType() == RaceType.HAPPY_GHAST && event.getVehicle().getType() != EntityType.HAPPY_GHAST ||
                              this.race.getType() == RaceType.CAMEL && event.getVehicle().getType() != EntityType.CAMEL ||
+                             this.race.getType() == RaceType.NAUTILUS && event.getVehicle().getType() != EntityType.NAUTILUS
                      ) {
                         event.setCancelled(true);
                      }
@@ -743,6 +745,7 @@ public class RaceSession implements Listener {
                }
             case HORSE:
             case CAMEL:
+            case NAUTILUS:
                if (event.getItemDrop().getItemStack().getType() == Material.SADDLE) {
                   event.setCancelled(true);
                }
@@ -885,6 +888,8 @@ public class RaceSession implements Listener {
                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_HAPPY_GHAST_INTERACT)).toUpperCase(Locale.ENGLISH));
            case CAMEL ->
                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_CAMEL_INTERACT)).toUpperCase(Locale.ENGLISH));
+           case NAUTILUS ->
+                  RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_NAUTILUS_INTERACT)).toUpperCase(Locale.ENGLISH));
        };
    }
 
@@ -908,6 +913,8 @@ public class RaceSession implements Listener {
                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_HAPPY_GHAST_DEATH)).toUpperCase(Locale.ENGLISH));
            case CAMEL ->
                    RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_CAMEL_DEATH)).toUpperCase(Locale.ENGLISH));
+           case NAUTILUS ->
+                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_NAUTILUS_DEATH)).toUpperCase(Locale.ENGLISH));
        };
    }
 

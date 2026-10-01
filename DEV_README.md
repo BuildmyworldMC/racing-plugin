@@ -21,3 +21,4 @@
 | StriderSpeedMigrationRace                       |     V15      | -> |    V16     |
 | HappyGhastSpeedMigrationRace                    |     V16      | -> |    V17     |
 | CamelAttributesMigrationRace                    |     V17      | -> |    V18     |
+| NautilusAttributesMigrationRace                 |     V18      | -> |    V19     |
