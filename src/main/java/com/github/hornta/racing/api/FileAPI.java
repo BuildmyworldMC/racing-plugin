@@ -507,10 +507,10 @@ public class FileAPI implements RacingAPI {
 
                String playerName = (String)entry.get("name");
                if (playerName != null && !playerName.isEmpty()) {
-                  int runs = (Integer)entry.get("runs");
-                  int singleRuns = (Integer)entry.get("single_runs");
-                  int wins = (Integer)entry.get("wins");
-                  long fastestLap = (long)(Integer)entry.get("fastestLap");
+                  int runs = ((Number)entry.get("runs")).intValue();
+                  int singleRuns = ((Number)entry.get("single_runs")).intValue();
+                  int wins = ((Number)entry.get("wins")).intValue();
+                  long fastestLap = ((Number)entry.get("fastestLap")).longValue();
                   Map records = (Map)entry.get("records");
                   results.add(new RacePlayerStatistic(playerId, playerName, wins, runs, singleRuns, fastestLap, records));
                   continue;
@@ -548,7 +548,6 @@ public class FileAPI implements RacingAPI {
       if (section == null) {
          throw new ParseRaceException("Missing field `potion_effects`");
       } else {
-
           for (String key : section.getKeys(false)) {
               PotionEffectType type = PotionEffectType.getByName(key);
               if (type == null) {
