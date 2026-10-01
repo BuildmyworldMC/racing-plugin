@@ -24,6 +24,15 @@ public class CommandCreateRace extends RacingCommand implements ICommandHandler 
 
    public void handle(CommandSender commandSender, String[] args, int typedArgs) {
       Entity player = (Entity)commandSender;
+      RaceType raceType = RaceType.PLAYER;
+      if (args.length > 1) {
+         try {
+            raceType = RaceType.valueOf(args[1].toUpperCase());
+         } catch (IllegalArgumentException ignored) {
+         }
+      } else if (args[0].toLowerCase().contains("elytra")) {
+         raceType = RaceType.ELYTRA;
+      }
       Race race = new Race(UUID.randomUUID(),
               RaceVersion.getLast(),
               args[0],
@@ -32,7 +41,7 @@ public class CommandCreateRace extends RacingCommand implements ICommandHandler 
               Instant.now(),
               Collections.emptyList(),
               Collections.emptyList(),
-              RaceType.PLAYER,
+              raceType,
               StartOrder.RANDOM,
               null,
               0.0D,

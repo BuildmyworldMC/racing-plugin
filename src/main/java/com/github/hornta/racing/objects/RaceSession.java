@@ -185,6 +185,7 @@ public class RaceSession implements Listener {
 
       if (!this.playerSessions.isEmpty() && this.getAmountOfParticipants() >= this.race.getMinimumRequiredParticipantsToStart()) {
          this.setState(RaceSessionState.COUNTDOWN);
+         this.race.updateSplineTask();
          if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.CHECKPOINT_PARTICLES_DURING_RACE)) {
             for(int i = 0; i < this.race.getCheckpoints().size(); ++i) {
                this.race.getCheckpoints().get(i).startTask(false, i == this.race.getCheckpoints().size() - 1);
@@ -236,6 +237,7 @@ public class RaceSession implements Listener {
          this.countdown = new RaceCountdown(this.playerSessions.values());
          this.countdown.start(() -> {
             this.setState(RaceSessionState.STARTED);
+            this.race.updateSplineTask();
             Collection<PotionEffect> potionEffects = new ArrayList<>();
 
             for(RacePotionEffect racePotionEffect : this.race.getPotionEffects()) {
@@ -422,6 +424,7 @@ public class RaceSession implements Listener {
          }
       }
 
+      this.race.updateSplineTask();
       HandlerList.unregisterAll(this);
    }
 
@@ -740,9 +743,11 @@ public class RaceSession implements Listener {
       if (this.isCurrentlyRacing(event.getPlayer())) {
          switch(this.race.getType()) {
             case ELYTRA:
-               if (event.getItemDrop().getItemStack().getType() == Material.ELYTRA) {
+               if (event.getItemDrop().getItemStack().getType() == Material.ELYTRA
+                     || event.getItemDrop().getItemStack().getType() == Material.FIREWORK_ROCKET) {
                   event.setCancelled(true);
                }
+               break;
             case HORSE:
             case CAMEL:
             case NAUTILUS:
@@ -811,6 +816,15 @@ public class RaceSession implements Listener {
                }
          }
 
+      }
+   }
+
+   @EventHandler
+   void onInventoryClick(org.bukkit.event.inventory.InventoryClickEvent event) {
+      if (event.getWhoClicked() instanceof Player clickingPlayer && this.isCurrentlyRacing(clickingPlayer)) {
+         if (this.race.getType() == RaceType.ELYTRA) {
+            event.setCancelled(true);
+         }
       }
    }
 
