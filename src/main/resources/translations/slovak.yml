@@ -99,6 +99,8 @@ commands:
     success: "§eRýchlosť koní bola nastavená na <speed>."
   race_set_horse_jump_strength:
     success: "§eSila skoku koní bola nastavená na <jump_strength>."
+  race_set_happy_ghast_speed:
+    success: "§eRýchlosť Happy Ghasta bola nastavená na <speed>."
   race_add_potion_effect:
     success: "§eEfekt `<potion_effect>` so silou `<amplifier>` bol nastavený pre pretek `<race_name>`."
   race_remove_potion_effect:

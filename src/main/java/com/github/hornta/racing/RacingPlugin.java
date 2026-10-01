@@ -344,6 +344,7 @@ public class RacingPlugin extends JavaPlugin {
       m.add(MessageKey.RACE_SET_STRIDER_SPEED, "commands.race_set_strider_speed.success");
       m.add(MessageKey.RACE_SET_HORSE_SPEED, "commands.race_set_horse_speed.success");
       m.add(MessageKey.RACE_SET_HORSE_JUMP_STRENGTH, "commands.race_set_horse_jump_strength.success");
+      m.add(MessageKey.RACE_SET_HAPPY_GHAST_SPEED, "commands.race_set_happy_ghast_speed.success");
       m.add(MessageKey.RACE_ADD_POTION_EFFECT, "commands.race_add_potion_effect.success");
       m.add(MessageKey.RACE_REMOVE_POTION_EFFECT, "commands.race_remove_potion_effect.success");
       m.add(MessageKey.RACE_CLEAR_POTION_EFFECTS, "commands.race_clear_potion_effects.success");
