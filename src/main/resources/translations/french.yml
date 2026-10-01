@@ -101,6 +101,10 @@ commands:
     success: "§eLa force de saut du cheval a été définie sur <jump_strength>."
   race_set_happy_ghast_speed:
     success: "§eLa vitesse du happy ghast a été définie sur <speed>."
+  race_set_camel_speed:
+    success: "§eLa vitesse du dromadaire a été définie sur <speed>."
+  race_set_camel_dash_strength:
+    success: "§eLa force de saut du dromadaire a été définie sur <dash_strength>."
   race_add_potion_effect:
     success: "§eL'effet de potion `<potion_effect>` avec l'amplificateur `<amplifier>` a été défini dans la course `<race_name>`."
   race_remove_potion_effect:

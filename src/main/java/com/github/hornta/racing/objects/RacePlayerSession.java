@@ -9,19 +9,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Boat;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.HappyGhast;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Steerable;
-import org.bukkit.entity.Strider;
-import org.bukkit.entity.Tameable;
+import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -121,6 +109,11 @@ public class RacePlayerSession {
          this.freezeHorse();
          RacingPlugin.debug("Freezed horse movement");
       }
+
+      if (this.raceSession.getRace().getType() == RaceType.CAMEL) {
+         this.freezeCamel();
+         RacingPlugin.debug("Freezed camel movement");
+      }
    }
 
    Entity getVehicle() {
@@ -142,6 +135,8 @@ public class RacePlayerSession {
          this.player.getInventory().setItemInMainHand(new ItemStack(Material.WARPED_FUNGUS_ON_A_STICK, 1));
       } else if (this.vehicle instanceof HappyGhast) {
          this.unfreezeHappyGhast();
+      } else if (this.vehicle instanceof Camel) {
+         this.unfreezeCamel();
       } else if (this.vehicle instanceof Horse) {
          this.unfreezeHorse();
       }
@@ -190,6 +185,11 @@ public class RacePlayerSession {
             }
             this.spawnVehicle(EntityType.HORSE, location);
             this.setupHorse(horseData);
+            break;
+
+         case CAMEL:
+            this.spawnVehicle(EntityType.CAMEL, location);
+            this.setupCamel();
             break;
 
          case BOAT:
@@ -266,6 +266,7 @@ public class RacePlayerSession {
             case HORSE:
             case BOAT:
             case HAPPY_GHAST:
+            case CAMEL:
                this.respawnInVehicle(loc, runnable, fireTicksResetCallback);
                break;
 
@@ -382,6 +383,31 @@ public class RacePlayerSession {
       Objects.requireNonNull(((Attributable) this.vehicle)
          .getAttribute(Attribute.MOVEMENT_SPEED))
          .setBaseValue(this.raceSession.getRace().getHappyGhastSpeed());
+   }
+
+   private void setupCamel() {
+      ((LivingEntity)this.vehicle).setAI(false);
+      RacingPlugin.debug("Disable camel AI");
+      ((Tameable)this.vehicle).setTamed(true);
+      RacingPlugin.debug("Set camel to be tamed");
+      ((Tameable)this.vehicle).setOwner(this.player);
+      RacingPlugin.debug("Set camel owner to " + this.player.getName());
+      ((AbstractHorse)this.vehicle).getInventory().setSaddle(new ItemStack(Material.SADDLE, 1));
+      RacingPlugin.debug("Giving camel a saddle");
+      ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getCamelDashStrength());
+      RacingPlugin.debug("Setting camel jump strength to" + this.raceSession.getRace().getCamelDashStrength());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getCamelSpeed());
+      RacingPlugin.debug("Setting camel movement speed to " + this.raceSession.getRace().getCamelSpeed());
+   }
+
+   public void freezeCamel() {
+      ((AbstractHorse)this.vehicle).setJumpStrength(0.0D);
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(0.0D);
+   }
+
+   private void unfreezeCamel() {
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getCamelSpeed());
+      ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getCamelDashStrength());
    }
 
    public void cleanup() {
