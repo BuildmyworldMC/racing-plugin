@@ -75,7 +75,7 @@ public enum RaceVersion {
            V16,
            V17,
            V18,
-           V19,
+           V19
       };
    }
 

@@ -35,7 +35,8 @@ public enum RaceType {
           STRIDER,
           MINECART,
           HAPPY_GHAST,
-          CAMEL
+          CAMEL,
+          NAUTILUS
       };
    }
 }
