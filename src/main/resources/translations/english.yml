@@ -105,6 +105,8 @@ commands:
     success: "§eCamel speed set to <speed>."
   race_set_camel_dash_strength:
     success: "§eCamel dash strength set to <dash_strength>."
+  race_set_nautilus_speed:
+    success: "§eNautilus speed set to <speed>."
   race_add_potion_effect:
     success: "§ePotion effect `<potion_effect>` with amplifier `<amplifier>` set in race `<race_name>`."
   race_remove_potion_effect:

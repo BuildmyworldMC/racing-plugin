@@ -47,7 +47,9 @@ public class Race implements Listener {
    private double happyGhastSpeed;
    private double camelSpeed;
    private double camelDashStrength;
+   private double nautilusSpeed;
 
+   public Race(UUID id, RaceVersion version, String name, Location spawn, RaceState state, Instant createdAt, List<RaceCheckpoint> checkpoints, List<RaceStartPoint> startPoints, RaceType type, StartOrder startOrder, String song, double entryFee, float walkSpeed, Set<RacePotionEffect> potionEffects, Set<RaceSign> signs, Set<RacePlayerStatistic> results, int minimimRequiredParticipantsToStart, double pigSpeed, double striderSpeed, double horseSpeed, double horseJumpStrength, double happyGhastSpeed, double camelSpeed, double camelDashStrength, double nautilusSpeed, List<RaceCommand> commands) {
       this.id = id;
       this.version = version;
       this.name = name;
@@ -71,6 +73,7 @@ public class Race implements Listener {
       this.happyGhastSpeed = happyGhastSpeed;
       this.camelSpeed = camelSpeed;
       this.camelDashStrength = camelDashStrength;
+      this.nautilusSpeed = nautilusSpeed;
 
        for (RacePlayerStatistic playerStatistic : results) {
            this.resultByPlayerId.put(playerStatistic.getPlayerId(), playerStatistic);
@@ -403,6 +406,10 @@ public class Race implements Listener {
    public double getCamelDashStrength() { return this.camelDashStrength; }
 
    public void setCamelDashStrength(double camelDashStrength) { this.camelDashStrength = camelDashStrength; }
+
+   public double getNautilusSpeed() { return this.nautilusSpeed; }
+
+   public void setNautilusSpeed(double nautilusSpeed) { this.nautilusSpeed = nautilusSpeed; }
 
    public List<RaceCommand> getCommands() {
       return this.commands;
