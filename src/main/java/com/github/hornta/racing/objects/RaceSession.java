@@ -692,6 +692,7 @@ public class RaceSession implements Listener {
                case PIG:
                case STRIDER:
                case HAPPY_GHAST:
+               case CAMEL:
                default:
                   if (!session.isAllowedToEnterVehicle()) {
                      event.setCancelled(true);
@@ -706,7 +707,8 @@ public class RaceSession implements Listener {
                              this.race.getType() == RaceType.HORSE && event.getVehicle().getType() != EntityType.HORSE ||
                              this.race.getType() == RaceType.MINECART && event.getVehicle().getType() != EntityType.MINECART ||
                              this.race.getType() == RaceType.STRIDER && event.getVehicle().getType() != EntityType.STRIDER ||
-                             this.race.getType() == RaceType.HAPPY_GHAST && event.getVehicle().getType() != EntityType.HAPPY_GHAST
+                             this.race.getType() == RaceType.HAPPY_GHAST && event.getVehicle().getType() != EntityType.HAPPY_GHAST ||
+                             this.race.getType() == RaceType.CAMEL && event.getVehicle().getType() != EntityType.CAMEL ||
                      ) {
                         event.setCancelled(true);
                      }
@@ -740,6 +742,7 @@ public class RaceSession implements Listener {
                   event.setCancelled(true);
                }
             case HORSE:
+            case CAMEL:
                if (event.getItemDrop().getItemStack().getType() == Material.SADDLE) {
                   event.setCancelled(true);
                }
@@ -880,6 +883,8 @@ public class RaceSession implements Listener {
                    RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_STRIDER_INTERACT)).toUpperCase(Locale.ENGLISH));
            case HAPPY_GHAST ->
                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_HAPPY_GHAST_INTERACT)).toUpperCase(Locale.ENGLISH));
+           case CAMEL ->
+                  RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_CAMEL_INTERACT)).toUpperCase(Locale.ENGLISH));
        };
    }
 
@@ -901,6 +906,8 @@ public class RaceSession implements Listener {
                    RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_STRIDER_DEATH)).toUpperCase(Locale.ENGLISH));
            case HAPPY_GHAST ->
                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_HAPPY_GHAST_DEATH)).toUpperCase(Locale.ENGLISH));
+           case CAMEL ->
+                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_CAMEL_DEATH)).toUpperCase(Locale.ENGLISH));
        };
    }
 

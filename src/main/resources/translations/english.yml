@@ -101,6 +101,10 @@ commands:
     success: "§eHorse jump strength has been set to <jump_strength>."
   race_set_happy_ghast_speed:
     success: "§eHappy Ghast speed has been set to <speed>."
+  race_set_camel_speed:
+    success: "§eCamel speed set to <speed>."
+  race_set_camel_dash_strength:
+    success: "§eCamel dash strength set to <dash_strength>."
   race_add_potion_effect:
     success: "§ePotion effect `<potion_effect>` with amplifier `<amplifier>` set in race `<race_name>`."
   race_remove_potion_effect:

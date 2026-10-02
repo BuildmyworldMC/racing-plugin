@@ -74,6 +74,8 @@ public class FileAPI implements RacingAPI {
    private static final String STRIDER_SPEED_FIELD = "strider_speed";
    private static final String HORSE_SPEED_FIELD = "horse_speed";
    private static final String HORSE_JUMP_STRENGTH_FIELD = "horse_jump_strength";
+   private static final String CAMEL_SPEED_FIELD = "camel_speed";
+   private static final String CAMEL_DASH_STRENGTH_FIELD = "camel_dash_strength";
    public static final String COMMANDS_FIELD = "commands";
    private final ExecutorService fileService = Executors.newSingleThreadExecutor();
    private final File directory;
@@ -98,6 +100,7 @@ public class FileAPI implements RacingAPI {
       this.migrationManager.addMigration(new SingleRuns());
       this.migrationManager.addMigration(new StriderSpeedMigrationRace());
       this.migrationManager.addMigration(new HappyGhastSpeedMigrationRace());
+      this.migrationManager.addMigration(new CamelAttributesMigrationRace());
    }
 
    public void fetchAllRaces(Consumer<List<Race>> consumers) {
@@ -197,6 +200,8 @@ public class FileAPI implements RacingAPI {
          yaml.set("horse_speed", race.getHorseSpeed());
          yaml.set("horse_jump_strength", race.getHorseJumpStrength());
          yaml.set("happy_ghast_speed", race.getHappyGhastSpeed());
+         yaml.set("camel_speed", race.getCamelSpeed());
+         yaml.set("camel_dash_strength", race.getCamelDashStrength());
          this.writeCommands(race.getCommands(), yaml);
 
          try {
@@ -364,7 +369,21 @@ public class FileAPI implements RacingAPI {
                           happyGhastSpeed = (double)yaml.getInt("happy_ghast_speed");
                       }
 
-                     return new Race(id, version, name, spawn, state, createdAt, checkpoints, startPoints, type, startOrder, song, entryFee, walkSpeed, potionEffects, this.parseSigns(yaml), results, minimumRequiredParticipantsToStart, pigSpeed, striderSpeed, horseSpeed, horseJumpStrength, happyGhastSpeed, this.parseCommands(yaml));
+                      double camelSpeed;
+                      if (yaml.isDouble("camel_speed")) {
+                          camelSpeed = yaml.getDouble("camel_speed");
+                      } else {
+                          camelSpeed = (double)yaml.getInt("camel_speed");
+                      }
+
+                      double camelDashStrength;
+                      if (yaml.isDouble("camel_dash_strength")) {
+                          camelDashStrength = yaml.getDouble("camel_dash_strength");
+                      } else {
+                          camelDashStrength = (double)yaml.getInt("camel_dash_strength");
+                      }
+
+                     return new Race(id, version, name, spawn, state, createdAt, checkpoints, startPoints, type, startOrder, song, entryFee, walkSpeed, potionEffects, this.parseSigns(yaml), results, minimumRequiredParticipantsToStart, pigSpeed, striderSpeed, horseSpeed, horseJumpStrength, happyGhastSpeed, camelSpeed, camelDashStrength, this.parseCommands(yaml));
                   }
                } else {
                   throw new ParseRaceException("Missing field `walk_speed`");
