@@ -1,12 +1,13 @@
 package com.github.hornta.racing.objects;
 
-import com.github.hornta.racing.AttributeUtil;
 import com.github.hornta.racing.ConfigKey;
 import com.github.hornta.racing.RacingPlugin;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Objects;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -139,11 +140,7 @@ public class RaceParticipantReset {
       RacingPlugin.debug("Restored fire ticks of %s to %d", this.playerSession.getPlayer().getName(), this.fireTicks);
       this.playerSession.getPlayer().setAllowFlight(this.allowFlight);
       RacingPlugin.debug("Restoring allowFlight of %s to %b", this.playerSession.getPlayer().getName(), this.allowFlight);
-      double maxHealth = 20.0D;
-      org.bukkit.attribute.AttributeInstance maxHealthAttr = this.playerSession.getPlayer().getAttribute(AttributeUtil.MAX_HEALTH);
-      if (maxHealthAttr != null) {
-         maxHealth = maxHealthAttr.getValue();
-      }
+      double maxHealth = Objects.requireNonNull(this.playerSession.getPlayer().getAttribute(Attribute.MAX_HEALTH)).getValue();
       double clampedHealth = Math.min(this.health, maxHealth);
       this.playerSession.getPlayer().setHealth(clampedHealth);
       RacingPlugin.debug("Restored health of %s to %f", this.playerSession.getPlayer().getName(), clampedHealth);

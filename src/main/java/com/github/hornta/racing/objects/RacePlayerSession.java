@@ -1,6 +1,5 @@
 package com.github.hornta.racing.objects;
 
-import com.github.hornta.racing.AttributeUtil;
 import com.github.hornta.racing.RacingPlugin;
 import com.github.hornta.racing.Util;
 import com.github.hornta.racing.enums.RaceType;
@@ -374,7 +373,7 @@ public class RacePlayerSession {
       RacingPlugin.debug("Disable pig AI");
       ((Steerable)this.vehicle).setSaddle(true);
       RacingPlugin.debug("Giving pig a saddle");
-      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(AttributeUtil.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getPigSpeed());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getPigSpeed());
       RacingPlugin.debug("Setting movementspeed on pig to " + this.raceSession.getRace().getPigSpeed());
    }
 
@@ -383,17 +382,17 @@ public class RacePlayerSession {
       RacingPlugin.debug("Disable strider AI");
       ((Steerable)this.vehicle).setSaddle(true);
       RacingPlugin.debug("Giving strider a saddle");
-      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(AttributeUtil.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getStriderSpeed());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getStriderSpeed());
       RacingPlugin.debug("Setting movementspeed on strider to " + this.raceSession.getRace().getStriderSpeed());
    }
 
    public void freezeHorse() {
       ((AbstractHorse)this.vehicle).setJumpStrength(0.0D);
-      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(AttributeUtil.MOVEMENT_SPEED)).setBaseValue(0.0D);
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(0.0D);
    }
 
    private void unfreezeHorse() {
-      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(AttributeUtil.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHorseSpeed());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHorseSpeed());
       ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getHorseJumpStrength());
    }
 
@@ -402,7 +401,7 @@ public class RacePlayerSession {
       RacingPlugin.debug("Disable happy ghast AI");
       this.vehicle.addPassenger(this.player);
       RacingPlugin.debug("Add passenger to happy ghast");
-      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(AttributeUtil.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHappyGhastSpeed());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHappyGhastSpeed());
       RacingPlugin.debug("Setting movementspeed on happy ghast to " + this.raceSession.getRace().getHappyGhastSpeed());
 
       // Choix aléatoire d'une couleur de teinture
@@ -433,13 +432,13 @@ public class RacePlayerSession {
 
    public void freezeHappyGhast() {
       this.vehicle.setVelocity(new Vector(0, 0, 0));
-      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(AttributeUtil.MOVEMENT_SPEED))
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED))
               .setBaseValue(0.0D);
    }
 
    private void unfreezeHappyGhast() {
       Objects.requireNonNull(((Attributable) this.vehicle)
-         .getAttribute(AttributeUtil.MOVEMENT_SPEED))
+         .getAttribute(Attribute.MOVEMENT_SPEED))
          .setBaseValue(this.raceSession.getRace().getHappyGhastSpeed());
    }
 
@@ -561,7 +560,7 @@ public class RacePlayerSession {
       RacingPlugin.debug("Giving horse a saddle");
       ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getHorseJumpStrength());
       RacingPlugin.debug("Setting horse jump strength to" + this.raceSession.getRace().getHorseJumpStrength());
-      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(AttributeUtil.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHorseSpeed());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getHorseSpeed());
       RacingPlugin.debug("Setting horse movement speed to " + this.raceSession.getRace().getHorseSpeed());
       if (horseData != null) {
          RacingPlugin.debug("Transferring old horse values to new horse");
