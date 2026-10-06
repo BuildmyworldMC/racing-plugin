@@ -2,9 +2,10 @@ package com.github.hornta.racing.objects;
 
 import com.github.hornta.racing.ConfigKey;
 import com.github.hornta.racing.RacingPlugin;
-
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Objects;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.ItemStack;
@@ -12,11 +13,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class RaceParticipantReset {
-   private static final int PREVENT_SPRINT_FOOD_LEVEL = 6;
    private final RacePlayerSession playerSession;
    private final float walkSpeed;
    private final int foodLevel;
-   private final ItemStack[] inventory;
+   private final ItemStack[] storageContents;
+   private final ItemStack[] armorContents;
+   private final ItemStack[] extraContents;
    private final Collection<PotionEffect> potionEffects;
    private final double health;
    private final GameMode gameMode;
@@ -55,7 +57,9 @@ public class RaceParticipantReset {
 
       playerSession.getPlayer().closeInventory();
       RacingPlugin.debug("Closing inventory of %s", playerSession.getPlayer().getName());
-      this.inventory = playerSession.getPlayer().getInventory().getContents();
+      this.storageContents = cloneItemArray(playerSession.getPlayer().getInventory().getStorageContents());
+      this.armorContents = cloneItemArray(playerSession.getPlayer().getInventory().getArmorContents());
+      this.extraContents = cloneItemArray(playerSession.getPlayer().getInventory().getExtraContents());
       if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.ADVENTURE_ON_START)) {
          playerSession.getPlayer().setGameMode(GameMode.ADVENTURE);
          RacingPlugin.debug("Setting game mode to %s on %s", GameMode.ADVENTURE, playerSession.getPlayer().getName());
@@ -101,9 +105,9 @@ public class RaceParticipantReset {
          case STRIDER:
          case MINECART:
          case HAPPY_GHAST:
+         case ELYTRA:
             playerSession.getPlayer().setAllowFlight(true);
             break;
-         case ELYTRA:
          case PLAYER:
             playerSession.getPlayer().setAllowFlight(false);
       }
@@ -142,7 +146,22 @@ public class RaceParticipantReset {
       RacingPlugin.debug("Restored health of %s to %f", this.playerSession.getPlayer().getName(), clampedHealth);
       this.playerSession.getPlayer().setGameMode(this.gameMode);
       RacingPlugin.debug("Restored game mode of %s to %s", this.playerSession.getPlayer().getName(), this.gameMode);
-      this.playerSession.getPlayer().getInventory().setContents(this.inventory);
-      RacingPlugin.debug("Restored inventory of %s to %s", this.playerSession.getPlayer().getName(), this.inventory);
+      this.playerSession.getPlayer().getInventory().clear();
+      this.playerSession.getPlayer().getInventory().setStorageContents(this.storageContents);
+      this.playerSession.getPlayer().getInventory().setArmorContents(this.armorContents);
+      this.playerSession.getPlayer().getInventory().setExtraContents(this.extraContents);
+      this.playerSession.getPlayer().updateInventory();
+      RacingPlugin.debug("Restored inventory of %s", this.playerSession.getPlayer().getName());
+   }
+
+   private static ItemStack[] cloneItemArray(ItemStack[] items) {
+      if (items == null) {
+         return null;
+      }
+      ItemStack[] copy = new ItemStack[items.length];
+      for (int i = 0; i < items.length; i++) {
+         copy[i] = items[i] != null ? items[i].clone() : null;
+      }
+      return copy;
    }
 }

@@ -168,6 +168,8 @@ public class RacingManager implements Listener {
          }
 
       }
+
+      event.getRace().updateSplineTask();
    }
 
    @EventHandler
@@ -187,6 +189,7 @@ public class RacingManager implements Listener {
          startPoint.removeHologram();
       }
 
+      event.getRace().stopSplineTask();
       this.addChunkTickets();
    }
 
@@ -202,6 +205,7 @@ public class RacingManager implements Listener {
            }
        }
 
+      event.getRace().updateSplineTask();
       this.addChunkTickets();
    }
 
@@ -217,6 +221,7 @@ public class RacingManager implements Listener {
            }
        }
 
+      event.getRace().updateSplineTask();
       this.addChunkTickets();
    }
 
@@ -231,6 +236,7 @@ public class RacingManager implements Listener {
            }
        }
 
+      event.getRace().updateSplineTask();
       this.addChunkTickets();
    }
 
@@ -245,6 +251,7 @@ public class RacingManager implements Listener {
            }
        }
 
+      event.getRace().updateSplineTask();
       this.addChunkTickets();
    }
 
@@ -270,6 +277,7 @@ public class RacingManager implements Listener {
           }
       }
 
+      event.getRace().updateSplineTask();
       this.addChunkTickets();
    }
 
@@ -548,6 +556,7 @@ public class RacingManager implements Listener {
 
    public void moveCheckpoint(Location location, Race race, RaceCheckpoint checkpoint, Runnable runnable) {
       checkpoint.setLocation(location);
+      race.updateSplineTask();
       this.api.updateCheckpoints(race.getId(), race.getCheckpoints(), (result) -> {
          Bukkit.getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
             if (result) {
@@ -559,6 +568,7 @@ public class RacingManager implements Listener {
 
    public void moveStartPoint(Location location, Race race, RaceStartPoint startPoint, Runnable runnable) {
       startPoint.setLocation(location);
+      race.updateSplineTask();
       this.api.updateStartPoints(race.getId(), race.getStartPoints(), (result) -> {
          Bukkit.getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
             if (result) {

@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -96,6 +98,9 @@ public class RacePlayerSession {
       this.respawn(RespawnType.FROM_START, () -> {
          this.player.playSound(this.player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 2.0F);
          this.restore = new RaceParticipantReset(this);
+         if (this.raceSession.getRace().getType() == RaceType.ELYTRA) {
+            this.setupElytra();
+         }
       }, () -> {
          this.player.setHealth(20.0D);
          RacingPlugin.debug("Setting health to %f on %s", 20.0D, this.player.getName());
@@ -312,17 +317,55 @@ public class RacePlayerSession {
       RacingPlugin.debug("Spawned vehicle at " + this.vehicle.getLocation());
    }
 
-   private void setupElytra() {
-      this.player.getInventory().setChestplate(new ItemStack(Material.ELYTRA, 1));
+   /**
+    * Prepares and equips the participant with unbreakable Elytra and firework rockets,
+    * starting an asynchronous monitoring task to ensure continuous flight equipment supply.
+    */
+   public void setupElytra() {
+      ItemStack unbreakableElytraItemStack = new ItemStack(Material.ELYTRA, 1);
+      ItemMeta elytraItemMeta = unbreakableElytraItemStack.getItemMeta();
+      if (elytraItemMeta != null) {
+         elytraItemMeta.setUnbreakable(true);
+         unbreakableElytraItemStack.setItemMeta(elytraItemMeta);
+      }
+      this.player.getInventory().setChestplate(unbreakableElytraItemStack);
+      this.player.getInventory().setItemInMainHand(createRaceRocket());
 
-      Player player = this.player;
-      RacePlayerSession session = this;
+      if (this.elytraTask != null && !this.elytraTask.isCancelled()) {
+         this.elytraTask.cancel();
+      }
+
+      Player participatingPlayer = this.player;
+      RacePlayerSession activePlayerSession = this;
       this.elytraTask = Bukkit.getScheduler().runTaskTimer(RacingPlugin.getInstance(), () -> {
-         if (session.isFinished() || session.getPlayer().isDead()) {
+         if (activePlayerSession.isFinished() || activePlayerSession.isRestored() || !participatingPlayer.isOnline()) {
             return;
          }
-         player.getInventory().setItemInMainHand(new ItemStack(Material.FIREWORK_ROCKET, 64));
-      }, 0L, 600L); // Exécute toutes les 600 ticks (30 seconds, stopper quand raceSession est null)
+         ItemStack currentChestplateItem = participatingPlayer.getInventory().getChestplate();
+         if (currentChestplateItem == null || currentChestplateItem.getType() != Material.ELYTRA) {
+            participatingPlayer.getInventory().setChestplate(unbreakableElytraItemStack);
+         }
+         ItemStack currentMainHandItem = participatingPlayer.getInventory().getItemInMainHand();
+         if (currentMainHandItem == null || currentMainHandItem.getType() != Material.FIREWORK_ROCKET || currentMainHandItem.getAmount() < 16) {
+            participatingPlayer.getInventory().setItemInMainHand(createRaceRocket());
+         }
+      }, 10L, 10L);
+   }
+
+   /**
+    * Constructs a stack of 64 flight duration 1 firework rockets with no explosive stars
+    * for boosting Elytra flight safely during races.
+    *
+    * @return Configured {@link ItemStack} of 64 firework rockets.
+    */
+   private static ItemStack createRaceRocket() {
+      ItemStack raceRocketItemStack = new ItemStack(Material.FIREWORK_ROCKET, 64);
+      FireworkMeta fireworkRocketMeta = (FireworkMeta) raceRocketItemStack.getItemMeta();
+      if (fireworkRocketMeta != null) {
+         fireworkRocketMeta.setPower(1);
+         raceRocketItemStack.setItemMeta(fireworkRocketMeta);
+      }
+      return raceRocketItemStack;
    }
 
    private void setupPig() {
@@ -477,6 +520,7 @@ public class RacePlayerSession {
       }
 
       if (this.raceSession.getRace().getType() == RaceType.ELYTRA) {
+         this.player.getInventory().clear();
          this.player.getInventory().setChestplate(null);
          this.player.getInventory().setItemInMainHand(null);
       }
