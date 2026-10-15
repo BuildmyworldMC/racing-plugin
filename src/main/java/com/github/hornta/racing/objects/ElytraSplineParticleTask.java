@@ -50,39 +50,14 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
    private static final double VERTICAL_OFFSET_Y = -0.8D;
 
    /**
-    * Standard active particle color: Violet (RGB 120, 0, 255).
+    * Base particle color: Violet (RGB 120, 0, 255).
     */
    private static final DustOptions DUST_PURPLE = new DustOptions(Color.fromRGB(120, 0, 255), 2.2F);
 
    /**
-    * Standard active pulse particle color: Bright Violet (RGB 180, 50, 255).
+    * Pulse particle color: Violet (RGB 140, 0, 255).
     */
-   private static final DustOptions DUST_PURPLE_PULSE = new DustOptions(Color.fromRGB(180, 50, 255), 3.0F);
-
-   /**
-    * Preview of upcoming turn particle color: Softer Violet (RGB 100, 30, 200).
-    */
-   private static final DustOptions DUST_PREVIEW = new DustOptions(Color.fromRGB(100, 30, 200), 1.5F);
-
-   /**
-    * Start / departure segment color in construction mode: Vibrant Cyan (RGB 0, 220, 255).
-    */
-   private static final DustOptions DUST_CYAN = new DustOptions(Color.fromRGB(0, 220, 255), 2.2F);
-
-   /**
-    * Start / departure pulse highlight: Bright White-Cyan (RGB 200, 255, 255).
-    */
-   private static final DustOptions DUST_CYAN_PULSE = new DustOptions(Color.fromRGB(200, 255, 255), 3.0F);
-
-   /**
-    * Finish / arrival segment color in construction mode: Vibrant Gold (RGB 255, 170, 0).
-    */
-   private static final DustOptions DUST_GOLD = new DustOptions(Color.fromRGB(255, 170, 0), 2.2F);
-
-   /**
-    * Finish / arrival pulse highlight: Bright Yellow-White (RGB 255, 240, 150).
-    */
-   private static final DustOptions DUST_GOLD_PULSE = new DustOptions(Color.fromRGB(255, 240, 150), 3.0F);
+   private static final DustOptions DUST_PULSE = new DustOptions(Color.fromRGB(140, 0, 255), 3.0F);
 
    /**
     * The associated race definition.
@@ -90,9 +65,14 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
    private final Race race;
 
    /**
-    * Cached list of individual spline segments mapped to their target checkpoint.
+    * Cached list of individual spline segments connecting consecutive checkpoints.
     */
    private List<SplineSegment> splineSegments = Collections.emptyList();
+
+   /**
+    * Whether the current track geometry is a closed loop circuit.
+    */
+   private boolean isClosedLoop = false;
 
    /**
     * Internal animation counter incremented every execution tick.
@@ -108,32 +88,26 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
     * Represents an individual flight path segment connecting two consecutive checkpoints or start point.
     */
    public static class SplineSegment {
-      private final int targetCheckpointIndex;
+      private final int segmentIndex;
+      private final int startPointIndex;
       private final List<Location> points;
-      private final boolean isStartSegment;
-      private final boolean isFinishSegment;
 
-      public SplineSegment(int targetCheckpointIndex, List<Location> points, boolean isStartSegment, boolean isFinishSegment) {
-         this.targetCheckpointIndex = targetCheckpointIndex;
+      public SplineSegment(int segmentIndex, int startPointIndex, List<Location> points) {
+         this.segmentIndex = segmentIndex;
+         this.startPointIndex = startPointIndex;
          this.points = points;
-         this.isStartSegment = isStartSegment;
-         this.isFinishSegment = isFinishSegment;
       }
 
-      public int getTargetCheckpointIndex() {
-         return this.targetCheckpointIndex;
+      public int getSegmentIndex() {
+         return this.segmentIndex;
+      }
+
+      public int getStartPointIndex() {
+         return this.startPointIndex;
       }
 
       public List<Location> getPoints() {
          return this.points;
-      }
-
-      public boolean isStartSegment() {
-         return this.isStartSegment;
-      }
-
-      public boolean isFinishSegment() {
-         return this.isFinishSegment;
       }
    }
 
@@ -155,19 +129,15 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
       Collections.sort(checkpointsSorted);
 
       List<Location> controlPointLocations = new ArrayList<>();
-      List<Integer> targetCheckpointIndices = new ArrayList<>();
 
       // Include start point if available to show flight path from spawn/launch
       List<RaceStartPoint> startPoints = this.race.getStartPoints();
-      boolean hasSeparateStartPoint = false;
       if (!startPoints.isEmpty() && !checkpointsSorted.isEmpty()) {
          Location startPointLocation = startPoints.get(0).getLocation();
          if (startPointLocation != null && startPointLocation.getWorld() != null) {
             Location firstCpLoc = checkpointsSorted.get(0).getLocation();
-            // Only add separate start point if it is not placed at the exact same block as the first checkpoint
             if (firstCpLoc == null || startPointLocation.distanceSquared(firstCpLoc) > 1.5D) {
                controlPointLocations.add(startPointLocation.clone().add(0.0D, VERTICAL_OFFSET_Y, 0.0D));
-               hasSeparateStartPoint = true;
             }
          }
       }
@@ -187,22 +157,23 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
 
       if (controlPointLocations.size() < 2) {
          this.splineSegments = Collections.emptyList();
+         this.isClosedLoop = false;
          return;
       }
 
       World trackWorld = controlPointLocations.get(0).getWorld();
       int totalControlPoints = controlPointLocations.size();
 
-      // Check whether this track is a closed loop (start and finish at the same position)
-      boolean isClosedLoop = totalControlPoints >= 3
+      this.isClosedLoop = totalControlPoints >= 3
             && controlPointLocations.get(0).distanceSquared(controlPointLocations.get(totalControlPoints - 1)) <= 4.0D;
 
       List<SplineSegment> calculatedSegments = new ArrayList<>();
+      int cumulativePointCount = 0;
 
       for (int segmentIndex = 0; segmentIndex < totalControlPoints - 1; ++segmentIndex) {
          Vector previousPoint;
          if (segmentIndex == 0) {
-            previousPoint = isClosedLoop
+            previousPoint = this.isClosedLoop
                ? controlPointLocations.get(totalControlPoints - 2).toVector()
                : extrapolateBackwards(controlPointLocations.get(0).toVector(), controlPointLocations.get(1).toVector());
          } else {
@@ -216,7 +187,7 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
          if (segmentIndex + 2 < totalControlPoints) {
             futurePoint = controlPointLocations.get(segmentIndex + 2).toVector();
          } else {
-            futurePoint = isClosedLoop
+            futurePoint = this.isClosedLoop
                ? controlPointLocations.get(1).toVector()
                : extrapolateForwards(controlPointLocations.get(totalControlPoints - 2).toVector(), controlPointLocations.get(totalControlPoints - 1).toVector());
          }
@@ -231,19 +202,12 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
             segmentSamplePoints.add(new Location(trackWorld, interpolatedPosition.getX(), interpolatedPosition.getY(), interpolatedPosition.getZ()));
          }
 
-         // Map target checkpoint index (1-based position)
-         int targetCpIndex;
-         if (hasSeparateStartPoint) {
-            targetCpIndex = (segmentIndex < checkpointsSorted.size()) ? checkpointsSorted.get(segmentIndex).getPosition() : segmentIndex + 1;
-         } else {
-            int cpIndex = segmentIndex + 1;
-            targetCpIndex = (cpIndex < checkpointsSorted.size()) ? checkpointsSorted.get(cpIndex).getPosition() : cpIndex + 1;
+         if (segmentIndex == totalControlPoints - 2 && !this.isClosedLoop) {
+            segmentSamplePoints.add(controlPointLocations.get(totalControlPoints - 1).clone());
          }
 
-         boolean isStartSegment = (segmentIndex == 0);
-         boolean isFinishSegment = (segmentIndex == totalControlPoints - 2);
-
-         calculatedSegments.add(new SplineSegment(targetCpIndex, segmentSamplePoints, isStartSegment, isFinishSegment));
+         calculatedSegments.add(new SplineSegment(segmentIndex, cumulativePointCount, segmentSamplePoints));
+         cumulativePointCount += segmentSamplePoints.size();
       }
 
       this.splineSegments = calculatedSegments;
@@ -270,9 +234,9 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
 
       boolean isUnderConstruction = this.race.getState() == RaceState.UNDER_CONSTRUCTION;
       int pulseOffsetIndex = this.animationTickCounter % ANIMATION_PULSE_PERIOD;
+      int lastSegmentIndex = currentSegments.size() - 1;
 
       if (isUnderConstruction) {
-         // In construction mode, render full track to admins with color-coded departure and arrival
          List<Player> adminViewers = new ArrayList<>();
          for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer.hasPermission(Permission.RACING_MODIFY.toString()) && onlinePlayer.getWorld().equals(trackWorld)) {
@@ -285,26 +249,15 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
          }
 
          for (SplineSegment segment : currentSegments) {
-            DustOptions baseDust;
-            if (segment.isStartSegment()) {
-               baseDust = DUST_CYAN;
-            } else if (segment.isFinishSegment()) {
-               baseDust = DUST_GOLD;
-            } else {
-               baseDust = DUST_PURPLE;
-            }
-
-            renderSegmentToPlayers(segment, adminViewers, MAX_RENDER_DISTANCE_CONSTRUCTION_SQ, pulseOffsetIndex, baseDust);
+            renderSegmentToPlayers(segment, adminViewers, MAX_RENDER_DISTANCE_CONSTRUCTION_SQ, pulseOffsetIndex);
          }
       } else {
-         // In active race / countdown, render per participant ONLY their active and upcoming segment
          RacingManager racingManager = RacingPlugin.getInstance().getRacingManager();
          if (racingManager == null) {
             return;
          }
 
          List<RaceSession> activeSessions = racingManager.getRaceSessions(this.race);
-         int totalCheckpoints = this.race.getCheckpoints().size();
 
          for (RaceSession raceSession : activeSessions) {
             if (raceSession.getState() != RaceSessionState.COUNTDOWN && raceSession.getState() != RaceSessionState.STARTED) {
@@ -321,23 +274,16 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
                }
 
                RaceCheckpoint nextCheckpoint = playerSession.getNextCheckpoint();
-               if (nextCheckpoint == null) {
-                  continue;
-               }
-
-               int targetIndex = nextCheckpoint.getPosition();
-               int upcomingIndex = (targetIndex < totalCheckpoints) ? targetIndex + 1 : 1;
+               int targetPosition = (nextCheckpoint != null) ? nextCheckpoint.getPosition() : 1;
                List<Player> singlePlayerList = Collections.singletonList(participant);
 
                for (SplineSegment segment : currentSegments) {
-                  // Active leg leading directly to next checkpoint
-                  if (segment.getTargetCheckpointIndex() == targetIndex) {
-                     renderSegmentToPlayers(segment, singlePlayerList, MAX_RENDER_DISTANCE_RACE_SQ, pulseOffsetIndex, DUST_PURPLE);
+                  // On a closed circuit, do not render the finish arrival segment while the player is on the starting grid / first leg
+                  if (this.isClosedLoop && targetPosition == 1 && segment.getSegmentIndex() == lastSegmentIndex) {
+                     continue;
                   }
-                  // Soft preview of next turn ahead (omitted if at start line to prevent reverse confusion)
-                  else if (segment.getTargetCheckpointIndex() == upcomingIndex && targetIndex > 1) {
-                     renderSegmentToPlayers(segment, singlePlayerList, MAX_RENDER_DISTANCE_RACE_SQ, pulseOffsetIndex, DUST_PREVIEW);
-                  }
+
+                  renderSegmentToPlayers(segment, singlePlayerList, MAX_RENDER_DISTANCE_RACE_SQ, pulseOffsetIndex);
                }
             }
          }
@@ -347,33 +293,23 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
    }
 
    /**
-    * Renders sample points of a spline segment to specified viewers within distance.
+    * Renders sample points of a spline segment to specified viewers within distance in violet.
     */
    private void renderSegmentToPlayers(
          SplineSegment segment,
          List<Player> viewers,
          double maxDistanceSq,
-         int pulseOffset,
-         DustOptions baseColor) {
+         int pulseOffset) {
 
       List<Location> points = segment.getPoints();
       int totalPoints = points.size();
-
-      DustOptions pulseColor;
-      if (baseColor == DUST_CYAN) {
-         pulseColor = DUST_CYAN_PULSE;
-      } else if (baseColor == DUST_GOLD) {
-         pulseColor = DUST_GOLD_PULSE;
-      } else if (baseColor == DUST_PREVIEW) {
-         pulseColor = DUST_PURPLE;
-      } else {
-         pulseColor = DUST_PURPLE_PULSE;
-      }
+      int startOffset = segment.getStartPointIndex();
 
       for (int i = 0; i < totalPoints; ++i) {
          Location pt = points.get(i);
-         boolean isPulse = ((i - pulseOffset + ANIMATION_PULSE_PERIOD) % ANIMATION_PULSE_PERIOD) == 0;
-         DustOptions dust = isPulse ? pulseColor : baseColor;
+         int globalIndex = startOffset + i;
+         boolean isPulse = ((globalIndex - pulseOffset + ANIMATION_PULSE_PERIOD) % ANIMATION_PULSE_PERIOD) == 0;
+         DustOptions dust = isPulse ? DUST_PULSE : DUST_PURPLE;
 
          for (Player viewer : viewers) {
             if (viewer.getLocation().distanceSquared(pt) <= maxDistanceSq) {
