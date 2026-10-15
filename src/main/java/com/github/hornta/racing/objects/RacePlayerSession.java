@@ -267,6 +267,18 @@ public class RacePlayerSession {
             loc = this.startLocation;
          }
 
+         if (loc == null) {
+            if (this.startLocation != null) {
+               loc = this.startLocation;
+            } else if (this.currentCheckpoint != null) {
+               loc = this.currentCheckpoint.getLocation();
+            } else if (!this.raceSession.getRace().getStartPoints().isEmpty()) {
+               loc = this.raceSession.getRace().getStartPoints().get(0).getLocation();
+            } else {
+               loc = this.player.getLocation();
+            }
+         }
+
          if (this.player.isSleeping()) {
             RacingPlugin.debug("%s was sleeping. Trying to wake them up...", this.player.getName());
             this.player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 20, 255, false, false, false));
@@ -322,14 +334,19 @@ public class RacePlayerSession {
     * starting an asynchronous monitoring task to ensure continuous flight equipment supply.
     */
    public void setupElytra() {
+      this.player.setAllowFlight(false);
+      this.player.setFlying(false);
+
       ItemStack unbreakableElytraItemStack = new ItemStack(Material.ELYTRA, 1);
       ItemMeta elytraItemMeta = unbreakableElytraItemStack.getItemMeta();
       if (elytraItemMeta != null) {
          elytraItemMeta.setUnbreakable(true);
          unbreakableElytraItemStack.setItemMeta(elytraItemMeta);
       }
+      this.player.getInventory().clear();
       this.player.getInventory().setChestplate(unbreakableElytraItemStack);
-      this.player.getInventory().setItemInMainHand(createRaceRocket());
+      this.player.getInventory().setItem(0, createRaceRocket());
+      this.player.getInventory().setHeldItemSlot(0);
 
       if (this.elytraTask != null && !this.elytraTask.isCancelled()) {
          this.elytraTask.cancel();
@@ -341,13 +358,33 @@ public class RacePlayerSession {
          if (activePlayerSession.isFinished() || activePlayerSession.isRestored() || !participatingPlayer.isOnline()) {
             return;
          }
+
+         if (participatingPlayer.getAllowFlight()) {
+            participatingPlayer.setAllowFlight(false);
+         }
+         if (participatingPlayer.isFlying()) {
+            participatingPlayer.setFlying(false);
+         }
+
          ItemStack currentChestplateItem = participatingPlayer.getInventory().getChestplate();
          if (currentChestplateItem == null || currentChestplateItem.getType() != Material.ELYTRA) {
             participatingPlayer.getInventory().setChestplate(unbreakableElytraItemStack);
          }
-         ItemStack currentMainHandItem = participatingPlayer.getInventory().getItemInMainHand();
-         if (currentMainHandItem == null || currentMainHandItem.getType() != Material.FIREWORK_ROCKET || currentMainHandItem.getAmount() < 16) {
-            participatingPlayer.getInventory().setItemInMainHand(createRaceRocket());
+
+         int totalRockets = 0;
+         for (ItemStack item : participatingPlayer.getInventory().getStorageContents()) {
+            if (item != null && item.getType() == Material.FIREWORK_ROCKET) {
+               totalRockets += item.getAmount();
+            }
+         }
+
+         if (totalRockets < 16) {
+            int existingSlot = participatingPlayer.getInventory().first(Material.FIREWORK_ROCKET);
+            if (existingSlot != -1) {
+               participatingPlayer.getInventory().setItem(existingSlot, createRaceRocket());
+            } else {
+               participatingPlayer.getInventory().setItem(0, createRaceRocket());
+            }
          }
       }, 10L, 10L);
    }
