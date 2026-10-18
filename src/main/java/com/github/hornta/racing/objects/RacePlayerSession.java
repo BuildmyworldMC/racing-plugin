@@ -343,7 +343,6 @@ public class RacePlayerSession {
          elytraItemMeta.setUnbreakable(true);
          unbreakableElytraItemStack.setItemMeta(elytraItemMeta);
       }
-      this.player.getInventory().clear();
       this.player.getInventory().setChestplate(unbreakableElytraItemStack);
       this.player.getInventory().setItem(0, createRaceRocket());
       this.player.getInventory().setHeldItemSlot(0);
