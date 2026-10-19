@@ -105,9 +105,11 @@ public class RaceParticipantReset {
          case STRIDER:
          case MINECART:
          case HAPPY_GHAST:
-         case ELYTRA:
+         case CAMEL:
+         case NAUTILUS:
             playerSession.getPlayer().setAllowFlight(true);
             break;
+         case ELYTRA:
          case PLAYER:
             playerSession.getPlayer().setAllowFlight(false);
       }
@@ -140,7 +142,21 @@ public class RaceParticipantReset {
       RacingPlugin.debug("Restored fire ticks of %s to %d", this.playerSession.getPlayer().getName(), this.fireTicks);
       this.playerSession.getPlayer().setAllowFlight(this.allowFlight);
       RacingPlugin.debug("Restoring allowFlight of %s to %b", this.playerSession.getPlayer().getName(), this.allowFlight);
-      double maxHealth = Objects.requireNonNull(this.playerSession.getPlayer().getAttribute(Attribute.MAX_HEALTH)).getValue();
+      double maxHealth = 20.0D;
+      try {
+         for (String attrName : new String[]{"MAX_HEALTH", "GENERIC_MAX_HEALTH"}) {
+            try {
+               Attribute attribute = Attribute.valueOf(attrName);
+               org.bukkit.attribute.AttributeInstance attributeInstance = this.playerSession.getPlayer().getAttribute(attribute);
+               if (attributeInstance != null) {
+                  maxHealth = attributeInstance.getValue();
+                  break;
+               }
+            } catch (IllegalArgumentException | NoSuchFieldError ignored) {
+            }
+         }
+      } catch (Throwable ignored) {
+      }
       double clampedHealth = Math.min(this.health, maxHealth);
       this.playerSession.getPlayer().setHealth(clampedHealth);
       RacingPlugin.debug("Restored health of %s to %f", this.playerSession.getPlayer().getName(), clampedHealth);

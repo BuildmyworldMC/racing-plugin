@@ -65,9 +65,14 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
    private final Race race;
 
    /**
-    * Cached list of interpolated world locations forming the flight spline.
+    * Cached list of individual spline segments connecting consecutive checkpoints.
     */
-   private List<Location> splineSampleLocations = Collections.emptyList();
+   private List<SplineSegment> splineSegments = Collections.emptyList();
+
+   /**
+    * Whether the current track geometry is a closed loop circuit.
+    */
+   private boolean isClosedLoop = false;
 
    /**
     * Internal animation counter incremented every execution tick.
@@ -80,6 +85,33 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
    private int previousPointsHashCode = 0;
 
    /**
+    * Represents an individual flight path segment connecting two consecutive checkpoints or start point.
+    */
+   public static class SplineSegment {
+      private final int segmentIndex;
+      private final int startPointIndex;
+      private final List<Location> points;
+
+      public SplineSegment(int segmentIndex, int startPointIndex, List<Location> points) {
+         this.segmentIndex = segmentIndex;
+         this.startPointIndex = startPointIndex;
+         this.points = points;
+      }
+
+      public int getSegmentIndex() {
+         return this.segmentIndex;
+      }
+
+      public int getStartPointIndex() {
+         return this.startPointIndex;
+      }
+
+      public List<Location> getPoints() {
+         return this.points;
+      }
+   }
+
+   /**
     * Constructs a new spline particle rendering task for the specified race.
     *
     * @param race The race instance to generate and render flight spline particles for.
@@ -90,7 +122,7 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
    }
 
    /**
-    * Recalculates the Catmull-Rom spline interpolation curve based on current start points and checkpoints.
+    * Recalculates the Catmull-Rom spline interpolation curve broken down by checkpoint segments.
     */
    public synchronized void recalculateSpline() {
       List<RaceCheckpoint> checkpointsSorted = this.race.getCheckpoints();
@@ -103,7 +135,10 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
       if (!startPoints.isEmpty() && !checkpointsSorted.isEmpty()) {
          Location startPointLocation = startPoints.get(0).getLocation();
          if (startPointLocation != null && startPointLocation.getWorld() != null) {
-            controlPointLocations.add(startPointLocation.clone().add(0.0D, VERTICAL_OFFSET_Y, 0.0D));
+            Location firstCpLoc = checkpointsSorted.get(0).getLocation();
+            if (firstCpLoc == null || startPointLocation.distanceSquared(firstCpLoc) > 1.5D) {
+               controlPointLocations.add(startPointLocation.clone().add(0.0D, VERTICAL_OFFSET_Y, 0.0D));
+            }
          }
       }
 
@@ -115,46 +150,67 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
       }
 
       int newPointsHashCode = computeControlPointsHash(controlPointLocations);
-      if (newPointsHashCode == this.previousPointsHashCode && !this.splineSampleLocations.isEmpty()) {
+      if (newPointsHashCode == this.previousPointsHashCode && !this.splineSegments.isEmpty()) {
          return;
       }
       this.previousPointsHashCode = newPointsHashCode;
 
       if (controlPointLocations.size() < 2) {
-         this.splineSampleLocations = Collections.emptyList();
+         this.splineSegments = Collections.emptyList();
+         this.isClosedLoop = false;
          return;
       }
 
       World trackWorld = controlPointLocations.get(0).getWorld();
-      List<Location> calculatedSamplePoints = new ArrayList<>();
-
       int totalControlPoints = controlPointLocations.size();
+
+      this.isClosedLoop = totalControlPoints >= 3
+            && controlPointLocations.get(0).distanceSquared(controlPointLocations.get(totalControlPoints - 1)) <= 4.0D;
+
+      List<SplineSegment> calculatedSegments = new ArrayList<>();
+      int cumulativePointCount = 0;
+
       for (int segmentIndex = 0; segmentIndex < totalControlPoints - 1; ++segmentIndex) {
-         Vector previousPoint = (segmentIndex == 0)
-            ? extrapolateBackwards(controlPointLocations.get(0).toVector(), controlPointLocations.get(1).toVector())
-            : controlPointLocations.get(segmentIndex - 1).toVector();
+         Vector previousPoint;
+         if (segmentIndex == 0) {
+            previousPoint = this.isClosedLoop
+               ? controlPointLocations.get(totalControlPoints - 2).toVector()
+               : extrapolateBackwards(controlPointLocations.get(0).toVector(), controlPointLocations.get(1).toVector());
+         } else {
+            previousPoint = controlPointLocations.get(segmentIndex - 1).toVector();
+         }
 
          Vector currentPoint = controlPointLocations.get(segmentIndex).toVector();
          Vector nextPoint = controlPointLocations.get(segmentIndex + 1).toVector();
 
-         Vector futurePoint = (segmentIndex + 2 < totalControlPoints)
-            ? controlPointLocations.get(segmentIndex + 2).toVector()
-            : extrapolateForwards(controlPointLocations.get(totalControlPoints - 2).toVector(), controlPointLocations.get(totalControlPoints - 1).toVector());
+         Vector futurePoint;
+         if (segmentIndex + 2 < totalControlPoints) {
+            futurePoint = controlPointLocations.get(segmentIndex + 2).toVector();
+         } else {
+            futurePoint = this.isClosedLoop
+               ? controlPointLocations.get(1).toVector()
+               : extrapolateForwards(controlPointLocations.get(totalControlPoints - 2).toVector(), controlPointLocations.get(totalControlPoints - 1).toVector());
+         }
 
          double segmentLengthBlocks = currentPoint.distance(nextPoint);
          int interpolationSteps = Math.max(4, (int) Math.ceil(segmentLengthBlocks / STEP_SIZE_BLOCKS));
 
+         List<Location> segmentSamplePoints = new ArrayList<>(interpolationSteps + 1);
          for (int stepIndex = 0; stepIndex < interpolationSteps; ++stepIndex) {
             double normalizedStepProgress = (double) stepIndex / (double) interpolationSteps;
             Vector interpolatedPosition = computeCatmullRomSpline(previousPoint, currentPoint, nextPoint, futurePoint, normalizedStepProgress);
-            calculatedSamplePoints.add(new Location(trackWorld, interpolatedPosition.getX(), interpolatedPosition.getY(), interpolatedPosition.getZ()));
+            segmentSamplePoints.add(new Location(trackWorld, interpolatedPosition.getX(), interpolatedPosition.getY(), interpolatedPosition.getZ()));
          }
+
+         if (segmentIndex == totalControlPoints - 2 && !this.isClosedLoop) {
+            segmentSamplePoints.add(controlPointLocations.get(totalControlPoints - 1).clone());
+         }
+
+         calculatedSegments.add(new SplineSegment(segmentIndex, cumulativePointCount, segmentSamplePoints));
+         cumulativePointCount += segmentSamplePoints.size();
       }
 
-      // Add the final control point to terminate the spline
-      calculatedSamplePoints.add(controlPointLocations.get(totalControlPoints - 1).clone());
-
-      this.splineSampleLocations = calculatedSamplePoints;
+      this.splineSegments = calculatedSegments;
    }
 
    /**
@@ -162,86 +218,105 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
     */
    @Override
    public void run() {
-      // Periodically refresh if checkpoints changed dynamically
       if (this.animationTickCounter % 10 == 0) {
          recalculateSpline();
       }
 
-      List<Location> activeSplinePoints = this.splineSampleLocations;
-      if (activeSplinePoints.isEmpty()) {
+      List<SplineSegment> currentSegments = this.splineSegments;
+      if (currentSegments.isEmpty()) {
          return;
       }
 
-      World trackWorld = activeSplinePoints.get(0).getWorld();
+      World trackWorld = currentSegments.get(0).getPoints().isEmpty() ? null : currentSegments.get(0).getPoints().get(0).getWorld();
       if (trackWorld == null) {
          return;
       }
 
       boolean isUnderConstruction = this.race.getState() == RaceState.UNDER_CONSTRUCTION;
-      double maximumDistanceSquared = isUnderConstruction
-         ? MAX_RENDER_DISTANCE_CONSTRUCTION_SQ
-         : MAX_RENDER_DISTANCE_RACE_SQ;
+      int pulseOffsetIndex = this.animationTickCounter % ANIMATION_PULSE_PERIOD;
+      int lastSegmentIndex = currentSegments.size() - 1;
 
-      List<Player> eligibleViewerPlayers = new ArrayList<>();
       if (isUnderConstruction) {
+         List<Player> adminViewers = new ArrayList<>();
          for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer.hasPermission(Permission.RACING_MODIFY.toString()) && onlinePlayer.getWorld().equals(trackWorld)) {
-               eligibleViewerPlayers.add(onlinePlayer);
+               adminViewers.add(onlinePlayer);
             }
+         }
+
+         if (adminViewers.isEmpty()) {
+            return;
+         }
+
+         for (SplineSegment segment : currentSegments) {
+            renderSegmentToPlayers(segment, adminViewers, MAX_RENDER_DISTANCE_CONSTRUCTION_SQ, pulseOffsetIndex);
          }
       } else {
          RacingManager racingManager = RacingPlugin.getInstance().getRacingManager();
-         if (racingManager != null) {
-            List<RaceSession> activeSessions = racingManager.getRaceSessions(this.race);
-            for (RaceSession raceSession : activeSessions) {
-               if (raceSession.getState() == RaceSessionState.COUNTDOWN || raceSession.getState() == RaceSessionState.STARTED) {
-                  for (RacePlayerSession playerSession : raceSession.getPlayerSessions()) {
-                     Player participant = playerSession.getPlayer();
-                     if (participant != null && participant.isOnline() && participant.getWorld().equals(trackWorld)
-                           && raceSession.isCurrentlyRacing(participant) && !eligibleViewerPlayers.contains(participant)) {
-                        eligibleViewerPlayers.add(participant);
-                     }
+         if (racingManager == null) {
+            return;
+         }
+
+         List<RaceSession> activeSessions = racingManager.getRaceSessions(this.race);
+
+         for (RaceSession raceSession : activeSessions) {
+            if (raceSession.getState() != RaceSessionState.COUNTDOWN && raceSession.getState() != RaceSessionState.STARTED) {
+               continue;
+            }
+
+            for (RacePlayerSession playerSession : raceSession.getPlayerSessions()) {
+               Player participant = playerSession.getPlayer();
+               if (participant == null || !participant.isOnline() || !participant.getWorld().equals(trackWorld)) {
+                  continue;
+               }
+               if (!raceSession.isCurrentlyRacing(participant)) {
+                  continue;
+               }
+
+               RaceCheckpoint nextCheckpoint = playerSession.getNextCheckpoint();
+               int targetPosition = (nextCheckpoint != null) ? nextCheckpoint.getPosition() : 1;
+               List<Player> singlePlayerList = Collections.singletonList(participant);
+
+               for (SplineSegment segment : currentSegments) {
+                  // On a closed circuit, do not render the finish arrival segment while the player is on the starting grid / first leg
+                  if (this.isClosedLoop && targetPosition == 1 && segment.getSegmentIndex() == lastSegmentIndex) {
+                     continue;
                   }
+
+                  renderSegmentToPlayers(segment, singlePlayerList, MAX_RENDER_DISTANCE_RACE_SQ, pulseOffsetIndex);
                }
             }
          }
       }
 
-      if (eligibleViewerPlayers.isEmpty()) {
-         return;
-      }
-
-      int pulseOffsetIndex = this.animationTickCounter % ANIMATION_PULSE_PERIOD;
-      int totalSplinePoints = activeSplinePoints.size();
-
-      for (int pointIndex = 0; pointIndex < totalSplinePoints; ++pointIndex) {
-         Location currentSplineLocation = activeSplinePoints.get(pointIndex);
-
-         // Check if at least one eligible viewer is within view distance
-         boolean isAnyViewerInRange = false;
-         for (Player viewerPlayer : eligibleViewerPlayers) {
-            if (viewerPlayer.getLocation().distanceSquared(currentSplineLocation) <= maximumDistanceSquared) {
-               isAnyViewerInRange = true;
-               break;
-            }
-         }
-
-         if (!isAnyViewerInRange) {
-            continue;
-         }
-
-         // Animate directional pulse traveling forward along the spline
-         boolean isPulseHighlight = ((pointIndex - pulseOffsetIndex + ANIMATION_PULSE_PERIOD) % ANIMATION_PULSE_PERIOD) == 0;
-         DustOptions selectedDustOptions = isPulseHighlight ? DUST_PULSE : DUST_PURPLE;
-
-         for (Player viewerPlayer : eligibleViewerPlayers) {
-            if (viewerPlayer.getLocation().distanceSquared(currentSplineLocation) <= maximumDistanceSquared) {
-               viewerPlayer.spawnParticle(Particle.DUST, currentSplineLocation, 1, 0.0D, 0.0D, 0.0D, 0.0D, selectedDustOptions, true);
-            }
-         }
-      }
-
       this.animationTickCounter++;
+   }
+
+   /**
+    * Renders sample points of a spline segment to specified viewers within distance in violet.
+    */
+   private void renderSegmentToPlayers(
+         SplineSegment segment,
+         List<Player> viewers,
+         double maxDistanceSq,
+         int pulseOffset) {
+
+      List<Location> points = segment.getPoints();
+      int totalPoints = points.size();
+      int startOffset = segment.getStartPointIndex();
+
+      for (int i = 0; i < totalPoints; ++i) {
+         Location pt = points.get(i);
+         int globalIndex = startOffset + i;
+         boolean isPulse = ((globalIndex - pulseOffset + ANIMATION_PULSE_PERIOD) % ANIMATION_PULSE_PERIOD) == 0;
+         DustOptions dust = isPulse ? DUST_PULSE : DUST_PURPLE;
+
+         for (Player viewer : viewers) {
+            if (viewer.getLocation().distanceSquared(pt) <= maxDistanceSq) {
+               viewer.spawnParticle(Particle.DUST, pt, 1, 0.0D, 0.0D, 0.0D, 0.0D, dust, true);
+            }
+         }
+      }
    }
 
    /**

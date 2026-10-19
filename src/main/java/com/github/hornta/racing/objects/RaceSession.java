@@ -845,12 +845,14 @@ public class RaceSession implements Listener {
       if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.ELYTRA_RESPAWN_ON_GROUND)) {
          if (event.getEntity() instanceof Player player) {
              if (this.isCurrentlyRacing(player) && this.state == RaceSessionState.STARTED) {
-               if (!event.isGliding()) {
-                  (this.playerSessions.get(player)).respawn(RespawnType.FROM_START, null, null);
-                  (this.playerSessions.get(player)).setNextCheckpoint(this.race.getCheckpoint(1));
-               }
-
-            }
+                RacePlayerSession session = this.playerSessions.get(player);
+                if (session != null && !session.isFinished()) {
+                   if (!event.isGliding()) {
+                      session.respawn(RespawnType.FROM_START, null, null);
+                      session.setNextCheckpoint(this.race.getCheckpoint(1));
+                   }
+                }
+             }
          }
       }
    }
