@@ -28,5 +28,5 @@ Available languages (English, French, Slovak, Swedish)
 - Creator: Hornata
 - Maintainer: ORN_Fox (From 4.3.0)
 - Contributors:
-  - ulysse-mercadal (Particles debuging and migration to DecentHolograms)
+  - ulysse-mercadal (Particles debuging and migration to DecentHolograms, elytra 2.0)
   - Syl2010 (Helping pom creation for compilation)
