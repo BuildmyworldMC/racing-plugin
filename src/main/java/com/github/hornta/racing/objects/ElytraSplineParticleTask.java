@@ -27,12 +27,7 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
    /**
     * Spatial interval in blocks between interpolated spline sample points.
     */
-   private static final double STEP_SIZE_BLOCKS = 1.0D;
-
-   /**
-    * Period of the animated forward pulse traveling along the spline (in ticks).
-    */
-   private static final int ANIMATION_PULSE_PERIOD = 8;
+   private static final double STEP_SIZE_BLOCKS = 0.5D;
 
    /**
     * Maximum rendering distance squared (in blocks squared) when race is under construction (400 blocks).
@@ -40,9 +35,10 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
    private static final double MAX_RENDER_DISTANCE_CONSTRUCTION_SQ = 400.0D * 400.0D;
 
    /**
-    * Maximum rendering distance squared (in blocks squared) when a race is actively running (45 blocks).
+    * Maximum rendering distance squared (in blocks squared) when a race is actively running (130 blocks).
+    * Allows players flying at high speeds to see the flight path curving through upcoming checkpoints far ahead.
     */
-   private static final double MAX_RENDER_DISTANCE_RACE_SQ = 45.0D * 45.0D;
+   private static final double MAX_RENDER_DISTANCE_RACE_SQ = 130.0D * 130.0D;
 
    /**
     * Vertical offset applied to spline control points to position particle line below holograms.
@@ -50,14 +46,25 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
    private static final double VERTICAL_OFFSET_Y = -0.8D;
 
    /**
-    * Base particle color: Violet (RGB 120, 0, 255).
+    * Number of quantized track progression steps from pure blue (start) to pure red (finish).
     */
-   private static final DustOptions DUST_PURPLE = new DustOptions(Color.fromRGB(120, 0, 255), 2.2F);
+   private static final int PROGRESS_STEPS = 64;
 
    /**
-    * Pulse particle color: Violet (RGB 140, 0, 255).
+    * Precomputed palette of DustOptions transitioning from Full Blue (0, 0, 255) to Full Red (255, 0, 0).
+    * Static color gradient across the entire race track without pulses or extra colors.
     */
-   private static final DustOptions DUST_PULSE = new DustOptions(Color.fromRGB(140, 0, 255), 3.0F);
+   private static final DustOptions[] GRADIENT_PALETTE = new DustOptions[PROGRESS_STEPS];
+
+   static {
+      for (int s = 0; s < PROGRESS_STEPS; s++) {
+         double p = (PROGRESS_STEPS > 1) ? (double) s / (double) (PROGRESS_STEPS - 1) : 0.0D;
+         int r = (int) Math.round(p * 255.0);
+         int g = 0;
+         int b = (int) Math.round((1.0 - p) * 255.0);
+         GRADIENT_PALETTE[s] = new DustOptions(Color.fromRGB(r, g, b), 1.4F);
+      }
+   }
 
    /**
     * The associated race definition.
@@ -70,14 +77,19 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
    private List<SplineSegment> splineSegments = Collections.emptyList();
 
    /**
+    * Total count of interpolated points across all segments of the race track.
+    */
+   private int totalTrackPoints = 1;
+
+   /**
     * Whether the current track geometry is a closed loop circuit.
     */
    private boolean isClosedLoop = false;
 
    /**
-    * Internal animation counter incremented every execution tick.
+    * Internal counter incremented every execution tick to periodically check checkpoints.
     */
-   private int animationTickCounter = 0;
+   private int tickCounter = 0;
 
    /**
     * Hash code of previously calculated control points to detect geometry changes.
@@ -158,6 +170,7 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
       if (controlPointLocations.size() < 2) {
          this.splineSegments = Collections.emptyList();
          this.isClosedLoop = false;
+         this.totalTrackPoints = 1;
          return;
       }
 
@@ -211,6 +224,7 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
       }
 
       this.splineSegments = calculatedSegments;
+      this.totalTrackPoints = Math.max(1, cumulativePointCount);
    }
 
    /**
@@ -218,7 +232,7 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
     */
    @Override
    public void run() {
-      if (this.animationTickCounter % 10 == 0) {
+      if (this.tickCounter % 10 == 0) {
          recalculateSpline();
       }
 
@@ -233,7 +247,6 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
       }
 
       boolean isUnderConstruction = this.race.getState() == RaceState.UNDER_CONSTRUCTION;
-      int pulseOffsetIndex = this.animationTickCounter % ANIMATION_PULSE_PERIOD;
       int lastSegmentIndex = currentSegments.size() - 1;
 
       if (isUnderConstruction) {
@@ -249,7 +262,7 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
          }
 
          for (SplineSegment segment : currentSegments) {
-            renderSegmentToPlayers(segment, adminViewers, MAX_RENDER_DISTANCE_CONSTRUCTION_SQ, pulseOffsetIndex);
+            renderSegmentToPlayers(segment, adminViewers, MAX_RENDER_DISTANCE_CONSTRUCTION_SQ);
          }
       } else {
          RacingManager racingManager = RacingPlugin.getInstance().getRacingManager();
@@ -283,33 +296,34 @@ public class ElytraSplineParticleTask extends BukkitRunnable {
                      continue;
                   }
 
-                  renderSegmentToPlayers(segment, singlePlayerList, MAX_RENDER_DISTANCE_RACE_SQ, pulseOffsetIndex);
+                  renderSegmentToPlayers(segment, singlePlayerList, MAX_RENDER_DISTANCE_RACE_SQ);
                }
             }
          }
       }
 
-      this.animationTickCounter++;
+      this.tickCounter = (this.tickCounter + 1) % 1000;
    }
 
    /**
-    * Renders sample points of a spline segment to specified viewers within distance in violet.
+    * Renders sample points of a spline segment with a static color gradient from Full Blue (start) to Full Red (finish).
     */
    private void renderSegmentToPlayers(
          SplineSegment segment,
          List<Player> viewers,
-         double maxDistanceSq,
-         int pulseOffset) {
+         double maxDistanceSq) {
 
       List<Location> points = segment.getPoints();
       int totalPoints = points.size();
       int startOffset = segment.getStartPointIndex();
+      int totalTrack = Math.max(1, this.totalTrackPoints);
 
       for (int i = 0; i < totalPoints; ++i) {
          Location pt = points.get(i);
          int globalIndex = startOffset + i;
-         boolean isPulse = ((globalIndex - pulseOffset + ANIMATION_PULSE_PERIOD) % ANIMATION_PULSE_PERIOD) == 0;
-         DustOptions dust = isPulse ? DUST_PULSE : DUST_PURPLE;
+         double trackProgress = (double) globalIndex / (double) (totalTrack > 1 ? totalTrack - 1 : 1);
+         int progressStep = Math.min(PROGRESS_STEPS - 1, Math.max(0, (int) Math.round(trackProgress * (PROGRESS_STEPS - 1))));
+         DustOptions dust = GRADIENT_PALETTE[progressStep];
 
          for (Player viewer : viewers) {
             if (viewer.getLocation().distanceSquared(pt) <= maxDistanceSq) {
