@@ -99,6 +99,14 @@ commands:
     success: "§eeFörflyttningshastighet för hästar har satts till <speed>."
   race_set_horse_jump_strength:
     success: "§eSkuttkraft för hästar har satts till <jump_strength>."
+  race_set_happy_ghast_speed:
+    success: "§eHastigheten för Happy Ghast har ställts in på <speed>."
+  race_set_camel_speed:
+    success: "§eKamelens hastighet har ställts in på <speed>."
+  race_set_camel_dash_strength:
+    success: "§eKamelens rusningsstyrka har ställts in på <dash_strength>."
+  race_set_nautilus_speed:
+    success: "§eNautilus-hastigheten har ställts in på <speed>."
   race_add_potion_effect:
     success: "§Trolldryckseffekt `<potion_effect>` med förstärkare `<amplifier>` i race `<race_name>` tillagd."
   race_remove_potion_effect:

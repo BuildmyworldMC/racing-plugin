@@ -12,12 +12,18 @@ import org.bukkit.util.Vector;
 public class RaceCheckpoint extends RacePoint implements Comparable<RaceCheckpoint> {
    private final int radius;
    private CheckpointParticleTask task;
-   private final Vector vector;
+   private Vector vector;
    private final List<Player> players = new ArrayList<>();
 
    public RaceCheckpoint(UUID id, int position, Location location, int radius) {
       super(id, position, location);
       this.radius = radius;
+      this.vector = location.toVector();
+   }
+
+   @Override
+   public void setLocation(Location location) {
+      super.setLocation(location);
       this.vector = location.toVector();
    }
 

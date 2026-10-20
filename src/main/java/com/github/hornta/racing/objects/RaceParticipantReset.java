@@ -2,9 +2,10 @@ package com.github.hornta.racing.objects;
 
 import com.github.hornta.racing.ConfigKey;
 import com.github.hornta.racing.RacingPlugin;
-
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Objects;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.ItemStack;
@@ -12,11 +13,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class RaceParticipantReset {
-   private static final int PREVENT_SPRINT_FOOD_LEVEL = 6;
    private final RacePlayerSession playerSession;
    private final float walkSpeed;
    private final int foodLevel;
-   private final ItemStack[] inventory;
+   private final ItemStack[] storageContents;
+   private final ItemStack[] armorContents;
+   private final ItemStack[] extraContents;
    private final Collection<PotionEffect> potionEffects;
    private final double health;
    private final GameMode gameMode;
@@ -55,7 +57,9 @@ public class RaceParticipantReset {
 
       playerSession.getPlayer().closeInventory();
       RacingPlugin.debug("Closing inventory of %s", playerSession.getPlayer().getName());
-      this.inventory = playerSession.getPlayer().getInventory().getContents();
+      this.storageContents = cloneItemArray(playerSession.getPlayer().getInventory().getStorageContents());
+      this.armorContents = cloneItemArray(playerSession.getPlayer().getInventory().getArmorContents());
+      this.extraContents = cloneItemArray(playerSession.getPlayer().getInventory().getExtraContents());
       if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.ADVENTURE_ON_START)) {
          playerSession.getPlayer().setGameMode(GameMode.ADVENTURE);
          RacingPlugin.debug("Setting game mode to %s on %s", GameMode.ADVENTURE, playerSession.getPlayer().getName());
@@ -101,6 +105,8 @@ public class RaceParticipantReset {
          case STRIDER:
          case MINECART:
          case HAPPY_GHAST:
+         case CAMEL:
+         case NAUTILUS:
             playerSession.getPlayer().setAllowFlight(true);
             break;
          case ELYTRA:
@@ -136,13 +142,42 @@ public class RaceParticipantReset {
       RacingPlugin.debug("Restored fire ticks of %s to %d", this.playerSession.getPlayer().getName(), this.fireTicks);
       this.playerSession.getPlayer().setAllowFlight(this.allowFlight);
       RacingPlugin.debug("Restoring allowFlight of %s to %b", this.playerSession.getPlayer().getName(), this.allowFlight);
-      double maxHealth = Objects.requireNonNull(this.playerSession.getPlayer().getAttribute(Attribute.MAX_HEALTH)).getValue();
+      double maxHealth = 20.0D;
+      try {
+         for (String attrName : new String[]{"MAX_HEALTH", "GENERIC_MAX_HEALTH"}) {
+            try {
+               Attribute attribute = Attribute.valueOf(attrName);
+               org.bukkit.attribute.AttributeInstance attributeInstance = this.playerSession.getPlayer().getAttribute(attribute);
+               if (attributeInstance != null) {
+                  maxHealth = attributeInstance.getValue();
+                  break;
+               }
+            } catch (IllegalArgumentException | NoSuchFieldError ignored) {
+            }
+         }
+      } catch (Throwable ignored) {
+      }
       double clampedHealth = Math.min(this.health, maxHealth);
       this.playerSession.getPlayer().setHealth(clampedHealth);
       RacingPlugin.debug("Restored health of %s to %f", this.playerSession.getPlayer().getName(), clampedHealth);
       this.playerSession.getPlayer().setGameMode(this.gameMode);
       RacingPlugin.debug("Restored game mode of %s to %s", this.playerSession.getPlayer().getName(), this.gameMode);
-      this.playerSession.getPlayer().getInventory().setContents(this.inventory);
-      RacingPlugin.debug("Restored inventory of %s to %s", this.playerSession.getPlayer().getName(), this.inventory);
+      this.playerSession.getPlayer().getInventory().clear();
+      this.playerSession.getPlayer().getInventory().setStorageContents(this.storageContents);
+      this.playerSession.getPlayer().getInventory().setArmorContents(this.armorContents);
+      this.playerSession.getPlayer().getInventory().setExtraContents(this.extraContents);
+      this.playerSession.getPlayer().updateInventory();
+      RacingPlugin.debug("Restored inventory of %s", this.playerSession.getPlayer().getName());
+   }
+
+   private static ItemStack[] cloneItemArray(ItemStack[] items) {
+      if (items == null) {
+         return null;
+      }
+      ItemStack[] copy = new ItemStack[items.length];
+      for (int i = 0; i < items.length; i++) {
+         copy[i] = items[i] != null ? items[i].clone() : null;
+      }
+      return copy;
    }
 }

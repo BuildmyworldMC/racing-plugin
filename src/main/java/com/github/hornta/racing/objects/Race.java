@@ -1,5 +1,6 @@
 package com.github.hornta.racing.objects;
 
+import com.github.hornta.racing.RacingPlugin;
 import com.github.hornta.racing.enums.RaceStatType;
 import com.github.hornta.racing.enums.RaceState;
 import com.github.hornta.racing.enums.RaceType;
@@ -45,8 +46,12 @@ public class Race implements Listener {
    private double horseSpeed;
    private double horseJumpStrength;
    private double happyGhastSpeed;
+   private double camelSpeed;
+   private double camelDashStrength;
+   private double nautilusSpeed;
+   private ElytraSplineParticleTask elytraSplineTask;
 
-   public Race(UUID id, RaceVersion version, String name, Location spawn, RaceState state, Instant createdAt, List<RaceCheckpoint> checkpoints, List<RaceStartPoint> startPoints, RaceType type, StartOrder startOrder, String song, double entryFee, float walkSpeed, Set<RacePotionEffect> potionEffects, Set<RaceSign> signs, Set<RacePlayerStatistic> results, int minimimRequiredParticipantsToStart, double pigSpeed, double striderSpeed, double horseSpeed, double horseJumpStrength, double happyGhastSpeed, List<RaceCommand> commands) {
+   public Race(UUID id, RaceVersion version, String name, Location spawn, RaceState state, Instant createdAt, List<RaceCheckpoint> checkpoints, List<RaceStartPoint> startPoints, RaceType type, StartOrder startOrder, String song, double entryFee, float walkSpeed, Set<RacePotionEffect> potionEffects, Set<RaceSign> signs, Set<RacePlayerStatistic> results, int minimimRequiredParticipantsToStart, double pigSpeed, double striderSpeed, double horseSpeed, double horseJumpStrength, double happyGhastSpeed, double camelSpeed, double camelDashStrength, double nautilusSpeed, List<RaceCommand> commands) {
       this.id = id;
       this.version = version;
       this.name = name;
@@ -68,6 +73,9 @@ public class Race implements Listener {
       this.horseSpeed = horseSpeed;
       this.horseJumpStrength = horseJumpStrength;
       this.happyGhastSpeed = happyGhastSpeed;
+      this.camelSpeed = camelSpeed;
+      this.camelDashStrength = camelDashStrength;
+      this.nautilusSpeed = nautilusSpeed;
 
        for (RacePlayerStatistic playerStatistic : results) {
            this.resultByPlayerId.put(playerStatistic.getPlayerId(), playerStatistic);
@@ -311,6 +319,72 @@ public class Race implements Listener {
 
    public void setState(RaceState state) {
       this.state = state;
+      updateSplineTask();
+   }
+
+   /**
+    * Checks whether the elytra spline particle trail should currently be active.
+    * The spline is active if this is an {@link RaceType#ELYTRA} race and either:
+    * 1. The race is currently in {@link RaceState#UNDER_CONSTRUCTION}, or
+    * 2. The race has an active session currently in countdown or running state.
+    *
+    * @return {@code true} if the spline task should be running; {@code false} otherwise.
+    */
+   public boolean isSplineActive() {
+      if (this.type != RaceType.ELYTRA) {
+         return false;
+      }
+      if (this.state == RaceState.UNDER_CONSTRUCTION) {
+         return true;
+      }
+      if (this.state == RaceState.ENABLED && RacingPlugin.getInstance() != null && RacingPlugin.getInstance().getRacingManager() != null) {
+         for (RaceSession activeRaceSession : RacingPlugin.getInstance().getRacingManager().getRaceSessions(this)) {
+            if (activeRaceSession.getState() == com.github.hornta.racing.enums.RaceSessionState.COUNTDOWN
+                  || activeRaceSession.getState() == com.github.hornta.racing.enums.RaceSessionState.STARTED) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
+   /**
+    * Starts the asynchronous elytra spline particle rendering task if the spline is active.
+    */
+   public synchronized void startSplineTask() {
+      if (this.elytraSplineTask != null) {
+         this.elytraSplineTask.cancel();
+         this.elytraSplineTask = null;
+      }
+      if (isSplineActive()) {
+         this.elytraSplineTask = new ElytraSplineParticleTask(this);
+         this.elytraSplineTask.runTaskTimerAsynchronously(RacingPlugin.getInstance(), 0L, 2L);
+      }
+   }
+
+   /**
+    * Cancels and stops the running elytra spline particle task if active.
+    */
+   public synchronized void stopSplineTask() {
+      if (this.elytraSplineTask != null) {
+         this.elytraSplineTask.cancel();
+         this.elytraSplineTask = null;
+      }
+   }
+
+   /**
+    * Evaluates current race and session states to either start, recalculate, or stop the spline task.
+    */
+   public synchronized void updateSplineTask() {
+      if (isSplineActive()) {
+         if (this.elytraSplineTask == null) {
+            startSplineTask();
+         } else {
+            this.elytraSplineTask.recalculateSpline();
+         }
+      } else {
+         stopSplineTask();
+      }
    }
 
    public StartOrder getStartOrder() {
@@ -331,6 +405,7 @@ public class Race implements Listener {
 
    public void setType(RaceType type) {
       this.type = type;
+      updateSplineTask();
    }
 
    public String getSong() {
@@ -392,6 +467,18 @@ public class Race implements Listener {
    public double getHappyGhastSpeed() { return this.happyGhastSpeed; }
 
    public void setHappyGhastSpeed(double happyGhastSpeed) { this.happyGhastSpeed = happyGhastSpeed; }
+
+   public double getCamelSpeed() { return this.camelSpeed; }
+
+   public void setCamelSpeed(double camelSpeed) { this.camelSpeed = camelSpeed; }
+
+   public double getCamelDashStrength() { return this.camelDashStrength; }
+
+   public void setCamelDashStrength(double camelDashStrength) { this.camelDashStrength = camelDashStrength; }
+
+   public double getNautilusSpeed() { return this.nautilusSpeed; }
+
+   public void setNautilusSpeed(double nautilusSpeed) { this.nautilusSpeed = nautilusSpeed; }
 
    public List<RaceCommand> getCommands() {
       return this.commands;

@@ -8,7 +8,9 @@ public enum RaceType {
    BOAT,
    STRIDER,
    MINECART,
-   HAPPY_GHAST;
+   HAPPY_GHAST,
+   CAMEL,
+   NAUTILUS;
 
    public static RaceType fromString(String string) {
       RaceType[] raceTypes = values();
@@ -24,6 +26,17 @@ public enum RaceType {
 
    // $FF: synthetic method
    private static RaceType[] $values() {
-      return new RaceType[]{PLAYER, HORSE, PIG, ELYTRA, BOAT, STRIDER, MINECART, HAPPY_GHAST};
+      return new RaceType[]{
+          PLAYER,
+          HORSE,
+          PIG,
+          ELYTRA,
+          BOAT,
+          STRIDER,
+          MINECART,
+          HAPPY_GHAST,
+          CAMEL,
+          NAUTILUS
+      };
    }
 }

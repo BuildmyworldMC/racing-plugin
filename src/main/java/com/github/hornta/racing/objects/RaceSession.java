@@ -185,6 +185,7 @@ public class RaceSession implements Listener {
 
       if (!this.playerSessions.isEmpty() && this.getAmountOfParticipants() >= this.race.getMinimumRequiredParticipantsToStart()) {
          this.setState(RaceSessionState.COUNTDOWN);
+         this.race.updateSplineTask();
          if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.CHECKPOINT_PARTICLES_DURING_RACE)) {
             for(int i = 0; i < this.race.getCheckpoints().size(); ++i) {
                this.race.getCheckpoints().get(i).startTask(false, i == this.race.getCheckpoints().size() - 1);
@@ -236,6 +237,7 @@ public class RaceSession implements Listener {
          this.countdown = new RaceCountdown(this.playerSessions.values());
          this.countdown.start(() -> {
             this.setState(RaceSessionState.STARTED);
+            this.race.updateSplineTask();
             Collection<PotionEffect> potionEffects = new ArrayList<>();
 
             for(RacePotionEffect racePotionEffect : this.race.getPotionEffects()) {
@@ -422,6 +424,7 @@ public class RaceSession implements Listener {
          }
       }
 
+      this.race.updateSplineTask();
       HandlerList.unregisterAll(this);
    }
 
@@ -692,6 +695,8 @@ public class RaceSession implements Listener {
                case PIG:
                case STRIDER:
                case HAPPY_GHAST:
+               case CAMEL:
+               case NAUTILUS:
                default:
                   if (!session.isAllowedToEnterVehicle()) {
                      event.setCancelled(true);
@@ -706,7 +711,9 @@ public class RaceSession implements Listener {
                              this.race.getType() == RaceType.HORSE && event.getVehicle().getType() != EntityType.HORSE ||
                              this.race.getType() == RaceType.MINECART && event.getVehicle().getType() != EntityType.MINECART ||
                              this.race.getType() == RaceType.STRIDER && event.getVehicle().getType() != EntityType.STRIDER ||
-                             this.race.getType() == RaceType.HAPPY_GHAST && event.getVehicle().getType() != EntityType.HAPPY_GHAST
+                             this.race.getType() == RaceType.HAPPY_GHAST && event.getVehicle().getType() != EntityType.HAPPY_GHAST ||
+                             this.race.getType() == RaceType.CAMEL && event.getVehicle().getType() != EntityType.CAMEL ||
+                             this.race.getType() == RaceType.NAUTILUS && event.getVehicle().getType() != EntityType.NAUTILUS
                      ) {
                         event.setCancelled(true);
                      }
@@ -736,10 +743,14 @@ public class RaceSession implements Listener {
       if (this.isCurrentlyRacing(event.getPlayer())) {
          switch(this.race.getType()) {
             case ELYTRA:
-               if (event.getItemDrop().getItemStack().getType() == Material.ELYTRA) {
+               if (event.getItemDrop().getItemStack().getType() == Material.ELYTRA
+                     || event.getItemDrop().getItemStack().getType() == Material.FIREWORK_ROCKET) {
                   event.setCancelled(true);
                }
+               break;
             case HORSE:
+            case CAMEL:
+            case NAUTILUS:
                if (event.getItemDrop().getItemStack().getType() == Material.SADDLE) {
                   event.setCancelled(true);
                }
@@ -809,6 +820,15 @@ public class RaceSession implements Listener {
    }
 
    @EventHandler
+   void onInventoryClick(org.bukkit.event.inventory.InventoryClickEvent event) {
+      if (event.getWhoClicked() instanceof Player clickingPlayer && this.isCurrentlyRacing(clickingPlayer)) {
+         if (this.race.getType() == RaceType.ELYTRA) {
+            event.setCancelled(true);
+         }
+      }
+   }
+
+   @EventHandler
    void onPlayerInteract(PlayerInteractEvent event) {
       if (this.isCurrentlyRacing(event.getPlayer()) && this.state == RaceSessionState.STARTED && event.getItem() == null) {
          RacePlayerSession playerSession = this.playerSessions.get(event.getPlayer());
@@ -825,12 +845,14 @@ public class RaceSession implements Listener {
       if ((Boolean)RacingPlugin.getInstance().getConfiguration().get(ConfigKey.ELYTRA_RESPAWN_ON_GROUND)) {
          if (event.getEntity() instanceof Player player) {
              if (this.isCurrentlyRacing(player) && this.state == RaceSessionState.STARTED) {
-               if (!event.isGliding()) {
-                  (this.playerSessions.get(player)).respawn(RespawnType.FROM_START, null, null);
-                  (this.playerSessions.get(player)).setNextCheckpoint(this.race.getCheckpoint(1));
-               }
-
-            }
+                RacePlayerSession session = this.playerSessions.get(player);
+                if (session != null && !session.isFinished()) {
+                   if (!event.isGliding()) {
+                      session.respawn(RespawnType.FROM_START, null, null);
+                      session.setNextCheckpoint(this.race.getCheckpoint(1));
+                   }
+                }
+             }
          }
       }
    }
@@ -880,6 +902,10 @@ public class RaceSession implements Listener {
                    RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_STRIDER_INTERACT)).toUpperCase(Locale.ENGLISH));
            case HAPPY_GHAST ->
                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_HAPPY_GHAST_INTERACT)).toUpperCase(Locale.ENGLISH));
+           case CAMEL ->
+                  RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_CAMEL_INTERACT)).toUpperCase(Locale.ENGLISH));
+           case NAUTILUS ->
+                  RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_NAUTILUS_INTERACT)).toUpperCase(Locale.ENGLISH));
        };
    }
 
@@ -901,6 +927,10 @@ public class RaceSession implements Listener {
                    RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_STRIDER_DEATH)).toUpperCase(Locale.ENGLISH));
            case HAPPY_GHAST ->
                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_HAPPY_GHAST_DEATH)).toUpperCase(Locale.ENGLISH));
+           case CAMEL ->
+                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_CAMEL_DEATH)).toUpperCase(Locale.ENGLISH));
+           case NAUTILUS ->
+                   RespawnType.valueOf(((String) RacingPlugin.getInstance().getConfiguration().get(ConfigKey.RESPAWN_NAUTILUS_DEATH)).toUpperCase(Locale.ENGLISH));
        };
    }
 

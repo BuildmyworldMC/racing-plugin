@@ -279,6 +279,18 @@ public class RacingPlugin extends JavaPlugin {
          patch.set(ConfigKey.RESPAWN_HAPPY_GHAST_INTERACT, "respawn.happy_ghast.interact", RespawnType.NONE, Type.STRING);
          return patch;
       }));
+      cb.addMigration(new Migration<>(8, () -> {
+         Patch<ConfigKey> patch = new Patch<>();
+         patch.set(ConfigKey.RESPAWN_CAMEL_DEATH, "respawn.camel.death", RespawnType.FROM_LAST_CHECKPOINT, Type.STRING);
+         patch.set(ConfigKey.RESPAWN_CAMEL_INTERACT, "respawn.camel.interact", RespawnType.NONE, Type.STRING);
+         return patch;
+      }));
+      cb.addMigration(new Migration<>(9, () -> {
+         Patch<ConfigKey> patch = new Patch<>();
+         patch.set(ConfigKey.RESPAWN_NAUTILUS_DEATH, "respawn.nautilus.death", RespawnType.FROM_LAST_CHECKPOINT, Type.STRING);
+         patch.set(ConfigKey.RESPAWN_NAUTILUS_INTERACT, "respawn.nautilus.interact", RespawnType.NONE, Type.STRING);
+         return patch;
+      }));
       this.configuration = cb.create();
    }
 
@@ -344,6 +356,10 @@ public class RacingPlugin extends JavaPlugin {
       m.add(MessageKey.RACE_SET_STRIDER_SPEED, "commands.race_set_strider_speed.success");
       m.add(MessageKey.RACE_SET_HORSE_SPEED, "commands.race_set_horse_speed.success");
       m.add(MessageKey.RACE_SET_HORSE_JUMP_STRENGTH, "commands.race_set_horse_jump_strength.success");
+      m.add(MessageKey.RACE_SET_HAPPY_GHAST_SPEED, "commands.race_set_happy_ghast_speed.success");
+      m.add(MessageKey.RACE_SET_CAMEL_SPEED, "commands.race_set_camel_speed.success");
+      m.add(MessageKey.RACE_SET_CAMEL_DASH_STRENGTH, "commands.race_set_camel_dash_strength.success");
+      m.add(MessageKey.RACE_SET_NAUTILUS_SPEED, "commands.race_set_nautilus_speed.success");
       m.add(MessageKey.RACE_ADD_POTION_EFFECT, "commands.race_add_potion_effect.success");
       m.add(MessageKey.RACE_REMOVE_POTION_EFFECT, "commands.race_remove_potion_effect.success");
       m.add(MessageKey.RACE_CLEAR_POTION_EFFECTS, "commands.race_clear_potion_effects.success");
@@ -564,6 +580,9 @@ public class RacingPlugin extends JavaPlugin {
       this.commando.addCommand("racing sethorsespeed").withHandler(new CommandSetHorseSpeed(this.racingManager)).withArgument(raceArgument).withArgument(speedArgument).requiresPermission(Permission.COMMAND_SET_HORSE_SPEED.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing sethorsejumpstrength").withHandler(new CommandSetHorseJumpStrength(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("jump_strength")).setType(CarbonArgumentType.NUMBER).setMin(0.0D).create()).requiresPermission(Permission.COMMAND_SET_HORSE_JUMP_STRENGTH.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing sethappyghastspeed").withHandler(new CommandSetHappyGhastSpeed(this.racingManager)).withArgument(raceArgument).withArgument(speedArgument).requiresPermission(Permission.COMMAND_SET_HAPPY_GHAST_SPEED.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
+      this.commando.addCommand("racing setcamelspeed").withHandler(new CommandSetCamelSpeed(this.racingManager)).withArgument(raceArgument).withArgument(speedArgument).requiresPermission(Permission.COMMAND_SET_CAMEL_SPEED.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
+      this.commando.addCommand("racing setcameldashstrength").withHandler(new CommandSetCamelDashStrength(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("dash_strength")).setType(CarbonArgumentType.NUMBER).setMin(0.0D).create()).requiresPermission(Permission.COMMAND_SET_CAMEL_DASH_STRENGTH.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
+      this.commando.addCommand("racing setnautilusspeed").withHandler(new CommandSetNautilusSpeed(this.racingManager)).withArgument(raceArgument).withArgument(speedArgument).requiresPermission(Permission.COMMAND_SET_NAUTILUS_SPEED.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing addpotioneffect").withHandler(new CommandAddPotionEffect(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("effect")).setType(CarbonArgumentType.POTION_EFFECT).create()).withArgument((new CarbonArgument.Builder("amplifier")).setType(CarbonArgumentType.INTEGER).setMin(0.0D).setMax(255.0D).create()).requiresPermission(Permission.COMMAND_ADD_POTION_EFFECT.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing removepotioneffect").withHandler(new CommandRemovePotionEffect(this.racingManager)).withArgument(raceArgument).withArgument((new CarbonArgument.Builder("effect")).setHandler(new RacePotionEffectArgumentHandler(this.racingManager)).dependsOn(raceArgument).create()).requiresPermission(Permission.COMMAND_REMOVE_POTION_EFFECT.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing clearpotioneffects").withHandler(new CommandClearPotionEffects(this.racingManager)).withArgument(raceArgument).requiresPermission(Permission.COMMAND_CLEAR_POTION_EFFECTS.toString()).requiresPermission(Permission.RACING_MODIFY.toString());

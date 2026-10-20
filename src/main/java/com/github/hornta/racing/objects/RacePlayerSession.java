@@ -9,22 +9,13 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Boat;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.HappyGhast;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Steerable;
-import org.bukkit.entity.Strider;
-import org.bukkit.entity.Tameable;
+import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -107,6 +98,9 @@ public class RacePlayerSession {
       this.respawn(RespawnType.FROM_START, () -> {
          this.player.playSound(this.player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 2.0F);
          this.restore = new RaceParticipantReset(this);
+         if (this.raceSession.getRace().getType() == RaceType.ELYTRA) {
+            this.setupElytra();
+         }
       }, () -> {
          this.player.setHealth(20.0D);
          RacingPlugin.debug("Setting health to %f on %s", 20.0D, this.player.getName());
@@ -120,6 +114,16 @@ public class RacePlayerSession {
       if (this.raceSession.getRace().getType() == RaceType.HORSE) {
          this.freezeHorse();
          RacingPlugin.debug("Freezed horse movement");
+      }
+
+      if (this.raceSession.getRace().getType() == RaceType.CAMEL) {
+         this.freezeCamel();
+         RacingPlugin.debug("Freezed camel movement");
+      }
+
+      if (this.raceSession.getRace().getType() == RaceType.NAUTILUS) {
+         this.freezeNautilus();
+         RacingPlugin.debug("Freezed nautilus movement");
       }
    }
 
@@ -142,6 +146,10 @@ public class RacePlayerSession {
          this.player.getInventory().setItemInMainHand(new ItemStack(Material.WARPED_FUNGUS_ON_A_STICK, 1));
       } else if (this.vehicle instanceof HappyGhast) {
          this.unfreezeHappyGhast();
+      } else if (this.vehicle instanceof Camel) {
+         this.unfreezeCamel();
+      } else if (this.vehicle instanceof Nautilus) {
+         this.unfreezeNautilus();
       } else if (this.vehicle instanceof Horse) {
          this.unfreezeHorse();
       }
@@ -190,6 +198,16 @@ public class RacePlayerSession {
             }
             this.spawnVehicle(EntityType.HORSE, location);
             this.setupHorse(horseData);
+            break;
+
+         case CAMEL:
+            this.spawnVehicle(EntityType.CAMEL, location);
+            this.setupCamel();
+            break;
+
+         case NAUTILUS:
+            this.spawnVehicle(EntityType.NAUTILUS, location);
+            this.setupNautilus();
             break;
 
          case BOAT:
@@ -249,6 +267,18 @@ public class RacePlayerSession {
             loc = this.startLocation;
          }
 
+         if (loc == null) {
+            if (this.startLocation != null) {
+               loc = this.startLocation;
+            } else if (this.currentCheckpoint != null) {
+               loc = this.currentCheckpoint.getLocation();
+            } else if (!this.raceSession.getRace().getStartPoints().isEmpty()) {
+               loc = this.raceSession.getRace().getStartPoints().get(0).getLocation();
+            } else {
+               loc = this.player.getLocation();
+            }
+         }
+
          if (this.player.isSleeping()) {
             RacingPlugin.debug("%s was sleeping. Trying to wake them up...", this.player.getName());
             this.player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 20, 255, false, false, false));
@@ -266,6 +296,8 @@ public class RacePlayerSession {
             case HORSE:
             case BOAT:
             case HAPPY_GHAST:
+            case CAMEL:
+            case NAUTILUS:
                this.respawnInVehicle(loc, runnable, fireTicksResetCallback);
                break;
 
@@ -297,17 +329,79 @@ public class RacePlayerSession {
       RacingPlugin.debug("Spawned vehicle at " + this.vehicle.getLocation());
    }
 
-   private void setupElytra() {
-      this.player.getInventory().setChestplate(new ItemStack(Material.ELYTRA, 1));
+   /**
+    * Prepares and equips the participant with unbreakable Elytra and firework rockets,
+    * starting an asynchronous monitoring task to ensure continuous flight equipment supply.
+    */
+   public void setupElytra() {
+      this.player.setAllowFlight(false);
+      this.player.setFlying(false);
 
-      Player player = this.player;
-      RacePlayerSession session = this;
+      ItemStack unbreakableElytraItemStack = new ItemStack(Material.ELYTRA, 1);
+      ItemMeta elytraItemMeta = unbreakableElytraItemStack.getItemMeta();
+      if (elytraItemMeta != null) {
+         elytraItemMeta.setUnbreakable(true);
+         unbreakableElytraItemStack.setItemMeta(elytraItemMeta);
+      }
+      this.player.getInventory().setChestplate(unbreakableElytraItemStack);
+      this.player.getInventory().setItem(0, createRaceRocket());
+      this.player.getInventory().setHeldItemSlot(0);
+
+      if (this.elytraTask != null && !this.elytraTask.isCancelled()) {
+         this.elytraTask.cancel();
+      }
+
+      Player participatingPlayer = this.player;
+      RacePlayerSession activePlayerSession = this;
       this.elytraTask = Bukkit.getScheduler().runTaskTimer(RacingPlugin.getInstance(), () -> {
-         if (session.isFinished() || session.getPlayer().isDead()) {
+         if (activePlayerSession.isFinished() || activePlayerSession.isRestored() || !participatingPlayer.isOnline()) {
             return;
          }
-         player.getInventory().setItemInMainHand(new ItemStack(Material.FIREWORK_ROCKET, 64));
-      }, 0L, 600L); // Exécute toutes les 600 ticks (30 seconds, stopper quand raceSession est null)
+
+         if (participatingPlayer.getAllowFlight()) {
+            participatingPlayer.setAllowFlight(false);
+         }
+         if (participatingPlayer.isFlying()) {
+            participatingPlayer.setFlying(false);
+         }
+
+         ItemStack currentChestplateItem = participatingPlayer.getInventory().getChestplate();
+         if (currentChestplateItem == null || currentChestplateItem.getType() != Material.ELYTRA) {
+            participatingPlayer.getInventory().setChestplate(unbreakableElytraItemStack);
+         }
+
+         int totalRockets = 0;
+         for (ItemStack item : participatingPlayer.getInventory().getStorageContents()) {
+            if (item != null && item.getType() == Material.FIREWORK_ROCKET) {
+               totalRockets += item.getAmount();
+            }
+         }
+
+         if (totalRockets < 16) {
+            int existingSlot = participatingPlayer.getInventory().first(Material.FIREWORK_ROCKET);
+            if (existingSlot != -1) {
+               participatingPlayer.getInventory().setItem(existingSlot, createRaceRocket());
+            } else {
+               participatingPlayer.getInventory().setItem(0, createRaceRocket());
+            }
+         }
+      }, 10L, 10L);
+   }
+
+   /**
+    * Constructs a stack of 64 flight duration 1 firework rockets with no explosive stars
+    * for boosting Elytra flight safely during races.
+    *
+    * @return Configured {@link ItemStack} of 64 firework rockets.
+    */
+   private static ItemStack createRaceRocket() {
+      ItemStack raceRocketItemStack = new ItemStack(Material.FIREWORK_ROCKET, 64);
+      FireworkMeta fireworkRocketMeta = (FireworkMeta) raceRocketItemStack.getItemMeta();
+      if (fireworkRocketMeta != null) {
+         fireworkRocketMeta.setPower(1);
+         raceRocketItemStack.setItemMeta(fireworkRocketMeta);
+      }
+      return raceRocketItemStack;
    }
 
    private void setupPig() {
@@ -384,6 +478,77 @@ public class RacePlayerSession {
          .setBaseValue(this.raceSession.getRace().getHappyGhastSpeed());
    }
 
+   private void setupCamel() {
+      ((LivingEntity)this.vehicle).setAI(false);
+      RacingPlugin.debug("Disable camel AI");
+      ((Tameable)this.vehicle).setTamed(true);
+      RacingPlugin.debug("Set camel to be tamed");
+      ((Tameable)this.vehicle).setOwner(this.player);
+      RacingPlugin.debug("Set camel owner to " + this.player.getName());
+      ((AbstractHorse)this.vehicle).getInventory().setSaddle(new ItemStack(Material.SADDLE, 1));
+      RacingPlugin.debug("Giving camel a saddle");
+      ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getCamelDashStrength());
+      RacingPlugin.debug("Setting camel jump strength to" + this.raceSession.getRace().getCamelDashStrength());
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getCamelSpeed());
+      RacingPlugin.debug("Setting camel movement speed to " + this.raceSession.getRace().getCamelSpeed());
+   }
+
+   public void freezeCamel() {
+      ((AbstractHorse)this.vehicle).setJumpStrength(0.0D);
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(0.0D);
+   }
+
+   private void unfreezeCamel() {
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getCamelSpeed());
+      ((AbstractHorse)this.vehicle).setJumpStrength(this.raceSession.getRace().getCamelDashStrength());
+   }
+
+   private void setupNautilus() {
+      ((LivingEntity)this.vehicle).setAI(false);
+      RacingPlugin.debug("Disable nautilus AI");
+      ((Tameable)this.vehicle).setTamed(true);
+      RacingPlugin.debug("Set nautilus to be tamed");
+      ((Tameable)this.vehicle).setOwner(this.player);
+      RacingPlugin.debug("Set nautilus owner to " + this.player.getName());
+      equipNautilusSaddle();
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(this.raceSession.getRace().getNautilusSpeed());
+      RacingPlugin.debug("Setting nautilus movement speed to " + this.raceSession.getRace().getNautilusSpeed());
+   }
+
+   private void equipNautilusSaddle() {
+      AbstractNautilus nautilus = (AbstractNautilus) this.vehicle;
+      Inventory inventory = nautilus.getInventory();
+      ItemStack saddle = new ItemStack(Material.SADDLE, 1);
+
+      try {
+         Class<?> saddleInventoryType = Class.forName("org.bukkit.inventory.ArmoredSaddledMountInventory");
+
+         if (saddleInventoryType.isInstance(inventory)) {
+            saddleInventoryType.getMethod("setSaddle", ItemStack.class).invoke(inventory, saddle);
+            RacingPlugin.debug("Giving nautilus a saddle (Paper support)");
+            return;
+         }
+      } catch (ClassNotFoundException ignored) {
+         // No-op
+      } catch (ReflectiveOperationException exception) {
+         RacingPlugin.debug("Could not set Nautilus saddle through the specialized inventory API");
+      }
+
+      inventory.setItem(0, saddle);
+      RacingPlugin.debug("Giving nautilus a saddle (Default Spigot support)");
+   }
+
+   public void freezeNautilus() {
+      this.vehicle.setVelocity(new Vector(0, 0, 0));
+      Objects.requireNonNull(((Attributable) this.vehicle).getAttribute(Attribute.MOVEMENT_SPEED)).setBaseValue(0.0D);
+   }
+
+   private void unfreezeNautilus() {
+      Objects.requireNonNull(((Attributable) this.vehicle)
+         .getAttribute(Attribute.MOVEMENT_SPEED))
+         .setBaseValue(this.raceSession.getRace().getNautilusSpeed());
+   }
+
    public void cleanup() {
       if (this.elytraTask != null && !this.elytraTask.isCancelled()) {
          this.elytraTask.cancel();
@@ -391,6 +556,7 @@ public class RacePlayerSession {
       }
 
       if (this.raceSession.getRace().getType() == RaceType.ELYTRA) {
+         this.player.getInventory().clear();
          this.player.getInventory().setChestplate(null);
          this.player.getInventory().setItemInMainHand(null);
       }
