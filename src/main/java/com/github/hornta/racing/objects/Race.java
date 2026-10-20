@@ -358,7 +358,7 @@ public class Race implements Listener {
       }
       if (isSplineActive()) {
          this.elytraSplineTask = new ElytraSplineParticleTask(this);
-         this.elytraSplineTask.runTaskTimerAsynchronously(RacingPlugin.getInstance(), 0L, 2L);
+         this.elytraSplineTask.runTaskTimerAsynchronously(RacingPlugin.getInstance(), 0L, 5L);
       }
    }
 
