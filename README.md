@@ -26,7 +26,8 @@ Available languages (English, French, Slovak, Swedish)
 ## Acknowledgment
 
 - Creator: Hornata
-- Maintainer: ORN_Fox (From 4.3.0)
+- Maintainer: Buildmyworld (From 4.3.0)
 - Contributors:
+  - ORN_Fox (Initiating plugin restart with assistance and adding features)
   - ulysse-mercadal (Particles debuging and migration to DecentHolograms, elytra 2.0)
   - Syl2010 (Helping pom creation for compilation)
