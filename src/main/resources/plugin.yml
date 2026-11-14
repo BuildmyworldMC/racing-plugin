@@ -3,7 +3,7 @@ name: Racing
 version: 4.8.0-SNAPSHOT
 description: With Racing you can compete against other players in custom made racing tracks.
 author: hornta
-website: https://github.com/TrollskogenMC/racing
+website: https://github.com/BuildmyworldMC/racing-plugin
 main: com.github.hornta.racing.RacingPlugin
 depend: [ ProtocolLib ]
 softdepend: [ NoteBlockAPI, DecentHolograms, Vault ]
