@@ -93,6 +93,10 @@ public class RacingManager implements Listener {
            raceSession.stop();
        }
 
+       for (Race race : this.races) {
+           race.stopSplineTask();
+       }
+
       this.raceSessions.clear();
    }
 
