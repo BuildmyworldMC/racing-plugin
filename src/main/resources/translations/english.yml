@@ -13,6 +13,8 @@ commands:
     error_invalid_size: "§cThe checkpoint size is invalid (must be between 3 and 9)"
   race_delete_checkpoint:
     success: "§eCheckpoint `<position>` for race `<race_name>` has been deleted."
+  race_set_checkpoint_size:
+    success: "§eThe size of checkpoint `<position>` for race `<race_name>` is now `<radius>`."
   race_move_checkpoint:
     success: "§eCheckpoint `<position>` for race `<race_name>` was moved to <x>, <y>, <z> in world `<world>`."
     error_no_change: "§eCheckpoint `<position>` is already in this location."

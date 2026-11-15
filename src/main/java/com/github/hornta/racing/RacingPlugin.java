@@ -39,6 +39,7 @@ import com.github.hornta.racing.messenger.Translation;
 import com.github.hornta.racing.messenger.Translations;
 import com.github.hornta.racing.objects.Race;
 import com.github.hornta.racing.objects.RaceCommandExecutor;
+import com.github.hornta.racing.objects.RaceCheckpoint;
 import com.github.hornta.racing.versioned_config.Configuration;
 import com.github.hornta.racing.versioned_config.ConfigurationBuilder;
 import com.github.hornta.racing.versioned_config.ConfigurationException;
@@ -305,6 +306,7 @@ public class RacingPlugin extends JavaPlugin {
       m.add(MessageKey.RACE_ADD_CHECKPOINT_POSITION_OUT_OF_BOUNDS, "commands.race_add_checkpoint.error_position_out_of_bounds");
       m.add(MessageKey.RACE_ADD_CHECKPOINT_INVALID_RADIUS, "commands.race_add_checkpoint.error_invalid_size");
       m.add(MessageKey.RACE_DELETE_CHECKPOINT_SUCCESS, "commands.race_delete_checkpoint.success");
+      m.add(MessageKey.RACE_SET_CHECKPOINT_SIZE_SUCCESS, "commands.race_set_checkpoint_size.success");
       m.add(MessageKey.RACE_ADD_STARTPOINT_SUCCESS, "commands.race_add_startpoint.success");
       m.add(MessageKey.RACE_ADD_STARTPOINT_IS_OCCUPIED, "commands.race_add_startpoint.error_is_occupied");
       m.add(MessageKey.RACE_ADD_STARTPOINT_POSITION_OUT_OF_BOUNDS, "commands.race_add_startpoint.error_position_out_of_bounds");
@@ -560,6 +562,7 @@ public class RacingPlugin extends JavaPlugin {
          .withArgument((new CarbonArgument.Builder("radius")).setType(CarbonArgumentType.INTEGER).setMin(3.0D).setMax(9.0D).setDefaultValue(CommandSender.class, (cs, args) -> 3).create())
          .requiresPermission(Permission.COMMAND_ADD_CHECKPOINT.toString()).requiresPermission(Permission.RACING_MODIFY.toString()).preventConsoleCommandSender();
       ICarbonArgument checkpointArgument = (new CarbonArgument.Builder("position")).setHandler(new CheckpointArgumentHandler(this.racingManager, true)).dependsOn(raceArgument).create();
+      this.commando.addCommand("racing setcheckpointsize").withHandler(new CommandSetCheckpointSize(this.racingManager)).withArgument(raceArgument).withArgument(checkpointArgument).withArgument((new CarbonArgument.Builder("radius")).setType(CarbonArgumentType.INTEGER).setMin(RaceCheckpoint.MIN_RADIUS).setMax(RaceCheckpoint.MAX_RADIUS).create()).requiresPermission(Permission.COMMAND_SET_CHECKPOINT_SIZE.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing deletecheckpoint").withHandler(new CommandDeleteCheckpoint(this.racingManager)).withArgument(raceArgument).withArgument(checkpointArgument).requiresPermission(Permission.COMMAND_DELETE_CHECKPOINT.toString()).requiresPermission(Permission.RACING_MODIFY.toString());
       this.commando.addCommand("racing movecheckpoint").withHandler(new CommandMoveCheckpoint(this.racingManager)).withArgument(raceArgument).withArgument(checkpointArgument).requiresPermission(Permission.COMMAND_MOVE_CHECKPOINT.toString()).requiresPermission(Permission.RACING_MODIFY.toString()).preventConsoleCommandSender();
       this.commando.addCommand("racing tpcheckpoint").withHandler(new CommandRaceTeleportPoint(this.racingManager)).withArgument(raceArgument).withArgument(checkpointArgument).requiresPermission(Permission.COMMAND_TELEPORT_CHECKPOINT.toString()).requiresPermission(Permission.RACING_MODIFY.toString()).preventConsoleCommandSender();

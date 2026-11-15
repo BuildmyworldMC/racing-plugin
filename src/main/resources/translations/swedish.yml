@@ -13,6 +13,8 @@ commands:
     error_invalid_size: "§cKontrollpunktens storlek är ogiltig (måste vara mellan 3 och 9)"
   race_delete_checkpoint:
     success: "§eCheckpoint `<position>` för race `<race_name>` borttagen."
+  race_set_checkpoint_size:
+    success: "§eStorleken på checkpoint `<position>` för race `<race_name>` är nu `<radius>`."
   race_move_checkpoint:
     success: "§eCheckpoint `<position>` för race `<race_name>` flyttades till <x>, <y>, <z> in världen `<world>`."
     error_no_change: "§eCheckpoint `<position>` befinner sig redan på den här platsen."
