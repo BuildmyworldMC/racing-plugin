@@ -559,7 +559,7 @@ public class RacingPlugin extends JavaPlugin {
                  return 1;
              }
          }).create())
-         .withArgument((new CarbonArgument.Builder("radius")).setType(CarbonArgumentType.INTEGER).setMin(3.0D).setMax(9.0D).setDefaultValue(CommandSender.class, (cs, args) -> 3).create())
+         .withArgument((new CarbonArgument.Builder("radius")).setType(CarbonArgumentType.INTEGER).setMin(RaceCheckpoint.MIN_RADIUS).setMax(RaceCheckpoint.MAX_RADIUS).setDefaultValue(CommandSender.class, (cs, args) -> 3).create())
          .requiresPermission(Permission.COMMAND_ADD_CHECKPOINT.toString()).requiresPermission(Permission.RACING_MODIFY.toString()).preventConsoleCommandSender();
       ICarbonArgument checkpointArgument = (new CarbonArgument.Builder("position")).setHandler(new CheckpointArgumentHandler(this.racingManager, true)).dependsOn(raceArgument).create();
       this.commando.addCommand("racing setcheckpointsize").withHandler(new CommandSetCheckpointSize(this.racingManager)).withArgument(raceArgument).withArgument(checkpointArgument).withArgument((new CarbonArgument.Builder("radius")).setType(CarbonArgumentType.INTEGER).setMin(RaceCheckpoint.MIN_RADIUS).setMax(RaceCheckpoint.MAX_RADIUS).create()).requiresPermission(Permission.COMMAND_SET_CHECKPOINT_SIZE.toString()).requiresPermission(Permission.RACING_MODIFY.toString());

@@ -10,7 +10,7 @@ commands:
     success: "§eNy checkpoint `<position>` har skapats för race `<race_name>`."
     error_is_occupied: "§cDet finns redan en checkpoint på den här platsen."
     error_position_out_of_bounds: "§cPosition för den här checkpointen kan maximalt vara <max>."
-    error_invalid_size: "§cKontrollpunktens storlek är ogiltig (måste vara mellan 3 och 9)"
+    error_invalid_size: "§cKontrollpunktens storlek är ogiltig (måste vara mellan <min> och <max>)"
   race_delete_checkpoint:
     success: "§eCheckpoint `<position>` för race `<race_name>` borttagen."
   race_set_checkpoint_size:
