@@ -39,8 +39,9 @@ public class CommandAddCheckpoint extends RacingCommand implements ICommandHandl
            return;
        }
 
-         if (radius < RaceCheckpoint.MIN_RADIUS || radius > RaceCheckpoint.MAX_RADIUS) {
-           MessageManager.setValue("radius", RaceCheckpoint.MIN_RADIUS);
+       if (radius < RaceCheckpoint.MIN_RADIUS || radius > RaceCheckpoint.MAX_RADIUS) {
+           MessageManager.setValue("min", RaceCheckpoint.MIN_RADIUS);
+           MessageManager.setValue("max", RaceCheckpoint.MAX_RADIUS);
            MessageManager.sendMessage(commandSender, MessageKey.RACE_ADD_CHECKPOINT_INVALID_RADIUS);
            return;
        }
