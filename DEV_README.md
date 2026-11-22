@@ -1,4 +1,4 @@
-# Racing - Spigot Plugin 4.9.0-SNAPSHOT
+# Racing - Spigot Plugin 4.9.0
 
 # Race migration history
 
