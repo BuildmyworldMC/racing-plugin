@@ -570,6 +570,17 @@ public class RacingManager implements Listener {
       });
    }
 
+   public void setCheckpointRadius(Race race, RaceCheckpoint checkpoint, int radius, Runnable runnable) {
+      checkpoint.setRadius(radius);
+      this.api.updateCheckpoints(race.getId(), race.getCheckpoints(), (result) -> {
+         Bukkit.getScheduler().scheduleSyncDelayedTask(RacingPlugin.getInstance(), () -> {
+            if (result) {
+               runnable.run();
+            }
+         });
+      });
+   }
+
    public void moveStartPoint(Location location, Race race, RaceStartPoint startPoint, Runnable runnable) {
       startPoint.setLocation(location);
       race.updateSplineTask();

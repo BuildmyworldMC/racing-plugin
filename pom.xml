@@ -4,7 +4,7 @@
 
     <groupId>io.github.orn-fox</groupId>
     <artifactId>racing</artifactId>
-    <version>4.8.0</version>
+    <version>4.9.0</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>26.1-R0.1-SNAPSHOT</version>
+            <version>26.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

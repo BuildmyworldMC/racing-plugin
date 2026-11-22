@@ -10,7 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class RaceCheckpoint extends RacePoint implements Comparable<RaceCheckpoint> {
-   private final int radius;
+   public static final int MIN_RADIUS = 3;
+   public static final int MAX_RADIUS = 9;
+   private int radius;
    private CheckpointParticleTask task;
    private Vector vector;
    private final List<Player> players = new ArrayList<>();
@@ -29,6 +31,10 @@ public class RaceCheckpoint extends RacePoint implements Comparable<RaceCheckpoi
 
    public int getRadius() {
       return this.radius;
+   }
+
+   public void setRadius(int radius) {
+      this.radius = radius;
    }
 
    public void stopTask() {

@@ -1,13 +1,13 @@
 ![Racing Banner](./racing-banner.jpg)
 
-# Racing - Spigot Plugin 4.8.0
+# Racing - Spigot Plugin 4.9.0
 
 Create and play race with your friends.
 
 Supported race type (Boat, Camel, Elytra, Happy Ghast, Horse, Minecart, Nautilus, Pig, Strider, Walk)
 
 Created in Minecraft Version : 1.16.0
-Tested in Minecraft Version : 1.16.0 to 26.1.2
+Tested in Minecraft Version : 1.16.0 to 26.2
 
 Available languages (English, French, Slovak, Swedish)
 

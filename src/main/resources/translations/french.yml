@@ -10,9 +10,11 @@ commands:
     success: "§eUn nouveau point de contrôle `<position>` a été créé pour la course `<race_name>`."
     error_is_occupied: "§cIl y a déjà un point de contrôle à cet emplacement."
     error_position_out_of_bounds: "§cLa position maximale que vous pouvez entrer pour ce point de contrôle est <max>."
-    error_invalid_size: "§cLa taille du point de contrôle est invalide (doit compris entre 3 et 9)"
+    error_invalid_size: "§cLa taille du point de contrôle est invalide (doit compris entre <min> et <max>>)"
   race_delete_checkpoint:
     success: "§eLe point de contrôle `<position>` pour la course `<race_name>` a été supprimé."
+  race_set_checkpoint_size:
+    success: "§eLa taille du point de contrôle `<position>` de la course `<race_name>` est maintenant de `<radius>`."
   race_move_checkpoint:
     success: "§eLe point de contrôle `<position>` pour la course `<race_name>` a été déplacé à <x>, <y>, <z> dans le monde `<world>`."
     error_no_change: "§eLe point de contrôle `<position>` est déjà à cet emplacement."
