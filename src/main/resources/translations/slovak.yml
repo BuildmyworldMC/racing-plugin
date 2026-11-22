@@ -10,9 +10,11 @@ commands:
     success: "§eNový záchytný bod `<position>` bol vytvorený pre pretek `<race_name>`."
     error_is_occupied: "§cNa tomto mieste už záchytný bod existuje."
     error_position_out_of_bounds: "§cMax position you can enter for this checkpoint is <max>."
-    error_invalid_size: "§cVeľkosť kontrolného bodu je neplatná (musí byť medzi 3 a 9)"
+    error_invalid_size: "§cVeľkosť kontrolného bodu je neplatná (musí byť medzi <min> a <max>)"
   race_delete_checkpoint:
     success: "§eZáchytný bod `<position>` pre pretek `<race_name>` bol odstránený."
+  race_set_checkpoint_size:
+    success: "§eVeľkosť záchytného bodu `<position>` pre pretek `<race_name>` je teraz `<radius>`."
   race_move_checkpoint:
     success: "§eCheckpoint `<position>` for race `<race_name>` was moved to <x>, <y>, <z> in world `<world>`."
     error_no_change: "§eCheckpoint `<position>` is already in this location."

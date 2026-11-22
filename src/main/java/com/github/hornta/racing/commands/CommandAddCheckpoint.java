@@ -7,6 +7,7 @@ import com.github.hornta.racing.commando.ICommandHandler;
 import com.github.hornta.racing.enums.RaceState;
 import com.github.hornta.racing.messenger.MessageManager;
 import com.github.hornta.racing.objects.Race;
+import com.github.hornta.racing.objects.RaceCheckpoint;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 
@@ -16,9 +17,6 @@ public class CommandAddCheckpoint extends RacingCommand implements ICommandHandl
    }
 
    public void handle(CommandSender commandSender, String[] args, int typedArgs) {
-       int MIN_RADIUS = 3;
-       int MAX_RADIUS = 9;
-
        // Récupération de la course
        Race race = this.racingManager.getRace(args[0]);
        
@@ -41,8 +39,9 @@ public class CommandAddCheckpoint extends RacingCommand implements ICommandHandl
            return;
        }
 
-       if (radius < MIN_RADIUS || radius > MAX_RADIUS) {
-           MessageManager.setValue("radius", MIN_RADIUS);
+       if (radius < RaceCheckpoint.MIN_RADIUS || radius > RaceCheckpoint.MAX_RADIUS) {
+           MessageManager.setValue("min", RaceCheckpoint.MIN_RADIUS);
+           MessageManager.setValue("max", RaceCheckpoint.MAX_RADIUS);
            MessageManager.sendMessage(commandSender, MessageKey.RACE_ADD_CHECKPOINT_INVALID_RADIUS);
            return;
        }
